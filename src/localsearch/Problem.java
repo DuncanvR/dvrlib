@@ -6,13 +6,24 @@
 
 package dvrlib.localsearch;
 
-public interface Problem {
+public interface Problem<S extends Solution, M> {
    /**
     * Generates a random Solution to this Problem.
     */
-   public Solution randomSolution();
+   public S randomSolution();
+
    /**
-    * Returns the Mutator for this Problem, an object which generates Mutations for Solutions.
+    * Generates a mutation that changes the solution into one that closely resembles it.
     */
-   public Mutator getMutator();
+   public M generateMutation(S solution);
+
+   /**
+    * Executes the given mutation.
+    */
+   public void doMutation(S solution, M mutation);
+
+   /**
+    * Undoes the given Mutation.
+    */
+   public void undoMutation(S solution, M mutation);
 }
