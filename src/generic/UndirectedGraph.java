@@ -38,10 +38,13 @@ public class UndirectedGraph extends Graph {
    public boolean addEdge(int a, int b) {
       if(a == b)
          return false;
-      else if(a < b)
-         return super.addEdge(a, b);
-      else
-         return super.addEdge(b, a);
+      
+      boolean added = (a < b ? super.addEdge(a, b) : super.addEdge(b, a));
+      if(added) {
+         degrees[(a < b ? b : a)]++;
+         incMaxDegree();
+      }
+      return added;
    }
 
    /**

@@ -9,7 +9,7 @@ package dvrlib.generic;
 public class Graph {
    protected final int vertexCount, firsts[], degrees[];
    protected final Edge edges[][];
-   protected int edgeCount;
+   protected int edgeCount, maxDegree;
 
    /**
     * Graph constructor.
@@ -22,6 +22,7 @@ public class Graph {
       degrees   = new  int[vertexCount];
       edges     = new Edge[vertexCount][vertexCount];
       edgeCount = 0;
+      maxDegree = 0;
    }
 
    /**
@@ -105,6 +106,7 @@ public class Graph {
       edges[a][b] = e;
       edgeCount++;
       degrees[a]++;
+      incMaxDegree();
 
       // Maintain data
       Edge n = getEdge(a);
@@ -181,6 +183,10 @@ public class Graph {
       // Delete edge
       edges[a][b] = null;
       edgeCount--;
+      if(degrees[a] == maxDegree) {
+         // Invalidate maxDegree
+         maxDegree = -1;
+      }
       degrees[a]--;
    }
 
@@ -194,14 +200,25 @@ public class Graph {
 
    /**
     * Returns the largest degree.
-    * O(v).
+    * O(v) if maxDegree was invalidated (by a call to removeEdge), O(1) otherwise.
     */
    public int getMaxDegree() {
-      int r = Integer.MIN_VALUE;
-      for(int i = 0; i < vertexCount; i++) {
-         r = Math.max(r, degrees[i]);
+      // If maxDegree has been invalidated, recalculate it
+      if(maxDegree < 0) {
+         maxDegree = 0;
+         for(int i = 0; i < vertexCount; i++) {
+            maxDegree = Math.max(maxDegree, degrees[i]);
+         }
       }
-      return r;
+      return maxDegree;
+   }
+
+   /**
+    * Increases the value of maxDegree.
+    * @see Graph#getMaxDegree()
+    */
+   protected void incMaxDegree() {
+      maxDegree = getMaxDegree() + 1;
    }
 
    /**
