@@ -210,10 +210,14 @@ public class Graph {
    public void print() {
       for(int i = 0; i < vertexCount; i++) {
          System.out.print("    [");
-         for(int j = 0; j < vertexCount - 1; j++) {
-            System.out.print(hasEdge(i, j) ? "1 " : "0 ");
+         for(int j = 0; j < vertexCount; j++) {
+            System.out.print(printEdge(i, j) + " ");
          }
-         System.out.println((hasEdge(i, vertexCount - 1) ? "1]" : "0]") + " : " + getDegree(i));
+         System.out.println("] : " + getDegree(i));
       }
+   }
+   
+   protected String printEdge(int a, int b) {
+      return (hasEdge(a, b) ? "1" : "0");
    }
 }

@@ -56,17 +56,8 @@ public class UndirectedGraph extends Graph {
          super.removeEdge(b, a);
    }
 
-   /**
-    * Prints this undirected graph.
-    */
    @Override
-   public void print() {
-      for(int i = 0; i < vertexCount; i++) {
-         System.out.print("    [");
-         for(int j = 0; j < vertexCount - 1; j++) {
-            System.out.print(super.hasEdge(i, j) ? "1 " : "0 ");
-         }
-         System.out.println((super.hasEdge(i, vertexCount - 1) ? "1]" : "0]") + " : " + getDegree(i));
-      }
+   protected String printEdge(int a, int b) {
+      return (a < b ? super.printEdge(a, b) : "-");
    }
 }
