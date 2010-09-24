@@ -6,8 +6,7 @@
 
 package dvrlib.generic;
 
-public class Edge {
-   public final int a, b;
+public class Edge extends AbstractEdge {
    protected Edge previous, next;
 
    /**
@@ -16,17 +15,8 @@ public class Edge {
     * @param b The index of the second vertex this edge is connected to.
     * O(1).
     */
-   public Edge(final int a, final int b) {
-      this.a = a;
-      this.b = b;
-   }
-
-   /**
-    * Returns true if getPrevious will return a valid pointer, false otherwise.
-    * O(1).
-    */
-   public boolean hasPrevious() {
-      return (previous != null);
+   public Edge(int a, int b) {
+      super(a, b);
    }
 
    /**
@@ -35,14 +25,6 @@ public class Edge {
     */
    public Edge getPrevious() {
       return previous;
-   }
-
-   /**
-    * Returns true if getNext() will return a valid pointer, false otherwise.
-    * O(1).
-    */
-   public boolean hasNext() {
-      return (next != null);
    }
 
    /**

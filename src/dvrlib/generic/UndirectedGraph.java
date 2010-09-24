@@ -7,8 +7,8 @@
 package dvrlib.generic;
 
 public class UndirectedGraph extends Graph {
-   public UndirectedGraph(int vertexCount) {
-      super(vertexCount);
+   public UndirectedGraph(int nodeCount) {
+      super(nodeCount);
    }
 
    /**
@@ -35,14 +35,14 @@ public class UndirectedGraph extends Graph {
     * O(e).
     */
    @Override
-   public boolean addEdge(int a, int b) {
+   public Edge addEdge(int a, int b) {
       if(a == b)
-         return false;
+         return null;
       
-      boolean added = (a < b ? super.addEdge(a, b) : super.addEdge(b, a));
-      if(added)
+      Edge e = (a < b ? super.addEdge(a, b) : super.addEdge(b, a));
+      if(e != null)
          incDegree(a < b ? b : a);
-      return added;
+      return e;
    }
 
    /**
@@ -50,15 +50,15 @@ public class UndirectedGraph extends Graph {
     * O(1).
     */
    @Override
-   public void removeEdge(int a, int b) {
+   public Edge removeEdge(int a, int b) {
       if(a < b)
-         super.removeEdge(a, b);
+         return super.removeEdge(a, b);
       else
-         super.removeEdge(b, a);
+         return super.removeEdge(b, a);
    }
 
    @Override
    protected String printEdge(int a, int b) {
-      return (a < b ? super.printEdge(a, b) : "-        ");
+      return (a < b ? super.printEdge(a, b) : "-");
    }
 }

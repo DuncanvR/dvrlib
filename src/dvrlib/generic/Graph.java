@@ -6,51 +6,34 @@
 
 package dvrlib.generic;
 
-public class Graph {
-   public final int vertexCount;
-   protected final int firstEdges[], lastEdges[], degrees[];
-   protected final Edge edges[][];
-   protected int edgeCount, firstEdge, lastEdge, maxDegree;
+public class Graph extends AbstractGraph {
+   protected final Node nodes[];
+   protected int firstEdge, lastEdge;
 
    /**
     * Graph constructor.
-    * @param vertexCount The number of vertices in this graph.
+    * @param nodeCount The number of vertices in this graph.
     * O(1).
     */
-   public Graph(final int vertexCount) {
-      this.vertexCount =    vertexCount;
-      firstEdges = new  int[vertexCount];
-      lastEdges  = new  int[vertexCount];
-      degrees    = new  int[vertexCount];
-      edges      = new Edge[vertexCount][vertexCount];
+   public Graph(int nodeCount) {
+      super(nodeCount);
+      nodes = new Node[nodeCount];
+      for(int i = 0; i < nodeCount; i++) {
+         nodes[i] = new Node(this, i);
+      }
+
       edgeCount  = 0;
-      firstEdge  = vertexCount;
+      firstEdge  = nodeCount;
       lastEdge   = -1;
       maxDegree  = 0;
    }
 
    /**
-    * Returns the number of edges in this graph.
+    * Returns true if there is an edge from node a to any other node, false otherwise.
     * O(1).
     */
-   public int getEdgeCount() {
-      return edgeCount;
-   }
-
-   /**
-    * Returns true if there is an edge from vertex a to any other vertex, false otherwise.
-    * O(1).
-    */
-   public boolean hasEdge(final int a) {
+   public boolean hasEdge(int a) {
       return (getFirstEdge(a) != null);
-   }
-
-   /**
-    * Returns true if there is an edge between vertices a and b, false otherwise.
-    * O(1).
-    */
-   public boolean hasEdge(final int a, final int b) {
-      return (getEdge(a, b) != null);
    }
 
    /**
@@ -70,30 +53,54 @@ public class Graph {
    }
 
    /**
-    * Returns the first edge from vertex a to any other vertex, or null if there is none.
+    * Returns the first edge from node a to any other node, or null if there is none.
     * O(1).
     */
-   public Edge getFirstEdge(final int a) {
-      return getEdge(a, firstEdges[a]);
-   }
-
-   /**
-    * Returns the last edge from vertex a to any other vertex, or null if there is none.
-    * O(1).
-    */
-   public Edge getLastEdge(final int a) {
-      return getEdge(a, lastEdges[a]);
-   }
-
-   /**
-    * Returns the edge between vertices a and b, or null if there is no such edge.
-    * O(1).
-    */
-   public Edge getEdge(final int a, final int b) {
-      // Sanity check
-      if(a < 0 || a >= vertexCount || b < 0 || b >= vertexCount)
+   public Edge getFirstEdge(int a) {
+      Node n = getNode(a);
+      if(n == null)
          return null;
-      return edges[a][b];
+      return getEdge(n, n.first);
+   }
+
+   /**
+    * Returns the last edge from node a to any other node, or null if there is none.
+    * O(1).
+    */
+   public Edge getLastEdge(int a) {
+      Node n = getNode(a);
+      if(n == null)
+         return null;
+      return getEdge(n, n.last);
+   }
+
+   /**
+    * Returns the edge between nodes a and b, or null if there is no such edge.
+    * O(1).
+    */
+   public Edge getEdge(int a, int b) {
+      // Sanity check
+      if(a < 0 || a >= nodeCount || b < 0 || b >= nodeCount)
+         return null;
+      return getEdge(getNode(a), b);
+   }
+
+   /**
+    * Returns the edge between nodes a and b, or null if there is no such edge.
+    * O(1).
+    */
+   public Edge getEdge(Node a, int b) {
+      if(a == null)
+         return null;
+      return a.getEdge(b);
+   }
+
+   /**
+    * Returns the node with the given index.
+    * O(1).
+    */
+   public Node getNode(int index) {
+      return nodes[index];
    }
 
    /**
@@ -101,97 +108,99 @@ public class Graph {
     * @return true if the edge was added, false otherwise.
     * O(e).
     */
-   public boolean addEdge(final int a, final int b) {
+   public Edge addEdge(int a, int b) {
       // Sanity check
-      if(a < 0 || a >= vertexCount || b < 0 || b >= vertexCount || hasEdge(a, b))
-         return false;
+      if(a < 0 || a >= nodeCount || b < 0 || b >= nodeCount)
+         return null;
 
-      // Create new edge
-      Edge e = new Edge(a, b);
-      edges[a][b] = e;
-      edgeCount++;
-      incDegree(a);
+      Edge e = getEdge(a, b);
+      if(e == null) {
+         // Create new edge
+         e = new Edge(a, b);
 
-      // Find the previous and next edges
-      Edge p = getFirstEdge(a), n = getLastEdge(a);
-      if(a < firstEdge) {
-         // The new edge comes before the first edge in the graph
-         // p == null, since there is no edge before it
-         firstEdge = a;
-         lastEdges[a] = b;
-      }
-      else {
-         // The new edge comes after the first edge in the graph
-         if(p == null) {
-            // The new edge is the first one connected to vertex a
-            firstEdges[a] = b;
-            for(int i = a - 1; i >= 0 && p == null; i--) {
-               p = getLastEdge(i);
-            }
-         }
-         else if(b > p.b) {
-            // The new edge comes after the first edge of vertex a
-            while(p.next != null && a == p.a && b < p.b) {
-               p = p.next;
-            }
+         // Find the previous and next edges
+         Edge p = getFirstEdge(a), n = getLastEdge(a);
+         if(a < firstEdge) {
+            // The new edge comes before the first edge in the graph
+            // p == null, since there is no edge before it
+            firstEdge = a;
+            nodes[a].last = b;
          }
          else {
-            // The new edge comes before the first edge of vertex a
-            p = p.previous;
+            // The new edge comes after the first edge in the graph
+            if(p == null) {
+               // The new edge is the first one connected to node a
+               for(int i = a - 1; p == null && i >= 0; i--) {
+                  p = getLastEdge(i);
+               }
+            }
+            else if(b > p.b) {
+               // The new edge comes after the first edge of node a
+               while(p.next != null && a == p.next.a && b > p.next.b) {
+                  p = p.next;
+               }
+            }
+            else {
+               // The new edge comes before the first edge of node a
+               p = p.previous;
+            }
          }
-      }
 
-      if(a > lastEdge) {
-         // The new edge comes after the last edge in the graph
-         // n == null, since there is no edge after it
-         lastEdge = a;
-         firstEdges[a] = b;
-      }
-      else {
-         // The new edge comes before the last edge in the graph
-         if(n == null) {
-            // The new edge is the first one connected to vertex a
-            lastEdges[a] = b;
-            for(int i = a + 1; i < vertexCount && n == null; i++) {
-               n = getFirstEdge(i);
-            }
-         }
-         else if(b < n.b) {
-            // The new edge comes before the last edge of vertex a
-            while(n.previous != null && a == n.a && b > n.b) {
-               n = n.previous;
-            }
+         if(a > lastEdge) {
+            // The new edge comes after the last edge in the graph
+            // n == null, since there is no edge after it
+            lastEdge = a;
+            nodes[a].first = b;
          }
          else {
-            // The new edge comes after the last edge of vertex a
-            n = n.next;
+            // The new edge comes before the last edge in the graph
+            if(n == null) {
+               // The new edge is the first one connected to node a
+               for(int i = a + 1; n == null && i < nodeCount; i++) {
+                  n = getFirstEdge(i);
+               }
+            }
+            else if(b < n.b) {
+               // The new edge comes before the last edge of node a
+               while(n.previous != null && a == n.previous.a && b < n.previous.b) {
+                  n = n.previous;
+               }
+            }
+            else {
+               // The new edge comes after the last edge of node a
+               n = n.next;
+            }
          }
+
+         // Set previous and next pointers
+         e.previous = p;
+         if(p == null || a != p.a || b < p.b)
+            nodes[a].first = b;
+         if(p != null)
+            p.next = e;
+
+         e.next = n;
+         if(n == null || a != n.a || b > n.b)
+            nodes[a].last = b;
+         if(n != null)
+            n.previous = e;
+
+         // Add edge
+         nodes[a].edges[b] = e;
+         edgeCount++;
+         incDegree(a);
       }
-      
-      // Set previous and next pointers
-      e.previous = p;
-      if(p == null || a != p.a || b < p.b)
-         firstEdges[a] = b;
-      if(p != null)
-         p.next = e;
-
-      e.next = n;
-      if(n == null || a != n.a || b > n.b)
-         lastEdges[a] = b;
-      if(n != null)
-         n.previous = e;
-
-      return true;
+      return e;
    }
 
    /**
     * Removes the edge between vertices a and b.
     * O(1).
     */
-   public void removeEdge(final int a, final int b) {
+   public Edge removeEdge(int a, int b) {
       // Sanity check
-      if(a < 0 || a >= vertexCount || b < 0 || b >= vertexCount || !hasEdge(a, b))
-         return;
+      if(a < 0 || a >= nodeCount || b < 0 || b >= nodeCount || !hasEdge(a, b))
+         return null;
 
       // Maintain data
       Edge e = getEdge(a, b);
@@ -199,7 +208,7 @@ public class Graph {
       if(a == firstEdge) {
          // The old edge was the first edge in the graph
          if(e.next == null)
-            firstEdge = vertexCount;
+            firstEdge = nodeCount;
          else
             firstEdge = e.next.a;
       }
@@ -217,78 +226,59 @@ public class Graph {
       if(e.next != null)
          e.next.previous = e.previous;
 
-      if(firstEdges[a] == b) {
+      if(nodes[a].first == b) {
          if(e.next != null && e.next.a == a)
-            firstEdges[a] = e.next.b;
+            nodes[a].first = e.next.b;
          else
-            firstEdges[a] = -1;
+            nodes[a].first = -1;
       }
-      if(lastEdges[a] == b) {
+      if(nodes[a].last == b) {
          if(e.previous != null && e.previous.a == a)
-            lastEdges[a] = e.previous.b;
+            nodes[a].last = e.previous.b;
          else
-            lastEdges[a] = -1;
+            nodes[a].last = -1;
       }
 
-      // Delete edge
-      edges[a][b] = null;
-      edgeCount--;
-      if(degrees[a] == maxDegree) {
+      if(nodes[a].getDegree() == maxDegree) {
          // Invalidate maxDegree
          maxDegree = -1;
       }
-      degrees[a]--;
+      nodes[a].degree--;
+
+      // Delete edge
+      nodes[a].edges[b] = null;
+      edgeCount--;
+
+      return e;
    }
 
    /**
-    * Returns the number of edges starting in vertex a.
+    * Returns the number of edges starting in node a.
     * O(1).
     */
-   public int getDegree(final int a) {
-      return degrees[a];
+   public int getDegree(int a) {
+      return nodes[a].getDegree();
    }
 
    /**
     * Returns the largest degree.
     * O(v) if maxDegree was invalidated (by a call to removeEdge), O(1) otherwise.
     */
+   @Override
    public int getMaxDegree() {
       // If maxDegree has been invalidated, recalculate it
       if(maxDegree < 0) {
          maxDegree = 0;
-         for(int i = 0; i < vertexCount; i++) {
-            maxDegree = Math.max(maxDegree, degrees[i]);
+         for(int i = 0; i < nodeCount; i++) {
+            maxDegree = Math.max(maxDegree, nodes[i].getDegree());
          }
       }
       return maxDegree;
    }
 
-   /**
-    * Increases the degree of vertex a.
-    */
-   protected void incDegree(int a) {
-      if(++degrees[a] > getMaxDegree());
-         maxDegree = degrees[a];
-   }
-
-   /**
-    * Prints this graph.
-    */
-   public void print() {
-      for(int i = 0; i < vertexCount; i++) {
-         System.out.print("\t[");
-         for(int j = 0; j < vertexCount; j++) {
-            System.out.print(printEdge(j, i) + " ");
-         }
-         System.out.println("] :d " + getDegree(i));
-      }
-   }
-   
+/*   @Override
    protected String printEdge(int a, int b) {
-      //return (hasEdge(a, b) ? "1" : "0");
-      //*
       Edge e = getEdge(a, b); // Debug output
       return (e == null ? "0       " : "p" + (e.previous == null ? "-  " : e.previous.a + "," + e.previous.b) + "n" + (e.next == null ? "-  " : e.next.a + "," + e.next.b));
-      //*/
-   }
+   }*/
 }
