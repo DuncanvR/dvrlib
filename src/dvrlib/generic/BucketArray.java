@@ -28,6 +28,30 @@ public class BucketArray<E> {
    }
 
    /**
+    * Returns the number of elements in this BucketArray.
+    * O(1).
+    */
+   public int getSize() {
+      return size;
+   }
+
+   /**
+    * Returns the index of the lowest non-empty bucket.
+    * O(1).
+    */
+   public int getLowestIndex() {
+      return low;
+   }
+
+   /**
+    * Returns the index of the highest non-empty bucket.
+    * O(1).
+    */
+   public int getHighestIndex() {
+      return high;
+   }
+
+   /**
     * Returns the bucket with the given index, or null if it doesn't exist.
     * O(1).
     */
@@ -49,7 +73,7 @@ public class BucketArray<E> {
       // Maintain data
       int i = index - 1;
       // Get previous bucket
-      while(i >= min && getBucket(i) == null)
+      while(i > min && getBucket(i) == null)
          i--;
       bucket.previous = i;
 
@@ -62,7 +86,7 @@ public class BucketArray<E> {
       else {
          // Get next bucket
          i = index + 1;
-         while(i <= max && getBucket(i) == null)
+         while(i < max && getBucket(i) == null)
             i++;
          bucket.next = i;
       }
@@ -76,53 +100,23 @@ public class BucketArray<E> {
    }
 
    /**
-    * Adds an element to the specified bucket.
-    * O(b) - The number of buckets.
-    */
-   public void add(int index, E element) {
-      // Add element
-      Bucket<E> bucket = getBucket(index);
-      if(bucket == null)
-         bucket = addBucket(index);
-      bucket.add(element);
-
-      // Maintain data
-      size++;
-      if(index < low)
-         low  = index;
-      else if(index > high)
-         high = index;
-   }
-
-   /**
-    * Returns, but does not remove, the first element in the bucket at the given index.
+    * Removes the bucket at the given index.
     * O(1).
     */
-   public E peek(int index) {
-      Bucket<E> b = getBucket(index);
-      if(b == null)
-         return null;
-      return b.peek();
-   }
-
-   /**
-    * Removes and returns the first element in the bucket at the given index.
-    */
-   public E pop(int index) {
-      // Retreive element
-      Bucket<E> bucket = getBucket(index);
-      E element = bucket.pop();
-
-      // Maintain data
-      size--;
-      if(bucket.isEmpty()) {
+   protected void removeBucket(int index) {
+      Bucket bucket = getBucket(index);
+      if(bucket != null) {
          if(index == high) {
             high = bucket.previous;
-            getBucket(high).next = max;
+            Bucket b = getBucket(high);
+            if(b != null)
+               b.next = max;
          }
          else if(index == low) {
             low = bucket.next;
-            getBucket(low).previous = min;
+            Bucket b = getBucket(low);
+            if(b != null)
+               b.previous = min;
          }
 
          Bucket<E> b = getBucket(bucket.previous);
@@ -136,12 +130,63 @@ public class BucketArray<E> {
          // Remove bucket
          buckets[index - min] = null;
       }
+   }
+
+   /**
+    * Adds an element to the specified bucket.
+    * @return The index of the element in the bucket.
+    * O(b) if a new bucket has to be added, O(1) otherwise.
+    */
+   public int add(int index, E element) {
+      // Add element
+      Bucket<E> bucket = getBucket(index);
+      if(bucket == null)
+         bucket = addBucket(index);
+      bucket.add(element);
+
+      // Maintain data
+      size++;
+      if(index < low)
+         low  = index;
+      else if(index > high)
+         high = index;
+
+      return bucket.size() - 1;
+   }
+
+   /**
+    * Returns, but does not remove, the first element in the bucket at the given index.
+    * O(1).
+    */
+   public E peek(int index) {
+      Bucket<E> bucket = getBucket(index);
+      if(bucket == null)
+         return null;
+      return bucket.getLast();
+   }
+
+   /**
+    * Removes and returns the first element in the bucket at the given index.
+    * O(1).
+    */
+   public E pop(int index) {
+      // Retreive element
+      Bucket<E> bucket = getBucket(index);
+      if(bucket == null)
+         return null;
+      E element = bucket.removeLast();
+
+      // Maintain data
+      size--;
+      if(bucket.isEmpty())
+         removeBucket(index);
 
       return element;
    }
 
    /**
     * Removes and returns the first element of the lowest non-empty bucket.
+    * O(1).
     */
    public E popLowest() {
       return pop(low);
@@ -149,17 +194,10 @@ public class BucketArray<E> {
 
    /**
     * Removes and returns the first element of the highest non-empty bucket.
+    * O(1).
     */
    public E popHighest() {
       return pop(high);
-   }
-
-   /**
-    * Returns the number of elements in this BucketArray.
-    * O(1).
-    */
-   public int getSize() {
-      return size;
    }
 
    /**

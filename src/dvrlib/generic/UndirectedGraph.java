@@ -40,10 +40,8 @@ public class UndirectedGraph extends Graph {
          return false;
       
       boolean added = (a < b ? super.addEdge(a, b) : super.addEdge(b, a));
-      if(added) {
-         degrees[(a < b ? b : a)]++;
-         incMaxDegree();
-      }
+      if(added)
+         incDegree(a < b ? b : a);
       return added;
    }
 
@@ -61,6 +59,6 @@ public class UndirectedGraph extends Graph {
 
    @Override
    protected String printEdge(int a, int b) {
-      return (a < b ? super.printEdge(a, b) : "-");
+      return (a < b ? super.printEdge(a, b) : "-        ");
    }
 }
