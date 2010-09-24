@@ -6,6 +6,8 @@
 
 package dvrlib.generic;
 
+import java.util.Collection;
+
 public abstract class AbstractGraph<N extends AbstractNode, E extends AbstractEdge> {
    protected int nodeCount, edgeCount, maxDegree;
 
@@ -66,6 +68,11 @@ public abstract class AbstractGraph<N extends AbstractNode, E extends AbstractEd
     * Returns the node at the given index.
     */
    public abstract N getNode(int index);
+
+   /**
+    * Returns the neighbouring nodes of the node with the given index.
+    */
+   public abstract Collection<N> getNeighbours(int index);
 
    /**
     * Returns true if there is an edge between nodes a and b, false otherwise.

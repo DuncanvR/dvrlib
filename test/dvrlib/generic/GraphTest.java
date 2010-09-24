@@ -1,30 +1,30 @@
 package dvrlib.generic;
 
+import java.util.Collection;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class GraphTest {
    Graph instance;
 
-   /**
-    * Test of getEdgeCount method, of class Graph.
-    */
    @Test
    public void testGetEdgeCount() {
-      instance = new Graph(7);
-      instance.addEdge(1, 2);
-      instance.addEdge(3, 2);
-      instance.addEdge(3, 4);
-      instance.addEdge(3, 6);
-      instance.addEdge(5, 6);
-      assertEquals(5, instance.getEdgeCount());
+      instance = new Graph(3);
+      assertEquals(0, instance.getEdgeCount());
+      instance.addEdge(0, 1);
+      assertEquals(1, instance.getEdgeCount());
+      instance.addEdge(2, 1);
+      assertEquals(2, instance.getEdgeCount());
+      instance.removeEdge(2, 0);
+      assertEquals(2, instance.getEdgeCount());
+      instance.removeEdge(2, 1);
+      assertEquals(1, instance.getEdgeCount());
+      instance.removeEdge(0, 1);
+      assertEquals(0, instance.getEdgeCount());
    }
 
-   /**
-    * Test of hasEdge method, of class Graph.
-    */
    @Test
-   public void test_has_getFirst_getLast_Edge() {
+   public void testHasEdge() {
       int nodeCount = 10;
       instance = new Graph(nodeCount);
       for(int i = 1; i < nodeCount; i += 2) {
@@ -33,19 +33,19 @@ public class GraphTest {
          }
       }
 
-      // Test Graph.hasEdge(int)
+      // Test hasEdge(int)
       for(int i = 0; i < nodeCount; i++) {
          assertEquals((i % 2 == 1), instance.hasEdge(i));
       }
 
-      // Test Graph.hasEdge(int, int)
+      // Test hasEdge(int, int)
       for(int i = 0; i < nodeCount; i++) {
          for(int j = 0; j < nodeCount; j++) {
             assertEquals((i % 2 == 1 && j % 2 == 0 && j < i), instance.hasEdge(i, j));
          }
       }
 
-      // Test Graph.getFirstEdge(int) and Graph.getLastEdge(int)
+      // Test getFirstEdge(int) and getLastEdge(int)
       for(int i = 0; i < nodeCount; i++) {
          Edge f = instance.getFirstEdge(i), l = instance.getLastEdge(i);
          if(i % 2 == 1) {
@@ -61,12 +61,9 @@ public class GraphTest {
       }
    }
 
-   /**
-    * Test of addEdge method, of class Graph.
-    */
    @Test
-   public void test_add_get_Edge() {
-      instance = new Graph(7);
+   public void testEdges() {
+      instance = new Graph(6);
       Edge edges[] = new Edge[5];
       edges[0] = instance.addEdge(0, 1);
       edges[1] = instance.addEdge(2, 1);
@@ -91,13 +88,26 @@ public class GraphTest {
    }
 
    public void assertEdges(Edge edges[]) {
+      // Test getFirstEdge() and getLastEdge()
       assertEquals(edges[0], instance.getFirstEdge());
       assertEquals(edges[edges.length - 1], instance.getLastEdge());
 
+      // Test getEdge(int, int)
       for(Edge e : edges) {
          assertEquals(e, instance.getEdge(e.a, e.b));
       }
 
+      // Test getNeighbours(int)
+      for(int i = 0; i < instance.getNodeCount(); i++) {
+         Collection<Node> neighbours = instance.getNeighbours(i);
+         for(Edge e : edges) {
+            if(i == e.a)
+               assertTrue(neighbours.remove(instance.getNode(e.b)));
+         }
+         assertTrue(neighbours.isEmpty());
+      }
+
+      // Test previous and next pointers
       assertNull(edges[0].previous);
       for(int i = 1; i < edges.length - 1; i++) {
          assertEquals(edges[i - 1], edges[i].previous);
@@ -107,6 +117,7 @@ public class GraphTest {
       }
       assertNull(edges[edges.length - 1].next);
 
+      // Test removeEdge(int, int)
       for(Edge e : edges) {
          assertEquals(e, instance.removeEdge(e.a, e.b));
       }
@@ -152,9 +163,11 @@ public class GraphTest {
    }
 
    public void assertDegrees(int max, int ds[]) {
+      // Test getDegree(int)
       for(int i = 0; i < ds.length; i++) {
          assertEquals(ds[i], instance.getDegree(i));
       }
+      // Test getMaxDegree()
       assertEquals(max, instance.getMaxDegree());
    }
 }

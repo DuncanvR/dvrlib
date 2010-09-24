@@ -6,7 +6,10 @@
 
 package dvrlib.generic;
 
-public class Node extends AbstractNode {
+import java.util.Collection;
+import java.util.LinkedList;
+
+public class Node extends AbstractNode<Node> {
    protected final Graph graph;
    protected final Edge edges[];
    protected int first, last;
@@ -41,7 +44,7 @@ public class Node extends AbstractNode {
     * O(1).
     */
    @Override
-   public boolean hasEdge(AbstractNode that) {
+   public boolean hasEdge(Node that) {
       return hasEdge(that.index);
    }
 
@@ -53,6 +56,21 @@ public class Node extends AbstractNode {
       if(index < 0 || index >= graph.nodeCount)
          return null;
       return edges[index];
+   }
+
+   /**
+    * Returns the neighbouring nodes of this node.
+    * O(n) the number of nodes in the graph.
+    */
+   @Override
+   public Collection<Node> getNeighbours() {
+      LinkedList<Node> neighbours = new LinkedList<Node>();
+      for(int i = first; i <= last; i++) {
+         Edge e = edges[i];
+         if(e != null)
+            neighbours.add(graph.getNode(e.b));
+      }
+      return neighbours;
    }
 
    @Override

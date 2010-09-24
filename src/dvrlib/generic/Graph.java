@@ -6,6 +6,8 @@
 
 package dvrlib.generic;
 
+import java.util.Collection;
+
 public class Graph extends AbstractGraph {
    protected final Node nodes[];
    protected int firstEdge, lastEdge;
@@ -101,6 +103,14 @@ public class Graph extends AbstractGraph {
     */
    public Node getNode(int index) {
       return nodes[index];
+   }
+
+   /**
+    * Returns the neighbouring nodes of the node with the given index.
+    * @see Node#getNeighbours()
+    */
+   public Collection<Node> getNeighbours(int index) {
+      return nodes[index].getNeighbours();
    }
 
    /**
