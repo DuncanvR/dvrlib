@@ -18,7 +18,7 @@ public interface Mutator<S extends Solution, M> {
    public void doMutation(S solution, M mutation);
 
    /**
-    * Undoes the given Mutation.
+    * Undoes the given mutation.
     */
    public void undoMutation(S solution, M mutation);
 }

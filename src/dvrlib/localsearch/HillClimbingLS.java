@@ -13,7 +13,7 @@ public class HillClimbingLS extends LocalSearch {
       Object mutation = null;
 
       // Keep mutating as long as it improves the solution
-      for(double e1 = Double.NEGATIVE_INFINITY, e2 = solution.evaluate(); e1 < e2; e1 = e2, e2 = solution.evaluate()) {
+      for(double e1 = Double.NEGATIVE_INFINITY, e2 = problem.evaluate(solution); e1 < e2; e1 = e2, e2 = problem.evaluate(solution)) {
          mutation = mutator.generateMutation(solution);
          mutator.doMutation(solution, mutation);
       }

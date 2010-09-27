@@ -24,8 +24,8 @@ public class MultiStartLS extends LocalSearch {
    public Solution search(Problem problem, Solution bestSolution) {
       for(int i = 0; i < count; i++) {
          Solution newSolution = ls.search(problem, problem.randomSolution());
-         if(newSolution.evaluate() < bestSolution.evaluate())
-            bestSolution   = newSolution;
+         if(problem.evaluate(newSolution) < problem.evaluate(bestSolution))
+            bestSolution = newSolution;
       }
       return bestSolution;
    }

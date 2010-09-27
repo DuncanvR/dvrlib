@@ -47,13 +47,13 @@ public class SimulatedAnnealingLS extends LocalSearch {
       double temperature = initTemp;
 
       // Main loop: i holds the total number of iterations; j holds the number of iterations since the last improvement
-      for(int i = 1, j = 0, eCur = solution.evaluate(); j < stopCount; i++, j++) {
+      for(int i = 1, j = 0, eCur = problem.evaluate(solution); j < stopCount; i++, j++) {
          // Mutate the solution
          Object mutation = mutator.generateMutation(solution);
          mutator.doMutation(solution, mutation);
 
          // Calculate the difference in evaluation
-         int eNew = solution.evaluate(), deltaE = eNew - eCur;
+         int eNew = problem.evaluate(solution), deltaE = eNew - eCur;
 
          if(deltaE <= 0 || Math.random() < Math.exp(-deltaE / temperature)) {
             eCur = eNew;
