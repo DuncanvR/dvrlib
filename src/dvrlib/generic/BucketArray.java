@@ -6,10 +6,10 @@
 
 package dvrlib.generic;
 
-public class BucketArray<E> {
+public class BucketArray<I extends AbstractBucketItem> {
    protected final int min, max;
-   protected int low, high, size;
-   protected Bucket<E> buckets[];
+   protected int first, last, size;
+   protected Bucket<I> buckets[];
 
    /**
     * BucketArray constructor.
@@ -20,15 +20,18 @@ public class BucketArray<E> {
    public BucketArray(int min, int max) {
       this.min = min;
       this.max = max;
-
-      low  = max;
-      high = min;
+      first = max;
+      last = min;
       size = 0;
       buckets = new Bucket[max - min + 1];
+      buckets[0] = new Bucket<I>(0);
+      for(int i = 1; i < buckets.length; i++) {
+         buckets[i] = new Bucket<I>(i);
+      }
    }
 
    /**
-    * Returns the number of elements in this BucketArray.
+    * Returns the number of items in this BucketArray.
     * O(1).
     */
    public int getSize() {
@@ -36,168 +39,115 @@ public class BucketArray<E> {
    }
 
    /**
-    * Returns the index of the lowest non-empty bucket.
+    * Returns the index of the first non-empty bucket.
     * O(1).
     */
-   public int getLowestIndex() {
-      return low;
+   public int getFirstBucketIndex() {
+      return first;
    }
 
    /**
-    * Returns the index of the highest non-empty bucket.
+    * Returns the index of the last non-empty bucket.
     * O(1).
     */
-   public int getHighestIndex() {
-      return high;
+   public int getLastBucketIndex() {
+      return last;
    }
 
    /**
-    * Returns the bucket with the given index, or null if it doesn't exist.
+    * Returns the bucket with the given index.
     * O(1).
     */
-   protected Bucket<E> getBucket(int index) {
-      // Sanity check
-      if(index < min || index > max)
-         return null;
-      return buckets[index - min];
+   protected Bucket<I> getBucket(int bucketIndex) {
+      return buckets[bucketIndex - min];
    }
 
    /**
-    * Adds a bucket at the given index.
-    * O(b) - The number of buckets.
-    */
-   protected Bucket<E> addBucket(int index) {
-      Bucket<E> bucket = new Bucket<E>();
-      buckets[index - min] = bucket;
-
-      // Maintain data
-      int i = index - 1;
-      // Get previous bucket
-      while(i > min && getBucket(i) == null)
-         i--;
-      bucket.previous = i;
-
-      // Set previous pointers
-      Bucket<E> b = getBucket(i);
-      if(b != null) {
-         bucket.next = b.next;
-         b.next = index;
-      }
-      else {
-         // Get next bucket
-         i = index + 1;
-         while(i < max && getBucket(i) == null)
-            i++;
-         bucket.next = i;
-      }
-
-      // Set next pointers
-      b = getBucket(bucket.next);
-      if(b != null)
-         b.previous = index;
-
-      return bucket;
-   }
-
-   /**
-    * Removes the bucket at the given index.
+    * Adds the given item to the specified bucket.
+    * @return The index of the item in the bucket.
     * O(1).
     */
-   protected void removeBucket(int index) {
-      Bucket bucket = getBucket(index);
-      if(bucket != null) {
-         if(index == high) {
-            high = bucket.previous;
-            Bucket b = getBucket(high);
-            if(b != null)
-               b.next = max;
-         }
-         else if(index == low) {
-            low = bucket.next;
-            Bucket b = getBucket(low);
-            if(b != null)
-               b.previous = min;
-         }
-
-         Bucket<E> b = getBucket(bucket.previous);
-         if(b != null)
-            b.next = bucket.next;
-
-         b = getBucket(bucket.next);
-         if(b != null)
-            b.previous = bucket.previous;
-
-         // Remove bucket
-         buckets[index - min] = null;
-      }
-   }
-
-   /**
-    * Adds an element to the specified bucket.
-    * @return The index of the element in the bucket.
-    * O(b) if a new bucket has to be added, O(1) otherwise.
-    */
-   public int add(int index, E element) {
-      // Add element
-      Bucket<E> bucket = getBucket(index);
-      if(bucket == null)
-         bucket = addBucket(index);
-      bucket.add(element);
+   public int add(int bucketIndex, I item) {
+      // Add item
+      Bucket<I> bucket = getBucket(bucketIndex);
+      bucket.add(item);
 
       // Maintain data
       size++;
-      if(index < low)
-         low  = index;
-      else if(index > high)
-         high = index;
+      if(bucket.size() == 1) {
+         // The added item is the only item in the bucket
+         if(bucketIndex < first)
+            first = bucketIndex;
+         if(bucketIndex > last)
+            last = bucketIndex;
+      }
 
-      return bucket.size() - 1;
+      return item.itemIndex;
    }
 
    /**
-    * Returns, but does not remove, the first element in the bucket at the given index.
-    * O(1).
+    * Removes and returns the item with the specified index from the specified bucket.
+    * O(b) if the item was the last one in the first or last bucket, O(1) otherwise.
     */
-   public E peek(int index) {
-      Bucket<E> bucket = getBucket(index);
-      if(bucket == null)
-         return null;
-      return bucket.getLast();
-   }
-
-   /**
-    * Removes and returns the first element in the bucket at the given index.
-    * O(1).
-    */
-   public E pop(int index) {
-      // Retreive element
-      Bucket<E> bucket = getBucket(index);
-      if(bucket == null)
-         return null;
-      E element = bucket.removeLast();
+   public I remove(int bucketIndex, int itemIndex) {
+      // Retreive item
+      Bucket<I> bucket = getBucket(bucketIndex);
+      I item = bucket.remove(itemIndex);
 
       // Maintain data
       size--;
-      if(bucket.isEmpty())
-         removeBucket(index);
+      if(bucket.isEmpty()) {
+         // The removed item was the only item in the bucket
+         if(bucketIndex == first) {
+            if(bucketIndex == last) {
+               // There are only empty buckets left
+               first = max;
+               last = min;
+            }
+            else {
+               // Find the first non-empty bucket
+               for(first++; first < max && getBucket(first).isEmpty(); first++) ;
+            }
+         }
+         else if(bucketIndex == last) {
+            // Find the last non-empty bucket
+            for(last--; last > min && getBucket(last).isEmpty(); last--) ;
+         }
+      }
 
-      return element;
+      return item;
    }
 
    /**
-    * Removes and returns the first element of the lowest non-empty bucket.
+    * Returns, but does not remove, the last item of the bucket with the given index.
     * O(1).
     */
-   public E popLowest() {
-      return pop(low);
+   public I peek(int bucketIndex) {
+      return getBucket(bucketIndex).getLast();
    }
 
    /**
-    * Removes and returns the first element of the highest non-empty bucket.
-    * O(1).
+    * Removes and returns the last item of the bucket with the given index.
+    * @see BucketArray#remove(int, int)
     */
-   public E popHighest() {
-      return pop(high);
+   public I pop(int bucketIndex) {
+      return remove(bucketIndex, getBucket(bucketIndex).getLastIndex());
+   }
+
+   /**
+    * Removes and returns the last item of the first non-empty bucket.
+    * @see BucketArray#pop(int)
+    */
+   public I popFirst() {
+      return pop(getFirstBucketIndex());
+   }
+
+   /**
+    * Removes and returns the last item of the last non-empty bucket.
+    * @see BucketArray#pop(int)
+    */
+   public I popLast() {
+      return pop(getLastBucketIndex());
    }
 
    /**
@@ -206,7 +156,7 @@ public class BucketArray<E> {
    public void print() {
       System.out.println(this);
       for(int i = min; i <= max; i++) {
-         Bucket<E> b = getBucket(i);
+         Bucket<I> b = getBucket(i);
          System.out.println("\t" + i + ": " + (b == null ? "[]" : b));
       }
    }

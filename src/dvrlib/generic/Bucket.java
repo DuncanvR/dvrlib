@@ -6,57 +6,110 @@
 
 package dvrlib.generic;
 
-public class Bucket<E> extends java.util.ArrayList<E> {
-   protected int previous, next;
+import java.util.ArrayList;
+
+public class Bucket<I extends AbstractBucketItem> {
+   protected final int bucketIndex;
+   private ArrayList<I> list;
 
    /**
     * Bucket constructor.
+    * @param bucketCount The number of buckets in the BucketArray.
     * O(1).
     */
-   public Bucket() {
-      super();
+   public Bucket(int bucketIndex) {
+      this.bucketIndex = bucketIndex;
+      list = new ArrayList<I>();
    }
 
    /**
-    * Returns the last element in this bucket.
+    * Returns true if this bucket holds no items, false otherwise.
     * O(1).
     */
-   public E getLast() {
-      return get(size() - 1);
+   public boolean isEmpty() {
+      return list.isEmpty();
    }
 
    /**
-    * Removes the element at the given index.
-    * Since the ordering of elements is not important, the removed element is replaced by the last element.
+    * Returns the number of items in this bucket.
     * O(1).
     */
-   @Override
-   public E remove(int index) {
-      // Sanity check
-      if(index < 0 || index > size() - 1)
-         return null;
+   public int size() {
+      return list.size();
+   }
 
-      if(index == size() - 1)
+   /**
+    * Returns the index to the last item in this bucket.
+    * O(1).
+    */
+   public int getLastIndex() {
+      return size() - 1;
+   }
+
+   /**
+    * Returns the last item in this bucket.
+    * O(1).
+    */
+   public I getLast() {
+      return list.get(getLastIndex());
+   }
+
+   /**
+    * Adds the given item to the back of this bucket.
+    * @return true if the item was added, false otherwise.
+    * O(1).
+    */
+   public boolean add(I item) {
+      if(list.add(item)) {
+         item.itemIndex = getLastIndex();
+         return true;
+      }
+      else
+         return false;
+   }
+
+   /**
+    * Replaces the item at the specified index with the given item.
+    * O(1).
+    */
+   public I set(int itemIndex, I item) {
+      item.itemIndex = itemIndex;
+      return list.set(itemIndex, item);
+   }
+
+   /**
+    * Removes and returns the given item.
+    * @see Bucket#remove(int)
+    * O(1).
+    */
+   public I remove(I item) {
+      return remove(item.itemIndex);
+   }
+
+   /**
+    * Removes and returns the item at the given index.
+    * Since the ordering of items is not important, the removed item is replaced by the last item.
+    * O(1).
+    */
+   public I remove(int itemIndex) {
+      if(itemIndex == getLastIndex())
          return removeLast();
-
-      E element = get(index);
-      set(index, removeLast());
-      return element;
+      return set(itemIndex, removeLast());
    }
 
    /**
-    * Removes and returns the last element in this bucket.
+    * Removes and returns the last item in this bucket.
     * O(1).
     */
-   public E removeLast() {
-      return remove(size() - 1);
+   public I removeLast() {
+      return list.remove(getLastIndex());
    }
 
    @Override
    public String toString() {
       String s = "[";
-      for(E e : this) {
-         s += e + ", ";
+      for(I item : list) {
+         s += item + ", ";
       }
       return s + "]";
    }
