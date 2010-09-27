@@ -6,6 +6,8 @@
 
 package dvrlib.generic;
 
+import java.util.Collection;
+
 public class UndirectedGraph extends Graph {
    public UndirectedGraph(int nodeCount) {
       super(nodeCount);
@@ -30,6 +32,20 @@ public class UndirectedGraph extends Graph {
    }
 
    /**
+    * Returns the neighbouring nodes of the node with the given index.
+    * @see Node#getNeighbours()
+    */
+   @Override
+   public Collection<AbstractNode> getNeighbours(int index) {
+      Collection<AbstractNode> neighbours = nodes[index].getNeighbours();
+      for(int i = 0; i < nodeCount; i++) {
+         if(nodes[i].hasEdge(index))
+            neighbours.add(getNode(i));
+      }
+      return neighbours;
+   }
+
+   /**
     * Adds an edge between vertices a and b.
     * @return true if the edge was removed, false otherwise.
     * O(e).
@@ -51,14 +67,15 @@ public class UndirectedGraph extends Graph {
     */
    @Override
    public Edge removeEdge(int a, int b) {
-      if(a < b)
-         return super.removeEdge(a, b);
-      else
-         return super.removeEdge(b, a);
+      Edge e = (a < b ? super.removeEdge(a, b) : super.removeEdge(b, a));
+      if(e != null)
+         decDegree(a < b ? b : a);
+      return e;
    }
 
    @Override
    protected String printEdge(int a, int b) {
       return (a < b ? super.printEdge(a, b) : "-");
+      //return (a < b ? super.printEdge(a, b) : "-       ");
    }
 }

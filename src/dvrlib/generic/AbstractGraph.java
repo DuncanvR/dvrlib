@@ -39,14 +39,22 @@ public abstract class AbstractGraph<N extends AbstractNode, E extends AbstractEd
 
    /**
     * Returns the largest degree.
-    * O(1).
+    * O(calcMaxDegree()) if maxDegree was invalidated, O(1) otherwise.
     */
    public int getMaxDegree() {
+      if(maxDegree < 0)
+         calcMaxDegree();
       return maxDegree;
    }
 
    /**
+    * Calculates the maximum degree.
+    */
+   protected abstract void calcMaxDegree();
+
+   /**
     * Increases the degree of node a.
+    * @see AbstractGraph#incDegree(dvrlib.generic.AbstractNode)
     * O(1).
     */
    protected void incDegree(int a) {
@@ -55,13 +63,32 @@ public abstract class AbstractGraph<N extends AbstractNode, E extends AbstractEd
 
    /**
     * Increases the degree of the given node.
-    * @see AbstractGraph#increaseDegree(int)
     */
    protected void incDegree(N node) {
       if(node != null) {
          if(++node.degree > getMaxDegree())
             maxDegree = node.degree;
       }
+   }
+
+   /**
+    * Decreases the degree of node a.
+    * @see AbstractGraph#decDegree(dvrlib.generic.AbstractNode)
+    * O(1).
+    */
+   protected void decDegree(int a) {
+      decDegree(getNode(a));
+   }
+
+   /**
+    * Decreases the degree of the given node.
+    * If the degree of the given node was equal to maxDegree, maxDegree will be invalidated.
+    * O(1).
+    */
+   protected void decDegree(N node) {
+      if(node != null)
+         if(node.degree-- == maxDegree)
+            maxDegree = -1;
    }
 
    /**
@@ -72,7 +99,7 @@ public abstract class AbstractGraph<N extends AbstractNode, E extends AbstractEd
    /**
     * Returns the neighbouring nodes of the node with the given index.
     */
-   public abstract Collection<N> getNeighbours(int index);
+   public abstract Collection<AbstractNode> getNeighbours(int index);
 
    /**
     * Returns true if there is an edge between nodes a and b, false otherwise.
@@ -128,7 +155,7 @@ public abstract class AbstractGraph<N extends AbstractNode, E extends AbstractEd
       for(int i = 0; i < nodeCount; i++) {
          System.out.print("\t[");
          for(int j = 0; j < nodeCount; j++) {
-            System.out.print(printEdge(j, i) + " ");
+            System.out.print(printEdge(i, j) + " ");
          }
          System.out.println("] :d " + getNode(i).getDegree());
       }

@@ -51,7 +51,7 @@ public class Graph extends AbstractGraph {
     * O(1).
     */
    public Edge getLastEdge() {
-      return getFirstEdge(lastEdge);
+      return getLastEdge(lastEdge);
    }
 
    /**
@@ -109,7 +109,7 @@ public class Graph extends AbstractGraph {
     * Returns the neighbouring nodes of the node with the given index.
     * @see Node#getNeighbours()
     */
-   public Collection<Node> getNeighbours(int index) {
+   public Collection<AbstractNode> getNeighbours(int index) {
       return nodes[index].getNeighbours();
    }
 
@@ -132,7 +132,7 @@ public class Graph extends AbstractGraph {
          Edge p = getFirstEdge(a), n = getLastEdge(a);
          if(a < firstEdge) {
             // The new edge comes before the first edge in the graph
-            // p == null, since there is no edge before it
+            // p == null, since there are no edges at this node
             firstEdge = a;
             nodes[a].last = b;
          }
@@ -158,7 +158,7 @@ public class Graph extends AbstractGraph {
 
          if(a > lastEdge) {
             // The new edge comes after the last edge in the graph
-            // n == null, since there is no edge after it
+            // n == null, since there are no edges at this node
             lastEdge = a;
             nodes[a].first = b;
          }
@@ -240,7 +240,7 @@ public class Graph extends AbstractGraph {
          if(e.next != null && e.next.a == a)
             nodes[a].first = e.next.b;
          else
-            nodes[a].first = -1;
+            nodes[a].first = nodeCount;
       }
       if(nodes[a].last == b) {
          if(e.previous != null && e.previous.a == a)
@@ -249,14 +249,9 @@ public class Graph extends AbstractGraph {
             nodes[a].last = -1;
       }
 
-      if(nodes[a].getDegree() == maxDegree) {
-         // Invalidate maxDegree
-         maxDegree = -1;
-      }
-      nodes[a].degree--;
-
       // Delete edge
       nodes[a].edges[b] = null;
+      decDegree(a);
       edgeCount--;
 
       return e;
@@ -271,24 +266,21 @@ public class Graph extends AbstractGraph {
    }
 
    /**
-    * Returns the largest degree.
-    * O(v) if maxDegree was invalidated (by a call to removeEdge), O(1) otherwise.
+    * Calculates the maximum degree.
+    * O(n).
     */
-   @Override
-   public int getMaxDegree() {
-      // If maxDegree has been invalidated, recalculate it
-      if(maxDegree < 0) {
-         maxDegree = 0;
-         for(int i = 0; i < nodeCount; i++) {
-            maxDegree = Math.max(maxDegree, nodes[i].getDegree());
-         }
+   protected void calcMaxDegree() {
+      maxDegree = 0;
+      for(int i = 0; i < nodeCount; i++) {
+         maxDegree = Math.max(maxDegree, nodes[i].getDegree());
       }
-      return maxDegree;
    }
 
-/*   @Override
+   /*
+   @Override
    protected String printEdge(int a, int b) {
       Edge e = getEdge(a, b); // Debug output
       return (e == null ? "0       " : "p" + (e.previous == null ? "-  " : e.previous.a + "," + e.previous.b) + "n" + (e.next == null ? "-  " : e.next.a + "," + e.next.b));
-   }*/
+   }
+   //*/
 }

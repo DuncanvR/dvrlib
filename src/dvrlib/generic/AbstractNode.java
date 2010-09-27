@@ -8,7 +8,7 @@ package dvrlib.generic;
 
 import java.util.Collection;
 
-public abstract class AbstractNode<N extends AbstractNode> {
+public abstract class AbstractNode {
    public final int index;
    protected int degree;
 
@@ -25,9 +25,9 @@ public abstract class AbstractNode<N extends AbstractNode> {
    /**
     * Returns true if there is an edge from this node to given node, false otherwise.
     */
-   public abstract boolean hasEdge(N that);
+   public abstract boolean hasEdge(AbstractNode that);
 
-   public abstract Collection<N> getNeighbours();
+   public abstract Collection<AbstractNode> getNeighbours();
 
    /**
     * Returns the degree of this node.
