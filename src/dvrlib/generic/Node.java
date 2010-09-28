@@ -73,7 +73,7 @@ public class Node extends AbstractNode {
 
    @Override
    public String toString() {
-      String s = "dvrlib.generic.Node [";
+      String s = "dvrlib.generic.Node #" + index + " [";
       for(int i = 0; i < graph.nodeCount; i++) {
          if(edges[i] == null)
             s += "-,";

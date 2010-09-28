@@ -14,7 +14,7 @@ public class Bucket<I extends AbstractBucketItem> {
 
    /**
     * Bucket constructor.
-    * @param bucketCount The number of buckets in the BucketArray.
+    * @param bucketIndex The index of this bucket in the array.
     * O(1).
     */
    public Bucket(int bucketIndex) {
@@ -94,7 +94,8 @@ public class Bucket<I extends AbstractBucketItem> {
    public I remove(int itemIndex) {
       if(itemIndex == getLastIndex())
          return removeLast();
-      return set(itemIndex, removeLast());
+      else
+         return set(itemIndex, removeLast());
    }
 
    /**

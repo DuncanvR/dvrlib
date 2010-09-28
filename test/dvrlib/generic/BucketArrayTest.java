@@ -71,6 +71,29 @@ public class BucketArrayTest {
    }
 
    @Test
+   public void testAddRemove() {
+      instance = new BucketArray<BucketItemTest>(-3, 3);
+      BucketItemTest items[] = new BucketItemTest[10];
+      for(int i = 0; i < items.length; i++) {
+         items[i] = new BucketItemTest(i);
+      }
+
+      assertEquals(0, instance.add(-1, items[0]));
+      assertEquals(1, instance.add(-1, items[1]));
+      assertEquals(2, instance.add(-1, items[2]));
+      assertEquals(3, instance.add(-1, items[3]));
+      assertEquals(0, instance.add(2, items[4]));
+      assertEquals(1, instance.add(2, items[5]));
+      assertEquals(2, instance.add(2, items[6]));
+      assertEquals(3, instance.add(2, items[7]));
+
+      assertEquals(items[2], instance.remove(-1, 2));
+      assertEquals(items[3], instance.pop(-1));
+      assertEquals(items[5], instance.remove(2, 1));
+      assertEquals(items[6], instance.pop(2));
+   }
+
+   @Test
    public void testPeekPop() {
       instance = new BucketArray<BucketItemTest>(-5, 5);
       instance.add(-3, new BucketItemTest(1));
