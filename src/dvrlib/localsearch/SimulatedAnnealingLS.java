@@ -12,6 +12,7 @@ public class SimulatedAnnealingLS extends LocalSearch {
    /** The default temperature modifier is 0.98, leading to a 2% decrease in temperature every coolCount iterations. */
    public final static double defTempMod = 0.98;
 
+   protected final Changer changer;
    protected final int stopCount, coolCount;
    protected final double initTemp, tempMod;
 
@@ -22,8 +23,8 @@ public class SimulatedAnnealingLS extends LocalSearch {
     * @see SimulatedAnnealingLS#SimulatedAnnealingLS(int, int, double, double)
     * O(1).
     */
-   public SimulatedAnnealingLS(int stopCount, int coolCount) {
-      this(stopCount, coolCount, defTemp, defTempMod);
+   public SimulatedAnnealingLS(Changer changer, int stopCount, int coolCount) {
+      this(changer, stopCount, coolCount, defTemp, defTempMod);
    }
 
    /**
@@ -34,7 +35,8 @@ public class SimulatedAnnealingLS extends LocalSearch {
     * @param tempMod    The modifier for the temperature. Every coolCount iterations the temperature is multiplied with this value.
     * O(1).
     */
-   public SimulatedAnnealingLS(int stopCount, int coolCount, double initTemp, double tempMod) {
+   public SimulatedAnnealingLS(Changer changer, int stopCount, int coolCount, double initTemp, double tempMod) {
+      this.changer   = changer;
       this.stopCount = stopCount;
       this.coolCount = coolCount;
       this.initTemp  = initTemp;
@@ -43,14 +45,13 @@ public class SimulatedAnnealingLS extends LocalSearch {
 
    @Override
    public Solution search(Problem problem, Solution solution) {
-      Mutator mutator = problem.getMutator();
       double temperature = initTemp;
 
       // Main loop: i holds the total number of iterations; j holds the number of iterations since the last improvement
       for(int i = 1, j = 0, eCur = problem.evaluate(solution); j < stopCount; i++, j++) {
          // Mutate the solution
-         Object mutation = mutator.generateMutation(solution);
-         mutator.doMutation(solution, mutation);
+         Object change = changer.generateChange(solution);
+         changer.doChange(solution, change);
 
          // Calculate the difference in evaluation
          int eNew = problem.evaluate(solution), deltaE = eNew - eCur;
@@ -63,7 +64,7 @@ public class SimulatedAnnealingLS extends LocalSearch {
          }
          else {
             // Undo the mutation
-            mutator.undoMutation(solution, mutation);
+            changer.undoChange(solution, change);
          }
 
          // Decrease the temperature regularly
