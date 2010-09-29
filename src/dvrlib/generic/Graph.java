@@ -14,7 +14,7 @@ public class Graph extends AbstractGraph {
 
    /**
     * Graph constructor.
-    * @param nodeCount The number of vertices in this graph.
+    * @param nodeCount The number of nodes in this graph.
     * O(1).
     */
    public Graph(int nodeCount) {
@@ -31,7 +31,7 @@ public class Graph extends AbstractGraph {
    }
 
    /**
-    * Returns true if there is an edge from node a to any other node, false otherwise.
+    * Returns true if there is an edge from the given node to any other node, false otherwise.
     * O(1).
     */
    public boolean hasEdge(int a) {
@@ -62,7 +62,7 @@ public class Graph extends AbstractGraph {
       Node n = getNode(a);
       if(n == null)
          return null;
-      return getEdge(n, n.first);
+      return n.getEdge(n.first);
    }
 
    /**
@@ -73,7 +73,7 @@ public class Graph extends AbstractGraph {
       Node n = getNode(a);
       if(n == null)
          return null;
-      return getEdge(n, n.last);
+      return n.getEdge(n.last);
    }
 
    /**
@@ -114,9 +114,8 @@ public class Graph extends AbstractGraph {
    }
 
    /**
-    * Adds an edge between vertices a and b.
-    * @return true if the edge was added, false otherwise.
-    * O(e).
+    * Adds and returns an edge between nodes a and b.
+    * O(1) if the edge already existed, O(e) otherwise.
     */
    public Edge addEdge(int a, int b) {
       // Sanity check
@@ -204,7 +203,7 @@ public class Graph extends AbstractGraph {
    }
 
    /**
-    * Removes the edge between vertices a and b.
+    * Removes the edge between nodes a and b.
     * O(1).
     */
    public Edge removeEdge(int a, int b) {

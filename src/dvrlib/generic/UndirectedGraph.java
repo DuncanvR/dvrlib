@@ -9,12 +9,19 @@ package dvrlib.generic;
 import java.util.Collection;
 
 public class UndirectedGraph extends Graph {
+
+   /**
+    * UndirectedGraph constructor.
+    * @param nodeCount The number of nodes in this graph.
+    * @see Graph#Graph(int)
+    * O(1)
+    */
    public UndirectedGraph(int nodeCount) {
       super(nodeCount);
    }
 
    /**
-    * Returns true if there is an edge between vertices a and b, false otherwise.
+    * Returns true if there is an edge between nodes a and b, false otherwise.
     * O(1).
     */
    @Override
@@ -23,7 +30,7 @@ public class UndirectedGraph extends Graph {
    }
 
    /**
-    * Returns the Edge between vertices a and b.
+    * Returns the edge between nodes a and b.
     * O(1).
     */
    @Override
@@ -46,9 +53,10 @@ public class UndirectedGraph extends Graph {
    }
 
    /**
-    * Adds an edge between vertices a and b.
-    * @return true if the edge was removed, false otherwise.
-    * O(e).
+    * Adds and returns an edge between nodes a and b.
+    * If the edge already existed, that edge is returned.
+    * @see Graph#addEdge(int, int)
+    * O(1) if the edge already existed, O(e) otherwise.
     */
    @Override
    public Edge addEdge(int a, int b) {
@@ -63,6 +71,7 @@ public class UndirectedGraph extends Graph {
 
    /**
     * Removes the edge between vertices a and b.
+    * @see Graph#removeEdge(int, int)
     * O(1).
     */
    @Override

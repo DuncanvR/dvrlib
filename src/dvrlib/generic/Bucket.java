@@ -78,7 +78,8 @@ public class Bucket<I extends AbstractBucketItem> {
    }
 
    /**
-    * Removes and returns the given item.
+    * Removes and returns the given item using its index.
+    * Does not check whether the given item is actually in this bucket!
     * @see Bucket#remove(int)
     * O(1).
     */
