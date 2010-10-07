@@ -7,5 +7,13 @@
 package dvrlib.localsearch;
 
 public interface Solution {
+   /**
+    * Returns the number of iterations it took to reach this solution.
+    */
+   public int getIterationCount();
 
+   /**
+    * Sets the number of iterations it took to reach this solution.
+    */
+   public void setIterationCount(int iterations);
 }
