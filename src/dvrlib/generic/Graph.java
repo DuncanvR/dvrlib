@@ -8,21 +8,33 @@ package dvrlib.generic;
 
 import java.util.Collection;
 
-public class Graph extends AbstractGraph {
-   protected final Node nodes[];
+public class Graph<E extends Edge> extends AbstractGraph implements EdgeCreator<E> {
+   protected final Node<E> nodes[];
+   protected final EdgeCreator<E> edgeCreator;
    protected int firstEdge, lastEdge;
 
    /**
-    * Graph constructor.
+    * Graph constructor, using itself as edgeCreator.
     * @param nodeCount The number of nodes in this graph.
-    * O(1).
+    * @see Graph(int, dvrlib.generic.EdgeCreator)
     */
    public Graph(int nodeCount) {
+      this(nodeCount, null);
+   }
+
+   /**
+    * Graph constructor.
+    * @param nodeCount   The number of nodes in this graph.
+    * @param edgeCreator The class that will take care of the creation of edges.
+    * O(1).
+    */
+   public Graph(int nodeCount, EdgeCreator<E> edgeCreator) {
       super(nodeCount);
       nodes = new Node[nodeCount];
       for(int i = 0; i < nodeCount; i++) {
-         nodes[i] = new Node(this, i);
+         nodes[i] = new Node<E>(this, i);
       }
+      this.edgeCreator = (edgeCreator == null ? this : edgeCreator);
 
       edgeCount  = 0;
       firstEdge  = nodeCount;
@@ -42,7 +54,7 @@ public class Graph extends AbstractGraph {
     * Returns the first edge in this graph, or null if there is none.
     * O(1).
     */
-   public Edge getFirstEdge() {
+   public E getFirstEdge() {
       return getFirstEdge(firstEdge);
    }
 
@@ -50,7 +62,7 @@ public class Graph extends AbstractGraph {
     * Returns the last edge in this graph, or null if there is none.
     * O(1).
     */
-   public Edge getLastEdge() {
+   public E getLastEdge() {
       return getLastEdge(lastEdge);
    }
 
@@ -58,8 +70,8 @@ public class Graph extends AbstractGraph {
     * Returns the first edge from node a to any other node, or null if there is none.
     * O(1).
     */
-   public Edge getFirstEdge(int a) {
-      Node n = getNode(a);
+   public E getFirstEdge(int a) {
+      Node<E> n = getNode(a);
       if(n == null)
          return null;
       return n.getEdge(n.first);
@@ -69,8 +81,8 @@ public class Graph extends AbstractGraph {
     * Returns the last edge from node a to any other node, or null if there is none.
     * O(1).
     */
-   public Edge getLastEdge(int a) {
-      Node n = getNode(a);
+   public E getLastEdge(int a) {
+      Node<E> n = getNode(a);
       if(n == null)
          return null;
       return n.getEdge(n.last);
@@ -80,7 +92,7 @@ public class Graph extends AbstractGraph {
     * Returns the edge between nodes a and b, or null if there is no such edge.
     * O(1).
     */
-   public Edge getEdge(int a, int b) {
+   public E getEdge(int a, int b) {
       // Sanity check
       if(a < 0 || a >= nodeCount || b < 0 || b >= nodeCount)
          return null;
@@ -91,7 +103,7 @@ public class Graph extends AbstractGraph {
     * Returns the edge between nodes a and b, or null if there is no such edge.
     * O(1).
     */
-   public Edge getEdge(Node a, int b) {
+   public E getEdge(Node<E> a, int b) {
       if(a == null)
          return null;
       return a.getEdge(b);
@@ -101,7 +113,7 @@ public class Graph extends AbstractGraph {
     * Returns the node with the given index.
     * O(1).
     */
-   public Node getNode(int index) {
+   public Node<E> getNode(int index) {
       return nodes[index];
    }
 
@@ -114,18 +126,27 @@ public class Graph extends AbstractGraph {
    }
 
    /**
+    * Creates and returns a new edge between the nodes with the given indices.
+    * @see dvrlib.generic.EdgeCreator#newEdge(int, int)
+    * O(1).
+    */
+   public E newEdge(int a, int b) {
+      return (E) new Edge(a, b);
+   }
+
+   /**
     * Adds and returns an edge between nodes a and b.
     * O(1) if the edge already existed, O(e) otherwise.
     */
-   public Edge addEdge(int a, int b) {
+   public E addEdge(int a, int b) {
       // Sanity check
       if(a < 0 || a >= nodeCount || b < 0 || b >= nodeCount)
          return null;
 
-      Edge e = getEdge(a, b);
+      E e = getEdge(a, b);
       if(e == null) {
          // Create new edge
-         e = new Edge(a, b);
+         e = edgeCreator.newEdge(a, b);
 
          // Find the previous and next edges
          Edge p = getFirstEdge(a), n = getLastEdge(a);
@@ -195,7 +216,7 @@ public class Graph extends AbstractGraph {
             n.previous = e;
 
          // Add edge
-         nodes[a].edges[b] = e;
+         nodes[a].edges.set(b, e);
          edgeCount++;
          incDegree(a);
       }
@@ -206,13 +227,13 @@ public class Graph extends AbstractGraph {
     * Removes the edge between nodes a and b.
     * O(1).
     */
-   public Edge removeEdge(int a, int b) {
+   public E removeEdge(int a, int b) {
       // Sanity check
       if(a < 0 || a >= nodeCount || b < 0 || b >= nodeCount || !hasEdge(a, b))
          return null;
 
       // Maintain data
-      Edge e = getEdge(a, b);
+      E e = getEdge(a, b);
 
       if(a == firstEdge) {
          // The old edge was the first edge in the graph
@@ -249,7 +270,7 @@ public class Graph extends AbstractGraph {
       }
 
       // Delete edge
-      nodes[a].edges[b] = null;
+      nodes[a].edges.set(b, null);
       decDegree(a);
       edgeCount--;
 

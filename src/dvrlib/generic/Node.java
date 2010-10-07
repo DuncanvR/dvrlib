@@ -7,10 +7,11 @@
 package dvrlib.generic;
 
 import java.util.LinkedList;
+import java.util.Vector;
 
-public class Node extends AbstractNode {
+public class Node<E extends Edge> extends AbstractNode {
    protected final Graph graph;
-   protected final Edge edges[];
+   protected final Vector<E> edges;
    protected int first, last;
 
    /**
@@ -23,7 +24,8 @@ public class Node extends AbstractNode {
       super(index);
       
       this.graph = graph;
-      edges = new Edge[graph.nodeCount];
+      edges = new Vector<E>(graph.nodeCount);
+      edges.setSize(graph.nodeCount);
       first = graph.nodeCount;
       last  = 0;
    }
@@ -50,10 +52,10 @@ public class Node extends AbstractNode {
     * Returns the edge to the node with the given index.
     * O(1).
     */
-   public Edge getEdge(int index) {
+   public E getEdge(int index) {
       if(index < 0 || index >= graph.nodeCount)
          return null;
-      return edges[index];
+      return edges.get(index);
    }
 
    /**
@@ -64,7 +66,7 @@ public class Node extends AbstractNode {
    public LinkedList<AbstractNode> getNeighbours() {
       LinkedList<AbstractNode> neighbours = new LinkedList<AbstractNode>();
       for(int i = first; i <= last; i++) {
-         Edge e = edges[i];
+         Edge e = edges.get(i);
          if(e != null)
             neighbours.add(graph.getNode(e.b));
       }
@@ -75,10 +77,10 @@ public class Node extends AbstractNode {
    public String toString() {
       String s = "dvrlib.generic.Node #" + index + " [";
       for(int i = 0; i < graph.nodeCount; i++) {
-         if(edges[i] == null)
+         if(edges.get(i) == null)
             s += "-,";
          else
-            s += edges[i].b + ",";
+            s += edges.get(i).b + ",";
       }
       return s + "]";
    }

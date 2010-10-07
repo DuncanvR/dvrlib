@@ -8,16 +8,26 @@ package dvrlib.generic;
 
 import java.util.Collection;
 
-public class UndirectedGraph extends Graph {
+public class UndirectedGraph<E extends Edge> extends Graph<E> {
+
+   /**
+    * UndirectedGraph constructor, using itself as edgeCreator.
+    * @param nodeCount The number of nodes in this graph.
+    * @see UndirectedGraph(int, dvrlib.generic.EdgeCreator)
+    */
+   public UndirectedGraph(int nodeCount) {
+      this(nodeCount, null);
+   }
 
    /**
     * UndirectedGraph constructor.
-    * @param nodeCount The number of nodes in this graph.
-    * @see Graph#Graph(int)
+    * @param nodeCount   The number of nodes in this graph.
+    * @param edgeCreator The class that will take care of the creation of edges.
+    * @see Graph#Graph(int, dvrlib.generic.EdgeCreator)
     * O(1)
     */
-   public UndirectedGraph(int nodeCount) {
-      super(nodeCount);
+   public UndirectedGraph(int nodeCount, EdgeCreator<E> edgeCreator) {
+      super(nodeCount, edgeCreator);
    }
 
    /**
@@ -34,7 +44,7 @@ public class UndirectedGraph extends Graph {
     * O(1).
     */
    @Override
-   public Edge getEdge(int a, int b) {
+   public E getEdge(int a, int b) {
       return (a < b ? super.getEdge(a, b) : super.getEdge(b, a));
    }
 
@@ -59,11 +69,11 @@ public class UndirectedGraph extends Graph {
     * O(1) if the edge already existed, O(e) otherwise.
     */
    @Override
-   public Edge addEdge(int a, int b) {
+   public E addEdge(int a, int b) {
       if(a == b)
          return null;
       
-      Edge e = (a < b ? super.addEdge(a, b) : super.addEdge(b, a));
+      E e = (a < b ? super.addEdge(a, b) : super.addEdge(b, a));
       if(e != null)
          incDegree(a < b ? b : a);
       return e;
@@ -75,8 +85,8 @@ public class UndirectedGraph extends Graph {
     * O(1).
     */
    @Override
-   public Edge removeEdge(int a, int b) {
-      Edge e = (a < b ? super.removeEdge(a, b) : super.removeEdge(b, a));
+   public E removeEdge(int a, int b) {
+      E e = (a < b ? super.removeEdge(a, b) : super.removeEdge(b, a));
       if(e != null)
          decDegree(a < b ? b : a);
       return e;
