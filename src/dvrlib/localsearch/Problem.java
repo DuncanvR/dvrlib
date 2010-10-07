@@ -15,5 +15,5 @@ public interface Problem<S extends Solution> {
    /**
     * Returns the evaluation of the given solution, where less is better.
     */
-   public int evaluate(S solution);
+   public double evaluate(S solution);
 }

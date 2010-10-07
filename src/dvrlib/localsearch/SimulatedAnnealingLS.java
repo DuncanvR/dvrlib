@@ -20,7 +20,7 @@ public class SimulatedAnnealingLS extends LocalSearch {
     * SimulatedAnnealingLS constructor, using the default values for initTemp and tempMod.
     * @param stopCount  The algorithm will stop this number of iterations after the current best Solution was found.
     * @param coolCount  The number of iterations after which the temperature will decrease.
-    * @see SimulatedAnnealingLS#SimulatedAnnealingLS(int, int, double, double)
+    * @see SimulatedAnnealingLS#SimulatedAnnealingLS(dvrlib.localsearch.Changer, int, int, double, double)
     * O(1).
     */
    public SimulatedAnnealingLS(Changer changer, int stopCount, int coolCount) {
@@ -45,19 +45,20 @@ public class SimulatedAnnealingLS extends LocalSearch {
 
    @Override
    public Solution search(Problem problem, Solution solution) {
-      double temperature = initTemp;
+      double temperature = initTemp, curEval = problem.evaluate(solution);
 
       // Main loop: i holds the total number of iterations; j holds the number of iterations since the last improvement
-      for(int i = 1, j = 0, eCur = problem.evaluate(solution); j < stopCount; i++, j++) {
+      int iterations = 1, j = 0;
+      for(; j < stopCount; iterations++, j++) {
          // Mutate the solution
          Object change = changer.generateChange(solution);
          changer.doChange(solution, change);
 
          // Calculate the difference in evaluation
-         int eNew = problem.evaluate(solution), deltaE = eNew - eCur;
+         double newEval = problem.evaluate(solution), deltaE = newEval - curEval;
 
          if(deltaE <= 0 || Math.random() < Math.exp(-deltaE / temperature)) {
-            eCur = eNew;
+            curEval = newEval;
             // Reset stop-counter if new solution is better
             if(deltaE < 0)
                j = 0;
@@ -68,9 +69,12 @@ public class SimulatedAnnealingLS extends LocalSearch {
          }
 
          // Decrease the temperature regularly
-         if(i % coolCount == 0)
+         if(iterations % coolCount == 0)
             temperature *= tempMod;
       }
+
+      solution.setIterationCount(iterations - 1); // -1, because iterations starts at 1
+
       return solution;
    }
 }
