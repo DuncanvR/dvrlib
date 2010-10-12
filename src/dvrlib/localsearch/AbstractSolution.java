@@ -9,11 +9,19 @@ package dvrlib.localsearch;
 public class AbstractSolution implements Solution {
    protected int iterationCount = 0;
 
+   /**
+    * Returns the number of iterations it took to reach this solution.
+    * O(1).
+    */
    public int getIterationCount() {
       return iterationCount;
    }
 
-   public void setIterationCount(int iterations) {
-      iterationCount = iterations;
+   /**
+    * Increases the number of iterations it took to reach this solution.
+    * O(1).
+    */
+   public void increaseIterationCount() {
+      iterationCount++;
    }
 }

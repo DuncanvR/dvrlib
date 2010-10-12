@@ -16,7 +16,6 @@ public class HillClimbingLS extends LocalSearch {
    @Override
    public Solution search(Problem problem, Solution solution) {
       Object change = null;
-      int iterations = 0;
 
       // Keep mutating as long as it improves the solution
       double e1, e2 = problem.evaluate(solution);
@@ -24,15 +23,13 @@ public class HillClimbingLS extends LocalSearch {
          e1 = e2;
          change = changer.generateChange(solution);
          changer.doChange(solution, change);
+         solution.increaseIterationCount();
          e2 = problem.evaluate(solution);
-         iterations++;
       }
       while(e2 < e1);
 
       // Undo last change
       changer.undoChange(solution, change);
-
-      solution.setIterationCount(iterations - 1); // -1, because the last change is undone
 
       return solution;
    }

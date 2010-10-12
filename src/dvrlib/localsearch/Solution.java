@@ -13,7 +13,7 @@ public interface Solution {
    public int getIterationCount();
 
    /**
-    * Sets the number of iterations it took to reach this solution.
+    * Increases the number of iterations it took to reach this solution.
     */
-   public void setIterationCount(int iterations);
+   public void increaseIterationCount();
 }
