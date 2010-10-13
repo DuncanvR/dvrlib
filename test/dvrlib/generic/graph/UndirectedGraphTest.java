@@ -4,15 +4,52 @@
  * UndirectedGraphTest.java
  */
 
-package dvrlib.generic;
+package dvrlib.generic.graph;
 
 import java.util.Collection;
 import static org.junit.Assert.*;
 
 public class UndirectedGraphTest extends GraphTest {
    @Override
-   public Graph newInstance(int nodeCount) {
-      return new UndirectedGraph(nodeCount);
+   public Graph<Edge> newInstance(int nodeCount) {
+      return new UndirectedGraph<Edge>(nodeCount);
+   }
+
+   @Override
+   public void testHasEdge() {
+      instance = newInstance(10);
+      for(int i = 1; i < instance.nodeCount; i += 2) {
+         for(int j = 0; j < i; j += 2) {
+            instance.addEdge(i, j);
+         }
+      }
+
+      // Test hasEdge(int)
+      for(int i = 0; i < instance.nodeCount; i++) {
+         assertEquals((i % 2 == 0), instance.hasEdge(i));
+      }
+
+      // Test hasEdge(int, int)
+      for(int i = 0; i < instance.nodeCount; i++) {
+         for(int j = 0; j < instance.nodeCount; j++) {
+            assertEquals((i % 2 == 0 && j % 2 == 1 && i < j) || (i % 2 == 1 && j % 2 == 0 && i > j), instance.hasEdge(i, j));
+         }
+      }
+
+      // Test getFirstEdge(int) and getLastEdge(int)
+      for(int i = 0; i < instance.nodeCount; i++) {
+         Edge f = instance.getFirstEdge(i), l = instance.getLastEdge(i);
+         if(i % 2 == 0) {
+            assertNotNull(f);
+            assertNotNull(l);
+            assertEquals(i + 1, f.b);
+            assertEquals(instance.nodeCount - 1, l.b);
+         }
+         else {
+            assertNull(f);
+            assertNull(l);
+         }
+      }
    }
 
    @Override

@@ -4,7 +4,7 @@
  * AbstractGraph.java
  */
 
-package dvrlib.generic;
+package dvrlib.generic.graph;
 
 import java.util.Collection;
 

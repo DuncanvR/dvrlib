@@ -4,7 +4,7 @@
  * EdgeCreator.java
  */
 
-package dvrlib.generic;
+package dvrlib.generic.graph;
 
 public interface EdgeCreator<E extends Edge> {
    /**

@@ -4,7 +4,7 @@
  * UndirectedGraph.java
  */
 
-package dvrlib.generic;
+package dvrlib.generic.graph;
 
 import java.util.Collection;
 
@@ -72,7 +72,7 @@ public class UndirectedGraph<E extends Edge> extends Graph<E> {
    public E addEdge(int a, int b) {
       if(a == b)
          return null;
-      
+
       E e = (a < b ? super.addEdge(a, b) : super.addEdge(b, a));
       if(e != null)
          incDegree(a < b ? b : a);

@@ -4,7 +4,7 @@
  * Edge.java
  */
 
-package dvrlib.generic;
+package dvrlib.generic.graph;
 
 public class Edge extends AbstractEdge {
    protected Edge previous, next;

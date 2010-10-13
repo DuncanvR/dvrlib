@@ -4,17 +4,17 @@
  * GraphTest.java
  */
 
-package dvrlib.generic;
+package dvrlib.generic.graph;
 
 import java.util.Collection;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class GraphTest {
-   Graph instance;
+   Graph<Edge> instance;
 
-   public Graph newInstance(int nodeCount) {
-      return new Graph(nodeCount);
+   public Graph<Edge> newInstance(int nodeCount) {
+      return new Graph<Edge>(nodeCount);
    }
 
    @Test
@@ -35,28 +35,27 @@ public class GraphTest {
 
    @Test
    public void testHasEdge() {
-      int nodeCount = 10;
-      instance = new Graph(nodeCount);
-      for(int i = 1; i < nodeCount; i += 2) {
+      instance = newInstance(10);
+      for(int i = 1; i < instance.nodeCount; i += 2) {
          for(int j = 0; j < i; j += 2) {
             instance.addEdge(i, j);
          }
       }
 
       // Test hasEdge(int)
-      for(int i = 0; i < nodeCount; i++) {
+      for(int i = 0; i < instance.nodeCount; i++) {
          assertEquals((i % 2 == 1), instance.hasEdge(i));
       }
 
       // Test hasEdge(int, int)
-      for(int i = 0; i < nodeCount; i++) {
-         for(int j = 0; j < nodeCount; j++) {
+      for(int i = 0; i < instance.nodeCount; i++) {
+         for(int j = 0; j < instance.nodeCount; j++) {
             assertEquals((i % 2 == 1 && j % 2 == 0 && j < i), instance.hasEdge(i, j));
          }
       }
 
       // Test getFirstEdge(int) and getLastEdge(int)
-      for(int i = 0; i < nodeCount; i++) {
+      for(int i = 0; i < instance.nodeCount; i++) {
          Edge f = instance.getFirstEdge(i), l = instance.getLastEdge(i);
          if(i % 2 == 1) {
             assertNotNull(f);

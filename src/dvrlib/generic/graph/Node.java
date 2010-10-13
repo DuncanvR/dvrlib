@@ -4,7 +4,7 @@
  * Node.java
  */
 
-package dvrlib.generic;
+package dvrlib.generic.graph;
 
 import java.util.LinkedList;
 import java.util.Vector;
@@ -22,7 +22,7 @@ public class Node<E extends Edge> extends AbstractNode {
     */
    public Node(Graph graph, int index) {
       super(index);
-      
+
       this.graph = graph;
       edges = new Vector<E>(graph.nodeCount);
       edges.setSize(graph.nodeCount);

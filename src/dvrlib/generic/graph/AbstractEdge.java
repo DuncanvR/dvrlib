@@ -4,7 +4,7 @@
  * AbstractEdge.java
  */
 
-package dvrlib.generic;
+package dvrlib.generic.graph;
 
 public class AbstractEdge {
    public final int a, b;
