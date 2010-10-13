@@ -21,7 +21,7 @@ public class AbstractSolution implements Solution {
     * Increases the number of iterations it took to reach this solution.
     * O(1).
     */
-   public void increaseIterationCount() {
-      iterationCount++;
+   public void increaseIterationCount(int i) {
+      iterationCount += i;
    }
 }

@@ -15,5 +15,5 @@ public interface Solution {
    /**
     * Increases the number of iterations it took to reach this solution.
     */
-   public void increaseIterationCount();
+   public void increaseIterationCount(int i);
 }

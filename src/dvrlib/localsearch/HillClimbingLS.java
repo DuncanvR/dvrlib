@@ -23,7 +23,7 @@ public class HillClimbingLS extends LocalSearch {
          e1 = e2;
          change = changer.generateChange(solution);
          changer.doChange(solution, change);
-         solution.increaseIterationCount();
+         solution.increaseIterationCount(1);
          e2 = problem.evaluate(solution);
       }
       while(e2 < e1);
