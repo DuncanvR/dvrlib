@@ -20,5 +20,5 @@ public interface Changer<S extends Solution, C> {
    /**
     * Undoes the given change.
     */
-   public void undoChange(S solution, C mutation);
+   public void undoChange(S solution, C change);
 }
