@@ -4,33 +4,36 @@
  * WeightedTreeNode.java
  */
 
-package dvrlib.generic.tree;
+package dvrlib.localsearch;
 
 import dvrlib.generic.Pair;
 
-public class WeightedTreeNode<K extends Comparable, V> extends Pair<K, V> {
-   protected WeightedTreeNode parent = null, left = null, right = null;
+public class WeightedTreeNode<E> extends Pair<Double, E> {
+   protected WeightedTreeNode<E> parent = null, left = null, right = null;
    protected int size = 1, height = 0;
+   protected double weight;
 
-   public WeightedTreeNode(K key, V value) {
+   public WeightedTreeNode(Double key, E value) {
       super(key, value);
+      weight = key;
    }
 
    /**
-    * Updates the size and height of this node.
+    * Updates the size, height and weight of this node.
     * O(1).
     */
    protected void setSize() {
-      size = getLeftSize() + 1 + getRightSize();
+      size   = getLeftSize() + 1 + getRightSize();
       height = Math.max(getLeftHeight() + 1, getRightHeight() + 1);
+      weight = getLeftWeight() + a + getRightWeight();
    }
 
    /**
     * Sets the given node as the left child, updates the size and height, and returns the replaced node.
     * O(1).
     */
-   protected WeightedTreeNode setLeft(WeightedTreeNode that) {
-      WeightedTreeNode old = left;
+   protected WeightedTreeNode<E> setLeft(WeightedTreeNode that) {
+      WeightedTreeNode<E> old = left;
       left = that;
       left.parent = this;
       setSize();
@@ -41,8 +44,8 @@ public class WeightedTreeNode<K extends Comparable, V> extends Pair<K, V> {
     * Sets the given node as the right child, updates the size and height, and returns the replaced node.
     * O(1).
     */
-   protected WeightedTreeNode setRight(WeightedTreeNode that) {
-      WeightedTreeNode old = right;
+   protected WeightedTreeNode<E> setRight(WeightedTreeNode that) {
+      WeightedTreeNode<E> old = right;
       right = that;
       right.parent = this;
       setSize();
@@ -74,17 +77,29 @@ public class WeightedTreeNode<K extends Comparable, V> extends Pair<K, V> {
    public int getRightHeight() {
       return (right == null ? -1 : right.height);
    }
-   
+
    public int getSize() {
       return size;
    }
-   
+
    public int getLeftSize() {
       return (left == null ? 0 : left.size);
    }
-   
+
    public int getRightSize() {
       return (right == null ? 0 : right.size);
+   }
+
+   public double getWeight() {
+      return weight;
+   }
+
+   public double getLeftWeight() {
+      return (left == null ? null : left.weight);
+   }
+
+   public double getRightWeight() {
+      return (right == null ? null : right.weight);
    }
 
    @Override

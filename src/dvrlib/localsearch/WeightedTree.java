@@ -4,12 +4,12 @@
  * WeightedTree.java
  */
 
-package dvrlib.generic.tree;
+package dvrlib.localsearch;
 
 import dvrlib.generic.Pair;
 
-public class WeightedTree<K extends Comparable, V> {
-   protected WeightedTreeNode<K, V> root = null;
+public class WeightedTree<E> {
+   protected WeightedTreeNode<E> root = null;
 
    public int size() {
       return (root == null ? 0 : root.size);
@@ -19,17 +19,17 @@ public class WeightedTree<K extends Comparable, V> {
       return root == null;
    }
 
-   public boolean add(Pair<K, V> element) {
+   public boolean add(Pair<Double, E> element) {
       if(element == null)
          throw new NullPointerException("No null elements permitted in this Collection");
       return add(element.a, element.b);
    }
 
-   public boolean add(K key, V value) {
+   public boolean add(Double key, E value) {
       if(key == null)
          throw new NullPointerException("No null keys permitted in this Collection");
 
-      WeightedTreeNode<K, V> node = new WeightedTreeNode<K, V>(key, value);
+      WeightedTreeNode<E> node = new WeightedTreeNode(key, value);
       if(root == null)
          root = node;
       else {
@@ -39,7 +39,7 @@ public class WeightedTree<K extends Comparable, V> {
       return true;
    }
 
-   protected void add(WeightedTreeNode<K, V> parent, WeightedTreeNode<K, V> node) {
+   protected void add(WeightedTreeNode<E> parent, WeightedTreeNode<E> node) {
       if(node.a.compareTo(parent.a) > 0) {
          if(parent.right == null)
             parent.setRight(node);
@@ -67,49 +67,49 @@ public class WeightedTree<K extends Comparable, V> {
       return null;
    }*/
 
-   protected V getWeighted(K weight) {
+   protected E getWeighted(double weight) {
       return null;
    }
 
-   protected WeightedTreeNode<K, V> getMin() {
+   protected WeightedTreeNode<E> getMin() {
       if(root == null)
          return null;
 
-      WeightedTreeNode<K, V> node = root;
+      WeightedTreeNode<E> node = root;
       while(node.left != null) {
          node = node.left;
       }
       return node;
    }
 
-   protected WeightedTreeNode<K, V> getMax() {
+   protected WeightedTreeNode<E> getMax() {
       if(root == null)
          return null;
 
-      WeightedTreeNode<K, V> node = root;
+      WeightedTreeNode<E> node = root;
       while(node.right != null) {
          node = node.right;
       }
       return node;
    }
 
-   public Pair<K, V> peekMin() {
+   public Pair<Double, E> peekMin() {
       return getMin();
    }
 
-   public Pair<K, V> peekMax() {
+   public Pair<Double, E> peekMax() {
       return getMax();
    }
 
-   public Pair<K, V> popMin() {
+   public Pair<Double, E> popMin() {
       return removeExternal(getMin());
    }
 
-   public Pair<K, V> popMax() {
+   public Pair<Double, E> popMax() {
       return removeExternal(getMax());
    }
-   
-   protected WeightedTreeNode<K, V> removeExternal(WeightedTreeNode<K, V> node) {
+
+   protected WeightedTreeNode<E> removeExternal(WeightedTreeNode<E> node) {
       if(node == null)
          return null;
       if(node == root)
@@ -181,7 +181,7 @@ public class WeightedTree<K extends Comparable, V> {
          z.parent.replace(z, y);
       y.parent = z.parent;
       z.parent = y;
-      
+
       // Set children
       if(ZLeft) {
          z.right = y.left;
