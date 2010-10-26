@@ -95,11 +95,11 @@ public class WeightedTreeNode<E> extends Pair<Double, E> {
    }
 
    public double getLeftWeight() {
-      return (left == null ? null : left.weight);
+      return (left == null ? 0 : left.weight);
    }
 
    public double getRightWeight() {
-      return (right == null ? null : right.weight);
+      return (right == null ? 0 : right.weight);
    }
 
    @Override

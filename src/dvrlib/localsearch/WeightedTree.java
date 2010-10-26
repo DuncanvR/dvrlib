@@ -19,12 +19,6 @@ public class WeightedTree<E> {
       return root == null;
    }
 
-   public boolean add(Pair<Double, E> element) {
-      if(element == null)
-         throw new NullPointerException("No null elements permitted in this Collection");
-      return add(element.a, element.b);
-   }
-
    public boolean add(Double key, E value) {
       if(key == null)
          throw new NullPointerException("No null keys permitted in this Collection");
@@ -40,7 +34,7 @@ public class WeightedTree<E> {
    }
 
    protected void add(WeightedTreeNode<E> parent, WeightedTreeNode<E> node) {
-      if(node.a.compareTo(parent.a) > 0) {
+      if(node.a > parent.a) {
          if(parent.right == null)
             parent.setRight(node);
          else
@@ -67,8 +61,30 @@ public class WeightedTree<E> {
       return null;
    }*/
 
-   protected E getWeighted(double weight) {
-      return null;
+   /**
+    * Returns the element from the tree, reached with the given normalized index.
+    * In a tree with these four items: {(1, A), (2, B), (1.3, C), (1.7, D)}, the sum of the indices is 6.
+    * A call to getWeighted(0.5) will then return the item with the summed index (0.5 * 6 = 3).
+    * Moving through the tree from the smallest index, (A: 1 < 3), (C: 1.3 < (3 - 1)), (D: 1.7 >= (3 - 1 - 1.3).
+    * This means the item with the largest index has the most chance to get selected.
+    * @param normIndex A number between 0 and 1.
+    * @return
+    */
+   protected E getWeighted(double normIndex) {
+      if(normIndex < 0 || normIndex > 1)
+         throw new IllegalArgumentException("The argument of WeightedTree.getWeighted(double) should be between 0 and 1");
+
+      WeightedTreeNode<E> node = root;
+      while(node != null) {
+         double weight = node.getWeight();
+         if(node.getLeftWeight() / weight > normIndex)
+            node = node.left;
+         else if((weight - node.getRightWeight()) / weight < normIndex)
+            node = node.right;
+         else
+            return node.b;
+      }
+      return node.b;
    }
 
    protected WeightedTreeNode<E> getMin() {
