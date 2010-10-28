@@ -15,17 +15,31 @@ public class GeneticLS extends LocalSearch {
    protected final Combiner combiner;
    protected final int populationSize, stopCount;
 
+   /**
+    * GeneticLS constructor.
+    * @param combiner       The combiner used to combine solutions when searching for a solution.
+    * @param populationSize The number of solutions kept in the population.
+    * @param stopCount      The number of iterations in which no better solution was found after which the algorithm will stop.
+    */
    public GeneticLS(Combiner combiner, int populationSize, int stopCount) {
       this.combiner = combiner;
       this.populationSize = Math.max(1, populationSize);
       this.stopCount = stopCount;
    }
 
+   /**
+    * Searches for a solution for the given problem.
+    * @see GeneticLS#search(dvrlib.localsearch.Problem, dvrlib.localsearch.Solution, int)
+    */
    @Override
    public Solution search(Problem problem, Solution solution) {
       return search(problem, solution, populationSize).get(0).b;
    }
 
+   /**
+    * Returns the population after searching for a solution for the given problem.
+    * This algorithm keeps replacing the worst solution in the population by the new combined solution if it is better, until a predefined number of iterations give no improvement.
+    */
    public ArrayList<HalfComparablePair<Double, Solution>> search(Problem problem, Solution solution, int size) {
       ArrayList<HalfComparablePair<Double, Solution>> population = new ArrayList<HalfComparablePair<Double, Solution>>();
       population.ensureCapacity(populationSize);

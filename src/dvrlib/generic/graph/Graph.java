@@ -8,7 +8,7 @@ package dvrlib.generic.graph;
 
 import java.util.Collection;
 
-public class Graph<E extends Edge> extends AbstractGraph implements EdgeCreator<E> {
+public class Graph<E extends Edge> extends AbstractGraph<Node, E> implements EdgeCreator<E> {
    protected final Node<E> nodes[];
    protected final EdgeCreator<E> edgeCreator;
    protected int firstEdge, lastEdge;
@@ -92,6 +92,7 @@ public class Graph<E extends Edge> extends AbstractGraph implements EdgeCreator<
     * Returns the edge between nodes a and b, or null if there is no such edge.
     * O(1).
     */
+   @Override
    public E getEdge(int a, int b) {
       // Sanity check
       if(a < 0 || a >= nodeCount || b < 0 || b >= nodeCount)
@@ -113,6 +114,7 @@ public class Graph<E extends Edge> extends AbstractGraph implements EdgeCreator<
     * Returns the node with the given index.
     * O(1).
     */
+   @Override
    public Node<E> getNode(int index) {
       return nodes[index];
    }
@@ -121,6 +123,7 @@ public class Graph<E extends Edge> extends AbstractGraph implements EdgeCreator<
     * Returns the neighbouring nodes of the node with the given index.
     * @see Node#getNeighbours()
     */
+   @Override
    public Collection<AbstractNode> getNeighbours(int index) {
       return nodes[index].getNeighbours();
    }
@@ -130,6 +133,7 @@ public class Graph<E extends Edge> extends AbstractGraph implements EdgeCreator<
     * @see dvrlib.generic.EdgeCreator#newEdge(int, int)
     * O(1).
     */
+   @Override
    public E newEdge(int a, int b) {
       return (E) new Edge(a, b);
    }
@@ -138,6 +142,7 @@ public class Graph<E extends Edge> extends AbstractGraph implements EdgeCreator<
     * Adds and returns an edge between nodes a and b.
     * O(1) if the edge already existed, O(e) otherwise.
     */
+   @Override
    public E addEdge(int a, int b) {
       // Sanity check
       if(a < 0 || a >= nodeCount || b < 0 || b >= nodeCount)
@@ -227,6 +232,7 @@ public class Graph<E extends Edge> extends AbstractGraph implements EdgeCreator<
     * Removes the edge between nodes a and b.
     * O(1).
     */
+   @Override
    public E removeEdge(int a, int b) {
       // Sanity check
       if(a < 0 || a >= nodeCount || b < 0 || b >= nodeCount || !hasEdge(a, b))
@@ -289,6 +295,7 @@ public class Graph<E extends Edge> extends AbstractGraph implements EdgeCreator<
     * Calculates the maximum degree.
     * O(n).
     */
+   @Override
    protected void calcMaxDegree() {
       maxDegree = 0;
       for(int i = 0; i < nodeCount; i++) {

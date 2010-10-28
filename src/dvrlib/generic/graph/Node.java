@@ -44,6 +44,7 @@ public class Node<E extends Edge> extends AbstractNode {
     * Returns true if there is an edge from this node to the one given, false otherwise.
     * O(1).
     */
+   @Override
    public boolean hasEdge(AbstractNode that) {
       return hasEdge(that.index);
    }

@@ -43,6 +43,12 @@ public class SimulatedAnnealingLS extends LocalSearch {
       this.tempMod   = tempMod;
    }
 
+   /**
+    * Searches for a solution for the given problem.
+    * This algorithm repeatedly generates changes for the current solution and applies them if they improve it.
+    * Otherwise, it is applied with a certain change based on the current temperature, which decreases as time passes by.
+    * After a predefined number of iterations in which no improvements were found, the current solution is returned.
+    */
    @Override
    public Solution search(Problem problem, Solution solution) {
       double temperature = initTemp, curEval = problem.evaluate(solution);

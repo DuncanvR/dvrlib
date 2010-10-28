@@ -12,14 +12,17 @@ public class MultiStartLS extends LocalSearch {
 
    /**
     * MultiStartLS Constructor.
-    * @param ls    This LocalSearch will be used repeatedly to search for a solution.
-    * @param count The number of times a solution is searched for.
+    * @param ls    The search algorithm that will be used repeatedly to search for a solution.
+    * @param count The number of times to search for a solution.
     */
    public MultiStartLS(LocalSearch ls, int count) {
       this.ls    = ls;
       this.count = count;
    }
 
+   /**
+    * Searches for a solution for the given problem by repeatedly applying the predefined search algorithm.
+    */
    @Override
    public Solution search(Problem problem, Solution bestSolution) {
       for(int i = 0; i < count; i++) {

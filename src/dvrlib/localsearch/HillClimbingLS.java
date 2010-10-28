@@ -9,10 +9,20 @@ package dvrlib.localsearch;
 public class HillClimbingLS extends LocalSearch {
    protected final Changer changer;
 
+   /**
+    * HillClimbingLS constructor.
+    * @param changer The changer used when searching for a solution.
+    * O(1).
+    */
    public HillClimbingLS(Changer changer) {
       this.changer = changer;
    }
 
+   /**
+    * Search for a solution for the given problem, using hill climbing.
+    * This algorithm keeps generating changes to the solution until they no longer improve it.
+    * @return The solution that was reached.
+    */
    @Override
    public Solution search(Problem problem, Solution solution) {
       Object change = null;

@@ -13,6 +13,7 @@ public class AbstractSolution implements Solution {
     * Returns the number of iterations it took to reach this solution.
     * O(1).
     */
+   @Override
    public int getIterationCount() {
       return iterationCount;
    }
@@ -21,6 +22,7 @@ public class AbstractSolution implements Solution {
     * Increases the number of iterations it took to reach this solution.
     * O(1).
     */
+   @Override
    public void increaseIterationCount(int i) {
       iterationCount += i;
    }
