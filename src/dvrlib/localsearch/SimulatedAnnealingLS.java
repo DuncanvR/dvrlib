@@ -6,6 +6,8 @@
 
 package dvrlib.localsearch;
 
+import java.util.LinkedList;
+
 public class SimulatedAnnealingLS extends LocalSearch {
    /** The default initial temperature is 2.4663035, so dE = 1 results in a 2/3 chance of acceptance. */
    public final static double defTemp = 2.4663035;
@@ -52,13 +54,14 @@ public class SimulatedAnnealingLS extends LocalSearch {
    @Override
    public Solution search(Problem problem, Solution solution) {
       double temperature = initTemp, curEval = problem.evaluate(solution);
+      LinkedList<Object> changeList = new LinkedList<Object>();
 
       int iterations = 1; // Starts at 1, otherwise the temperature would be decreased at the first iteration
       // Main loop: j holds the number of iterations since the last improvement
       for(int sc = 0; sc < stopCount; iterations++, sc++) {
          // Mutate the solution
-         Object change = changer.generateChange(solution);
-         changer.doChange(solution, change);
+         changeList.add(changer.generateChange(solution));
+         changer.doChange(solution, changeList.peekLast());
          solution.increaseIterationCount(1);
 
          // Calculate the difference in evaluation
@@ -66,19 +69,25 @@ public class SimulatedAnnealingLS extends LocalSearch {
 
          if(deltaE <= 0 || Math.random() < Math.exp(-deltaE / temperature)) {
             curEval = newEval;
-            // Reset stop-counter if new solution is better
-            if(deltaE < 0)
+            // If new solution is better, reset stop-counter and clear list of changes
+            if(deltaE < 0) {
                sc = 0;
+               changeList.clear();
+            }
          }
          else {
             // Undo the mutation
-            changer.undoChange(solution, change);
+            changer.undoChange(solution, changeList.pollLast());
          }
 
          // Decrease the temperature regularly
          if(iterations % coolCount == 0)
             temperature *= tempMod;
       }
+
+      // Undo the changes since the last improvement
+      while(!changeList.isEmpty())
+         changer.undoChange(solution, changeList.pollLast());
 
       return solution;
    }
