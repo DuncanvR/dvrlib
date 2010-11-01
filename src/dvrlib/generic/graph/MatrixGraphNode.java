@@ -1,7 +1,7 @@
 /*
  * DvRLib - Generic
  * Duncan van Roermund, 2010
- * Node.java
+ * MatrixGraphNode.java
  */
 
 package dvrlib.generic.graph;
@@ -9,18 +9,18 @@ package dvrlib.generic.graph;
 import java.util.LinkedList;
 import java.util.Vector;
 
-public class Node<E extends Edge> extends AbstractNode {
-   protected final Graph graph;
+public class MatrixGraphNode<E extends Edge> extends AbstractNode {
+   protected final MatrixGraph graph;
    protected final Vector<E> edges;
    protected int first, last;
 
    /**
-    * Node constructor.
+    * MatrixGraphNode constructor.
     * @param graph A pointer to the graph this node is in.
     * @param index The index of this node.
     * O(1).
     */
-   public Node(Graph graph, int index) {
+   public MatrixGraphNode(MatrixGraph graph, int index) {
       super(index);
 
       this.graph = graph;
@@ -35,8 +35,6 @@ public class Node<E extends Edge> extends AbstractNode {
     * O(1).
     */
    public boolean hasEdge(int index) {
-      if(index < 0 || index >= graph.nodeCount)
-         return false;
       return (getEdge(index) != null);
    }
 

@@ -11,10 +11,10 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class GraphTest {
-   Graph<Edge> instance;
+   MatrixGraph<Edge> instance;
 
-   public Graph<Edge> newInstance(int nodeCount) {
-      return new Graph<Edge>(nodeCount);
+   public MatrixGraph<Edge> newInstance(int nodeCount) {
+      return new MatrixGraph<Edge>(nodeCount);
    }
 
    @Test

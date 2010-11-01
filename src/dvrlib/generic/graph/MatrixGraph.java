@@ -1,38 +1,42 @@
 /*
  * DvRLib - Generic
  * Duncan van Roermund, 2010
- * Graph.java
+ * MatrixGraph.java
  */
 
 package dvrlib.generic.graph;
 
 import java.util.Collection;
 
-public class Graph<E extends Edge> extends AbstractGraph<Node, E> implements EdgeCreator<E> {
-   protected final Node<E> nodes[];
+/**
+ * Graph class, using fixed sized arrays to keep track of edges.
+ * This makes it fast at inserting and checking for edges, but slow at retreiving neighbouring nodes.
+ */
+public class MatrixGraph<E extends Edge> extends AbstractGraph<MatrixGraphNode, E> implements EdgeCreator<E> {
+   protected final MatrixGraphNode<E> nodes[];
    protected final EdgeCreator<E> edgeCreator;
    protected int firstEdge, lastEdge;
 
    /**
-    * Graph constructor, using itself as edgeCreator.
+    * MatrixGraph constructor, using itself as edgeCreator.
     * @param nodeCount The number of nodes in this graph.
-    * @see Graph(int, dvrlib.generic.EdgeCreator)
+    * @see MatrixGraph(int, dvrlib.generic.EdgeCreator)
     */
-   public Graph(int nodeCount) {
+   public MatrixGraph(int nodeCount) {
       this(nodeCount, null);
    }
 
    /**
-    * Graph constructor.
+    * MatrixGraph constructor.
     * @param nodeCount   The number of nodes in this graph.
     * @param edgeCreator The class that will take care of the creation of edges.
     * O(1).
     */
-   public Graph(int nodeCount, EdgeCreator<E> edgeCreator) {
+   public MatrixGraph(int nodeCount, EdgeCreator<E> edgeCreator) {
       super(nodeCount);
-      nodes = new Node[nodeCount];
+      nodes = new MatrixGraphNode[nodeCount];
       for(int i = 0; i < nodeCount; i++) {
-         nodes[i] = new Node<E>(this, i);
+         nodes[i] = new MatrixGraphNode<E>(this, i);
       }
       this.edgeCreator = (edgeCreator == null ? this : edgeCreator);
 
@@ -71,7 +75,7 @@ public class Graph<E extends Edge> extends AbstractGraph<Node, E> implements Edg
     * O(1).
     */
    public E getFirstEdge(int a) {
-      Node<E> n = getNode(a);
+      MatrixGraphNode<E> n = getNode(a);
       if(n == null)
          return null;
       return n.getEdge(n.first);
@@ -82,7 +86,7 @@ public class Graph<E extends Edge> extends AbstractGraph<Node, E> implements Edg
     * O(1).
     */
    public E getLastEdge(int a) {
-      Node<E> n = getNode(a);
+      MatrixGraphNode<E> n = getNode(a);
       if(n == null)
          return null;
       return n.getEdge(n.last);
@@ -104,7 +108,7 @@ public class Graph<E extends Edge> extends AbstractGraph<Node, E> implements Edg
     * Returns the edge between nodes a and b, or null if there is no such edge.
     * O(1).
     */
-   public E getEdge(Node<E> a, int b) {
+   public E getEdge(MatrixGraphNode<E> a, int b) {
       if(a == null)
          return null;
       return a.getEdge(b);
@@ -115,13 +119,13 @@ public class Graph<E extends Edge> extends AbstractGraph<Node, E> implements Edg
     * O(1).
     */
    @Override
-   public Node<E> getNode(int index) {
+   public MatrixGraphNode<E> getNode(int index) {
       return nodes[index];
    }
 
    /**
     * Returns the neighbouring nodes of the node with the given index.
-    * @see Node#getNeighbours()
+    * @see MatrixGraphNode#getNeighbours()
     */
    @Override
    public Collection<AbstractNode> getNeighbours(int index) {

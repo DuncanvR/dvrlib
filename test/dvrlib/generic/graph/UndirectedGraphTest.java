@@ -11,8 +11,8 @@ import static org.junit.Assert.*;
 
 public class UndirectedGraphTest extends GraphTest {
    @Override
-   public Graph<Edge> newInstance(int nodeCount) {
-      return new UndirectedGraph<Edge>(nodeCount);
+   public MatrixGraph<Edge> newInstance(int nodeCount) {
+      return new UndirectedMatrixGraph<Edge>(nodeCount);
    }
 
    @Override

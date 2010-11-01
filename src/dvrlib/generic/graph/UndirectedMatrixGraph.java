@@ -1,32 +1,32 @@
 /*
  * DvRLib - Generic
  * Duncan van Roermund, 2010
- * UndirectedGraph.java
+ * UndirectedMatrixGraph.java
  */
 
 package dvrlib.generic.graph;
 
 import java.util.Collection;
 
-public class UndirectedGraph<E extends Edge> extends Graph<E> {
+public class UndirectedMatrixGraph<E extends Edge> extends MatrixGraph<E> {
 
    /**
-    * UndirectedGraph constructor, using itself as edgeCreator.
+    * UndirectedMatrixGraph constructor, using itself as edgeCreator.
     * @param nodeCount The number of nodes in this graph.
-    * @see UndirectedGraph(int, dvrlib.generic.EdgeCreator)
+    * @see UndirectedMatrixGraph(int, dvrlib.generic.EdgeCreator)
     */
-   public UndirectedGraph(int nodeCount) {
+   public UndirectedMatrixGraph(int nodeCount) {
       this(nodeCount, null);
    }
 
    /**
-    * UndirectedGraph constructor.
+    * UndirectedMatrixGraph constructor.
     * @param nodeCount   The number of nodes in this graph.
     * @param edgeCreator The class that will take care of the creation of edges.
-    * @see Graph#Graph(int, dvrlib.generic.EdgeCreator)
+    * @see MatrixGraph#MatrixGraph(int, dvrlib.generic.EdgeCreator)
     * O(1)
     */
-   public UndirectedGraph(int nodeCount, EdgeCreator<E> edgeCreator) {
+   public UndirectedMatrixGraph(int nodeCount, EdgeCreator<E> edgeCreator) {
       super(nodeCount, edgeCreator);
    }
 
@@ -65,7 +65,7 @@ public class UndirectedGraph<E extends Edge> extends Graph<E> {
    /**
     * Adds and returns an edge between nodes a and b.
     * If the edge already existed, that edge is returned.
-    * @see Graph#addEdge(int, int)
+    * @see MatrixGraph#addEdge(int, int)
     * O(1) if the edge already existed, O(e) otherwise.
     */
    @Override
@@ -81,7 +81,7 @@ public class UndirectedGraph<E extends Edge> extends Graph<E> {
 
    /**
     * Removes the edge between vertices a and b.
-    * @see Graph#removeEdge(int, int)
+    * @see MatrixGraph#removeEdge(int, int)
     * O(1).
     */
    @Override
