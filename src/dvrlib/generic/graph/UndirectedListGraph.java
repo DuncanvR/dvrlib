@@ -18,15 +18,6 @@ public class UndirectedListGraph<E extends Edge> extends ListGraph {
    }
 
    /**
-    * Returns true if there is an edge between nodes a and b, false otherwise.
-    * O(1).
-    */
-   @Override
-   public boolean hasEdge(int a, int b) {
-      return (a < b ? super.hasEdge(a, b) : super.hasEdge(b, a));
-   }
-
-   /**
     * Adds and returns an edge between nodes a and b.
     * If the edge already existed, that edge is returned.
     * @see MatrixGraph#addEdge(int, int)
@@ -37,7 +28,15 @@ public class UndirectedListGraph<E extends Edge> extends ListGraph {
       if(a == b)
          return false;
 
-      return (a < b ? super.addEdge(a, b) : super.addEdge(b, a));
+      if(super.addEdge(a, b)) {
+         if(super.addEdge(b, a)) {
+            edgeCount--;
+            return true;
+         }
+         else
+            super.removeEdge(a, b);
+      }
+      return false;
    }
 
    /**
@@ -47,7 +46,15 @@ public class UndirectedListGraph<E extends Edge> extends ListGraph {
     */
    @Override
    public boolean removeEdge(int a, int b) {
-      return (a < b ? super.removeEdge(a, b) : super.removeEdge(b, a));
+      if(super.removeEdge(a, b)) {
+         if(super.removeEdge(b, a)) {
+            edgeCount++;
+            return true;
+         }
+         else
+            super.addEdge(a, b);
+      }
+      return false;
    }
 
    @Override
