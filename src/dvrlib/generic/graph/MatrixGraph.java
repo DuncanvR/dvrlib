@@ -12,7 +12,7 @@ import java.util.Collection;
  * Graph class, using fixed sized arrays to keep track of edges.
  * This makes it fast at inserting and checking for edges, but slow at retreiving neighbouring nodes.
  */
-public class MatrixGraph<E extends Edge> extends AbstractGraph<MatrixGraphNode, E> implements EdgeCreator<E> {
+public class MatrixGraph<E extends Edge> extends AbstractGraph<MatrixGraphNode> implements EdgeCreator<E> {
    protected final MatrixGraphNode<E> nodes[];
    protected final EdgeCreator<E> edgeCreator;
    protected int firstEdge, lastEdge;
@@ -40,21 +40,22 @@ public class MatrixGraph<E extends Edge> extends AbstractGraph<MatrixGraphNode, 
       }
       this.edgeCreator = (edgeCreator == null ? this : edgeCreator);
 
-      edgeCount  = 0;
-      firstEdge  = nodeCount;
-      lastEdge   = -1;
-      maxDegree  = 0;
+      edgeCount = 0;
+      firstEdge = nodeCount;
+      lastEdge  = -1;
+      maxDegree = 0;
    }
 
    /**
-    * Returns true if there is an edge from the given node to any other node, false otherwise.
+    * Returns true if there is an edge between nodes a and b, false otherwise.
     * O(1).
     */
-   public boolean hasEdge(int a) {
-      return (getFirstEdge(a) != null);
+   @Override
+   public boolean hasEdge(int a, int b) {
+      return (getEdge(a, b) != null);
    }
 
-   /**
+    /**
     * Returns the first edge in this graph, or null if there is none.
     * O(1).
     */
@@ -96,10 +97,9 @@ public class MatrixGraph<E extends Edge> extends AbstractGraph<MatrixGraphNode, 
     * Returns the edge between nodes a and b, or null if there is no such edge.
     * O(1).
     */
-   @Override
    public E getEdge(int a, int b) {
       // Sanity check
-      if(a < 0 || a >= nodeCount || b < 0 || b >= nodeCount)
+      if(!checkIndex(a) || !checkIndex(b))
          return null;
       return getEdge(getNode(a), b);
    }
@@ -128,7 +128,7 @@ public class MatrixGraph<E extends Edge> extends AbstractGraph<MatrixGraphNode, 
     * @see MatrixGraphNode#getNeighbours()
     */
    @Override
-   public Collection<AbstractNode> getNeighbours(int index) {
+   public Collection<MatrixGraphNode> getNeighbours(int index) {
       return nodes[index].getNeighbours();
    }
 
@@ -143,14 +143,15 @@ public class MatrixGraph<E extends Edge> extends AbstractGraph<MatrixGraphNode, 
    }
 
    /**
-    * Adds and returns an edge between nodes a and b.
+    * Adds an edge between nodes a and b.
+    * @return true if an edge was added, false otherwise.
     * O(1) if the edge already existed, O(e) otherwise.
     */
    @Override
-   public E addEdge(int a, int b) {
+   public boolean addEdge(int a, int b) {
       // Sanity check
-      if(a < 0 || a >= nodeCount || b < 0 || b >= nodeCount)
-         return null;
+      if(!checkIndex(a) || !checkIndex(b))
+         return false;
 
       E e = getEdge(a, b);
       if(e == null) {
@@ -229,18 +230,19 @@ public class MatrixGraph<E extends Edge> extends AbstractGraph<MatrixGraphNode, 
          edgeCount++;
          incDegree(a);
       }
-      return e;
+      return true;
    }
 
    /**
     * Removes the edge between nodes a and b.
+    * @return true if the edge was deleted, false otherwise.
     * O(1).
     */
    @Override
-   public E removeEdge(int a, int b) {
+   public boolean removeEdge(int a, int b) {
       // Sanity check
-      if(a < 0 || a >= nodeCount || b < 0 || b >= nodeCount || !hasEdge(a, b))
-         return null;
+      if(!checkIndex(a) || !checkIndex(b) || !hasEdge(a, b))
+         return false;
 
       // Maintain data
       E e = getEdge(a, b);
@@ -284,15 +286,56 @@ public class MatrixGraph<E extends Edge> extends AbstractGraph<MatrixGraphNode, 
       decDegree(a);
       edgeCount--;
 
-      return e;
+      return true;
    }
 
    /**
     * Returns the number of edges starting in node a.
     * O(1).
     */
+   @Override
    public int getDegree(int a) {
       return nodes[a].getDegree();
+   }
+
+   /**
+    * Increases the degree of node a.
+    * @see AbstractGraph#incDegree(dvrlib.generic.AbstractNode)
+    * O(1).
+    */
+   protected void incDegree(int a) {
+      incDegree(getNode(a));
+   }
+
+   /**
+    * Increases the degree of the given node.
+    * O(getMaxDegree()).
+    */
+   protected void incDegree(MatrixGraphNode node) {
+      if(node != null) {
+         if(++node.degree > getMaxDegree())
+            maxDegree = node.degree;
+      }
+   }
+
+   /**
+    * Decreases the degree of node a.
+    * @see AbstractGraph#decDegree(dvrlib.generic.AbstractNode)
+    * O(1).
+    */
+   protected void decDegree(int a) {
+      decDegree(getNode(a));
+   }
+
+   /**
+    * Decreases the degree of the given node.
+    * If the degree of the given node was equal to maxDegree, maxDegree will be invalidated.
+    * O(1).
+    */
+   protected void decDegree(MatrixGraphNode node) {
+      if(node != null)
+         if(node.degree-- == maxDegree)
+            maxDegree = -1;
    }
 
    /**

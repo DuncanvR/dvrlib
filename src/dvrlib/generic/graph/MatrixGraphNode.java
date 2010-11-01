@@ -9,10 +9,10 @@ package dvrlib.generic.graph;
 import java.util.LinkedList;
 import java.util.Vector;
 
-public class MatrixGraphNode<E extends Edge> extends AbstractNode {
+public class MatrixGraphNode<E extends Edge> extends AbstractNode<MatrixGraphNode> {
    protected final MatrixGraph graph;
    protected final Vector<E> edges;
-   protected int first, last;
+   protected int first, last = 0, degree = 0;
 
    /**
     * MatrixGraphNode constructor.
@@ -27,7 +27,6 @@ public class MatrixGraphNode<E extends Edge> extends AbstractNode {
       edges = new Vector<E>(graph.nodeCount);
       edges.setSize(graph.nodeCount);
       first = graph.nodeCount;
-      last  = 0;
    }
 
    /**
@@ -43,7 +42,7 @@ public class MatrixGraphNode<E extends Edge> extends AbstractNode {
     * O(1).
     */
    @Override
-   public boolean hasEdge(AbstractNode that) {
+   public boolean hasEdge(MatrixGraphNode that) {
       return hasEdge(that.index);
    }
 
@@ -62,14 +61,23 @@ public class MatrixGraphNode<E extends Edge> extends AbstractNode {
     * O(n) the number of nodes in the graph.
     */
    @Override
-   public LinkedList<AbstractNode> getNeighbours() {
-      LinkedList<AbstractNode> neighbours = new LinkedList<AbstractNode>();
+   public LinkedList<MatrixGraphNode> getNeighbours() {
+      LinkedList<MatrixGraphNode> neighbours = new LinkedList<MatrixGraphNode>();
       for(int i = first; i <= last; i++) {
          Edge e = edges.get(i);
          if(e != null)
             neighbours.add(graph.getNode(e.b));
       }
       return neighbours;
+   }
+
+   /**
+    * Returns the degree of this node.
+    * O(1).
+    */
+   @Override
+   public int getDegree() {
+      return degree;
    }
 
    @Override

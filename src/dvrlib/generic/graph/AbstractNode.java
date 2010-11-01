@@ -8,9 +8,8 @@ package dvrlib.generic.graph;
 
 import java.util.Collection;
 
-public abstract class AbstractNode {
+public abstract class AbstractNode<N extends AbstractNode> {
    public final int index;
-   protected int degree;
 
    /**
     * AbstractNode constructor.
@@ -19,21 +18,20 @@ public abstract class AbstractNode {
     */
    public AbstractNode(int index) {
       this.index = index;
-      degree = 0;
    }
 
    /**
     * Returns true if there is an edge from this node to given node, false otherwise.
     */
-   public abstract boolean hasEdge(AbstractNode that);
+   public abstract boolean hasEdge(N that);
 
-   public abstract Collection<AbstractNode> getNeighbours();
+   /**
+    * Returns the neighbouring nodes of this node.
+    */
+   public abstract Collection<N> getNeighbours();
 
    /**
     * Returns the degree of this node.
-    * O(1).
     */
-   public int getDegree() {
-      return degree;
-   }
+   public abstract int getDegree();
 }

@@ -53,8 +53,8 @@ public class UndirectedMatrixGraph<E extends Edge> extends MatrixGraph<E> {
     * @see Node#getNeighbours()
     */
    @Override
-   public Collection<AbstractNode> getNeighbours(int index) {
-      Collection<AbstractNode> neighbours = nodes[index].getNeighbours();
+   public Collection<MatrixGraphNode> getNeighbours(int index) {
+      Collection<MatrixGraphNode> neighbours = nodes[index].getNeighbours();
       for(int i = 0; i < nodeCount; i++) {
          if(nodes[i].hasEdge(index))
             neighbours.add(getNode(i));
@@ -63,20 +63,19 @@ public class UndirectedMatrixGraph<E extends Edge> extends MatrixGraph<E> {
    }
 
    /**
-    * Adds and returns an edge between nodes a and b.
-    * If the edge already existed, that edge is returned.
+    * Adds an edge between nodes a and b.
     * @see MatrixGraph#addEdge(int, int)
     * O(1) if the edge already existed, O(e) otherwise.
     */
    @Override
-   public E addEdge(int a, int b) {
+   public boolean addEdge(int a, int b) {
       if(a == b)
-         return null;
+         return false;
 
-      E e = (a < b ? super.addEdge(a, b) : super.addEdge(b, a));
-      if(e != null)
+      boolean added = (a < b ? super.addEdge(a, b) : super.addEdge(b, a));
+      if(added)
          incDegree(a < b ? b : a);
-      return e;
+      return added;
    }
 
    /**
@@ -85,11 +84,11 @@ public class UndirectedMatrixGraph<E extends Edge> extends MatrixGraph<E> {
     * O(1).
     */
    @Override
-   public E removeEdge(int a, int b) {
-      E e = (a < b ? super.removeEdge(a, b) : super.removeEdge(b, a));
-      if(e != null)
+   public boolean removeEdge(int a, int b) {
+      boolean removed = (a < b ? super.removeEdge(a, b) : super.removeEdge(b, a));
+      if(removed)
          decDegree(a < b ? b : a);
-      return e;
+      return removed;
    }
 
    @Override
