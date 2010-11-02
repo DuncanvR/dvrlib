@@ -48,6 +48,7 @@ public class GeneticLS extends LocalSearch {
       // Initialize population with random solutions
       for(int i = 1; i < populationSize; i++) {
          Solution s = problem.randomSolution();
+         s.ensureMostCommon(solution);
          double eval = problem.evaluate(s);
          population.add(new HalfComparablePair(eval, s));
       }

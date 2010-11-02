@@ -26,4 +26,12 @@ public class AbstractSolution implements Solution {
    public void increaseIterationCount(int i) {
       iterationCount += i;
    }
+
+   /**
+    * Makes this solution most like the given one.
+    */
+   @Override
+   public void ensureMostCommon(Solution s) {
+      // Do nothing
+   }
 }
