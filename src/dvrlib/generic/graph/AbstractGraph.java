@@ -6,9 +6,9 @@
 
 package dvrlib.generic.graph;
 
-import java.util.Collection;
+import java.util.Iterator;
 
-public abstract class AbstractGraph<N extends AbstractNode> {
+public abstract class AbstractGraph<N extends AbstractNode> implements Iterable<N> {
    protected int nodeCount, edgeCount = 0, maxDegree = 0;
 
    /**
@@ -69,9 +69,11 @@ public abstract class AbstractGraph<N extends AbstractNode> {
    public abstract N getNode(int index);
 
    /**
-    * Returns the neighbouring nodes of the node with the given index.
+    * Returns an iterator to the neighbouring nodes of the given node.
     */
-   public abstract Collection<N> getNeighbours(int index);
+   public Iterator<N> neighbourIterator(int index) {
+      return getNode(index).neighbourIterator();
+   }
 
    /**
     * Returns true if there is an edge between nodes a and b, false otherwise.

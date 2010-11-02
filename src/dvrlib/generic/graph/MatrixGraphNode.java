@@ -6,7 +6,7 @@
 
 package dvrlib.generic.graph;
 
-import java.util.LinkedList;
+import java.util.Iterator;
 import java.util.Vector;
 
 public class MatrixGraphNode<E extends Edge> extends AbstractNode<MatrixGraphNode> {
@@ -57,21 +57,6 @@ public class MatrixGraphNode<E extends Edge> extends AbstractNode<MatrixGraphNod
    }
 
    /**
-    * Returns the neighbouring nodes of this node.
-    * O(n) the number of nodes in the graph.
-    */
-   @Override
-   public LinkedList<MatrixGraphNode> getNeighbours() {
-      LinkedList<MatrixGraphNode> neighbours = new LinkedList<MatrixGraphNode>();
-      for(int i = first; i <= last; i++) {
-         Edge e = edges.get(i);
-         if(e != null)
-            neighbours.add(graph.getNode(e.b));
-      }
-      return neighbours;
-   }
-
-   /**
     * Returns the degree of this node.
     * O(1).
     */
@@ -90,5 +75,21 @@ public class MatrixGraphNode<E extends Edge> extends AbstractNode<MatrixGraphNod
             s += edges.get(i).b + ",";
       }
       return s + "]";
+   }
+
+   /**
+    * Returns an iterator to the neighbouring nodes of this node.
+    * O(n) the number of nodes in the graph.
+    */
+   @Override
+   public Iterator<MatrixGraphNode> neighbourIterator() {
+      throw new UnsupportedOperationException("Not supported yet.");
+
+      /*LinkedList<MatrixGraphNode> neighbours = new LinkedList<MatrixGraphNode>();
+      for(int i = first; i <= last; i++) {
+         Edge e = edges.get(i);
+         if(e != null)
+            neighbours.add(graph.getNode(e.b));
+      }//*/
    }
 }

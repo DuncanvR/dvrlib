@@ -6,7 +6,7 @@
 
 package dvrlib.generic.graph;
 
-public class UndirectedListGraph<E extends Edge> extends ListGraph {
+public class UndirectedListGraph extends ListGraph {
 
    /**
     * UndirectedListGraph constructor, using itself as edgeCreator.

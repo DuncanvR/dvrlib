@@ -6,7 +6,7 @@
 
 package dvrlib.generic.graph;
 
-import java.util.Collection;
+import java.util.Iterator;
 
 /**
  * Graph class, using fixed sized arrays to keep track of edges.
@@ -121,15 +121,6 @@ public class MatrixGraph<E extends Edge> extends AbstractGraph<MatrixGraphNode> 
    @Override
    public MatrixGraphNode<E> getNode(int index) {
       return nodes[index];
-   }
-
-   /**
-    * Returns the neighbouring nodes of the node with the given index.
-    * @see MatrixGraphNode#getNeighbours()
-    */
-   @Override
-   public Collection<MatrixGraphNode> getNeighbours(int index) {
-      return nodes[index].getNeighbours();
    }
 
    /**
@@ -348,6 +339,11 @@ public class MatrixGraph<E extends Edge> extends AbstractGraph<MatrixGraphNode> 
       for(int i = 0; i < nodeCount; i++) {
          maxDegree = Math.max(maxDegree, nodes[i].getDegree());
       }
+   }
+
+   @Override
+   public Iterator<MatrixGraphNode> iterator() {
+      throw new UnsupportedOperationException("Not supported yet.");
    }
 
    /*

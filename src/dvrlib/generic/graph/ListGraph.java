@@ -6,7 +6,7 @@
 
 package dvrlib.generic.graph;
 
-import java.util.Collection;
+import java.util.Iterator;
 
 /**
  * Graph class, using lists to keep track of edges.
@@ -25,9 +25,6 @@ public class ListGraph extends AbstractGraph<ListGraphNode> {
       for(int i = 0; i < nodeCount; i++) {
          nodes[i] = new ListGraphNode(this, i);
       }
-
-      edgeCount = 0;
-      maxDegree = 0;
    }
 
    /**
@@ -52,19 +49,6 @@ public class ListGraph extends AbstractGraph<ListGraphNode> {
          return nodes[index];
       else
          return null;
-   }
-
-   /**
-    * Returns the neighbouring nodes of the node with the given index.
-    * @see ListGraphNode#getNeighbours()
-    */
-   @Override
-   public Collection<ListGraphNode> getNeighbours(int index) {
-      ListGraphNode n = getNode(index);
-      if(n == null)
-         return null;
-      else
-         return n.getNeighbours();
    }
 
    /**
@@ -127,5 +111,10 @@ public class ListGraph extends AbstractGraph<ListGraphNode> {
          return -1;
       else
          return na.getDegree();
+   }
+
+   @Override
+   public Iterator<ListGraphNode> iterator() {
+      return new ListGraphIterator(this);
    }
 }

@@ -6,7 +6,7 @@
 
 package dvrlib.generic.graph;
 
-import java.util.Collection;
+import java.util.Iterator;
 
 public abstract class AbstractNode<N extends AbstractNode> {
    public final int index;
@@ -26,9 +26,9 @@ public abstract class AbstractNode<N extends AbstractNode> {
    public abstract boolean hasEdge(N that);
 
    /**
-    * Returns the neighbouring nodes of this node.
+    * Returns an iterator to the neighbouring nodes.
     */
-   public abstract Collection<N> getNeighbours();
+   public abstract Iterator<N> neighbourIterator();
 
    /**
     * Returns the degree of this node.

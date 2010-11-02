@@ -6,7 +6,7 @@
 
 package dvrlib.generic.graph;
 
-import java.util.Collection;
+import java.util.Iterator;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -101,12 +101,13 @@ public abstract class AbstractGraphTest {
       // Test getNeighbours(int)
       int totalNeighbourCount = 0;
       for(int i = 0; i < instance.getNodeCount(); i++) {
-         Collection<MatrixGraphNode> neighbours = instance.getNeighbours(i);
          for(AbstractEdge e : edges) {
             if(i == e.a)
                assertTrue(instance.hasEdge(e.a, e.b));
          }
-         totalNeighbourCount += neighbours.size();
+         for(Iterator<AbstractNode> it = instance.neighbourIterator(i); it.hasNext(); it.next()) {
+            totalNeighbourCount++;
+         }
       }
       assertNeighbours(edges.length, totalNeighbourCount);
    }

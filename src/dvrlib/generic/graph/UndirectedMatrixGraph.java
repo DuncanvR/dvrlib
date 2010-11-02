@@ -6,8 +6,6 @@
 
 package dvrlib.generic.graph;
 
-import java.util.Collection;
-
 public class UndirectedMatrixGraph<E extends Edge> extends MatrixGraph<E> {
 
    /**
@@ -46,20 +44,6 @@ public class UndirectedMatrixGraph<E extends Edge> extends MatrixGraph<E> {
    @Override
    public E getEdge(int a, int b) {
       return (a < b ? super.getEdge(a, b) : super.getEdge(b, a));
-   }
-
-   /**
-    * Returns the neighbouring nodes of the node with the given index.
-    * @see Node#getNeighbours()
-    */
-   @Override
-   public Collection<MatrixGraphNode> getNeighbours(int index) {
-      Collection<MatrixGraphNode> neighbours = nodes[index].getNeighbours();
-      for(int i = 0; i < nodeCount; i++) {
-         if(nodes[i].hasEdge(index))
-            neighbours.add(getNode(i));
-      }
-      return neighbours;
    }
 
    /**
