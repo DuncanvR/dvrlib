@@ -8,7 +8,7 @@ package dvrlib.graph;
 
 import java.util.Iterator;
 
-public abstract class AbstractGraph<N extends AbstractNode> implements Iterable<N> {
+public abstract class AbstractGraph<N extends AbstractGraphNode> implements Iterable<N> {
    protected int nodeCount, edgeCount = 0, maxDegree = 0;
 
    /**

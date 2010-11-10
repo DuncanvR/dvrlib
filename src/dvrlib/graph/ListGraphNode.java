@@ -10,7 +10,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-public class ListGraphNode extends AbstractNode<ListGraphNode> {
+public class ListGraphNode extends AbstractGraphNode<ListGraphNode> {
    protected final ListGraph graph;
    protected final Collection<ListGraphNode> neighbours;
 

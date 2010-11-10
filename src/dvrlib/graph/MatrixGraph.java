@@ -20,7 +20,7 @@ public class MatrixGraph<E extends Edge> extends AbstractGraph<MatrixGraphNode> 
    /**
     * MatrixGraph constructor, using itself as edgeCreator.
     * @param nodeCount The number of nodes in this graph.
-    * @see MatrixGraph(int, dvrlib.generic.EdgeCreator)
+    * @see MatrixGraph#MatrixGraph(int, dvrlib.graph.EdgeCreator)
     */
    public MatrixGraph(int nodeCount) {
       this(nodeCount, null);
@@ -125,7 +125,7 @@ public class MatrixGraph<E extends Edge> extends AbstractGraph<MatrixGraphNode> 
 
    /**
     * Creates and returns a new edge between the nodes with the given indices.
-    * @see dvrlib.generic.EdgeCreator#newEdge(int, int)
+    * @see dvrlib.graph.EdgeCreator#newEdge(int, int)
     * O(1).
     */
    @Override
@@ -281,17 +281,8 @@ public class MatrixGraph<E extends Edge> extends AbstractGraph<MatrixGraphNode> 
    }
 
    /**
-    * Returns the number of edges starting in node a.
-    * O(1).
-    */
-   @Override
-   public int getDegree(int a) {
-      return nodes[a].getDegree();
-   }
-
-   /**
     * Increases the degree of node a.
-    * @see AbstractGraph#incDegree(dvrlib.generic.AbstractNode)
+    * @see AbstractGraph#incDegree(dvrlib.graph.AbstractGraphNode)
     * O(1).
     */
    protected void incDegree(int a) {
@@ -311,7 +302,7 @@ public class MatrixGraph<E extends Edge> extends AbstractGraph<MatrixGraphNode> 
 
    /**
     * Decreases the degree of node a.
-    * @see AbstractGraph#decDegree(dvrlib.generic.AbstractNode)
+    * @see AbstractGraph#decDegree(dvrlib.graph.AbstractGraphNode)
     * O(1).
     */
    protected void decDegree(int a) {

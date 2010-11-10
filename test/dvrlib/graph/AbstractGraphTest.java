@@ -105,7 +105,7 @@ public abstract class AbstractGraphTest {
             if(i == e.a)
                assertTrue(instance.hasEdge(e.a, e.b));
          }
-         for(Iterator<AbstractNode> it = instance.neighbourIterator(i); it.hasNext(); it.next()) {
+         for(Iterator<AbstractGraphNode> it = instance.neighbourIterator(i); it.hasNext(); it.next()) {
             totalNeighbourCount++;
          }
       }

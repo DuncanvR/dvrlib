@@ -9,7 +9,7 @@ package dvrlib.graph;
 import java.util.Iterator;
 import java.util.Vector;
 
-public class MatrixGraphNode<E extends Edge> extends AbstractNode<MatrixGraphNode> {
+public class MatrixGraphNode<E extends Edge> extends AbstractGraphNode<MatrixGraphNode> {
    protected final MatrixGraph graph;
    protected final Vector<E> edges;
    protected int first, last = 0, degree = 0;

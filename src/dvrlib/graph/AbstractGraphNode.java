@@ -1,22 +1,22 @@
 /*
  * DvRLib - Graph
  * Duncan van Roermund, 2010
- * AbstractNode.java
+ * AbstractGraphNode.java
  */
 
 package dvrlib.graph;
 
 import java.util.Iterator;
 
-public abstract class AbstractNode<N extends AbstractNode> {
+public abstract class AbstractGraphNode<N extends AbstractGraphNode> {
    public final int index;
 
    /**
-    * AbstractNode constructor.
+    * AbstractGraphNode constructor.
     * @param index The index of this node.
     * O(1).
     */
-   public AbstractNode(int index) {
+   public AbstractGraphNode(int index) {
       this.index = index;
    }
 
