@@ -8,7 +8,7 @@ package dvrlib.graph;
 
 import java.util.Iterator;
 
-public abstract class AbstractGraph<N extends AbstractGraphNode> implements Iterable<N> {
+public abstract class AbstractGraph<N extends AbstractGraphNode> {
    protected int nodeCount, edgeCount = 0, maxDegree = 0;
 
    /**
@@ -45,8 +45,16 @@ public abstract class AbstractGraph<N extends AbstractGraphNode> implements Iter
 
    /**
     * Returns the number of edges starting in node a.
+    * Returns -1 if the node index is out of bounds.
+    * O(1).
     */
-   public abstract int getDegree(int a);
+   public int getDegree(int a) {
+      AbstractGraphNode n = getNode(a);
+      if(n == null)
+         return -1;
+      else
+         return n.getDegree();
+   }
 
    /**
     * Returns the largest degree.
@@ -65,6 +73,7 @@ public abstract class AbstractGraph<N extends AbstractGraphNode> implements Iter
 
    /**
     * Returns the node at the given index.
+    * May return null if the node index is out of bounds.
     */
    public abstract N getNode(int index);
 
@@ -74,6 +83,11 @@ public abstract class AbstractGraph<N extends AbstractGraphNode> implements Iter
    public Iterator<N> neighbourIterator(int index) {
       return getNode(index).neighbourIterator();
    }
+
+   /**
+    * Returns an iterator to the nodes of this graph.
+    */
+   public abstract Iterator<N> nodesIterator();
 
    /**
     * Returns true if there is an edge between nodes a and b, false otherwise.

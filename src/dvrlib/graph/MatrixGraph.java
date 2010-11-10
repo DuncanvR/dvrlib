@@ -333,7 +333,7 @@ public class MatrixGraph<E extends Edge> extends AbstractGraph<MatrixGraphNode> 
    }
 
    @Override
-   public Iterator<MatrixGraphNode> iterator() {
+   public Iterator<MatrixGraphNode> nodesIterator() {
       throw new UnsupportedOperationException("Not supported yet.");
    }
 

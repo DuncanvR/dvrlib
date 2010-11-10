@@ -40,7 +40,7 @@ public class ListGraph extends AbstractGraph<ListGraphNode> {
    }
 
    /**
-    * Returns the node with the given index.
+    * Returns the node with the given index, or null if the index is out of bounds.
     * O(1).
     */
    @Override
@@ -104,17 +104,11 @@ public class ListGraph extends AbstractGraph<ListGraphNode> {
       }
    }
 
+   /**
+    * Returns an iterator to the nodes of this graph.
+    */
    @Override
-   public int getDegree(int a) {
-      ListGraphNode na = getNode(a);
-      if(na == null)
-         return -1;
-      else
-         return na.getDegree();
-   }
-
-   @Override
-   public Iterator<ListGraphNode> iterator() {
+   public Iterator<ListGraphNode> nodesIterator() {
       return new ListGraphIterator(this);
    }
 }
