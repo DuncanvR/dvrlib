@@ -1,10 +1,10 @@
 /*
- * DvRLib - Generic
+ * DvRLib - Graph
  * Duncan van Roermund, 2010
  * UndirectedMatrixGraph.java
  */
 
-package dvrlib.generic.graph;
+package dvrlib.graph;
 
 public class UndirectedMatrixGraph<E extends Edge> extends MatrixGraph<E> {
 

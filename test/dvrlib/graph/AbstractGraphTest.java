@@ -1,10 +1,10 @@
 /*
- * DvRLib - Generic
+ * DvRLib - Graph
  * Duncan van Roermund, 2010
  * AbstractGraphTest.java
  */
 
-package dvrlib.generic.graph;
+package dvrlib.graph;
 
 import java.util.Iterator;
 import org.junit.Test;
@@ -14,7 +14,7 @@ public abstract class AbstractGraphTest {
    AbstractGraph instance;
 
    public abstract AbstractGraph newInstance(int nodeCount);
-   
+
    @Test
    public void testGetEdgeCount() {
       instance = newInstance(3);

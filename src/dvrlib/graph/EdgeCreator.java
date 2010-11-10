@@ -1,10 +1,10 @@
 /*
- * DvRLib - Generic
+ * DvRLib - Graph
  * Duncan van Roermund, 2010
  * EdgeCreator.java
  */
 
-package dvrlib.generic.graph;
+package dvrlib.graph;
 
 public interface EdgeCreator<E extends Edge> {
    /**

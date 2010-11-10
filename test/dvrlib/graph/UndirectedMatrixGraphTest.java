@@ -1,15 +1,15 @@
 /*
- * DvRLib - Generic
+ * DvRLib - Graph
  * Duncan van Roermund, 2010
  * UndirectedMatrixGraphTest.java
  */
 
-package dvrlib.generic.graph;
+package dvrlib.graph;
 
 import static org.junit.Assert.*;
 
 public class UndirectedMatrixGraphTest extends MatrixGraphTest {
-   
+
    @Override
    public MatrixGraph<Edge> newInstance(int nodeCount) {
       return new UndirectedMatrixGraph<Edge>(nodeCount);

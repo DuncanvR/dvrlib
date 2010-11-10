@@ -1,10 +1,10 @@
 /*
- * DvRLib - Generic
+ * DvRLib - Graph
  * Duncan van Roermund, 2010
  * ListGraphTest.java
  */
 
-package dvrlib.generic.graph;
+package dvrlib.graph;
 
 public class ListGraphTest extends AbstractGraphTest {
 

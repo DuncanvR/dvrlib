@@ -1,10 +1,10 @@
 /*
- * DvRLib - Generic
+ * DvRLib - Graph
  * Duncan van Roermund, 2010
  * ListGraph.java
  */
 
-package dvrlib.generic.graph;
+package dvrlib.graph;
 
 import java.util.Iterator;
 

@@ -1,10 +1,10 @@
 /*
- * DvRLib - Generic
+ * DvRLib - Graph
  * Duncan van Roermund, 2010
  * AbstractGraphTest.java
  */
 
-package dvrlib.generic.graph;
+package dvrlib.graph;
 
 import static org.junit.Assert.*;
 

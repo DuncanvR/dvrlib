@@ -1,10 +1,10 @@
 /*
- * DvRLib - Generic
+ * DvRLib - Graph
  * Duncan van Roermund, 2010
  * ListGraphIterator.java
  */
 
-package dvrlib.generic.graph;
+package dvrlib.graph;
 
 public class ListGraphIterator implements java.util.Iterator<ListGraphNode> {
    protected final ListGraph graph;
