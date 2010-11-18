@@ -75,12 +75,13 @@ public class WeightedTreeTest {
 
    public void testBalance(WeightedTreeNode<Integer> node) {
       if(node != null) {
+         assertTrue(Math.abs(node.getLeftHeight() - node.getRightHeight()) < 2);
          if(node.left != null) {
-            assertTrue(node.left.a <= node.a);
+            assertTrue(node.left.key <= node.key);
             testBalance(node.left);
          }
          if(node.right != null) {
-            assertTrue(node.right.a > node.a);
+            assertTrue(node.right.key > node.key);
             testBalance(node.right);
          }
       }

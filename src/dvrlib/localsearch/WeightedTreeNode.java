@@ -7,63 +7,20 @@
 package dvrlib.localsearch;
 
 import dvrlib.generic.Pair;
+import java.util.LinkedList;
+import java.util.List;
 
-public class WeightedTreeNode<E> extends Pair<Double, E> {
+public class WeightedTreeNode<E> {
    protected WeightedTreeNode<E> parent = null, left = null, right = null;
+   protected List<E> values;
+   protected double key, weight;
    protected int size = 1, height = 0;
-   protected double weight;
 
-   public WeightedTreeNode(Double key, E value) {
-      super(key, value);
+   public WeightedTreeNode(double key, E value) {
+      values = new LinkedList<E>();
+      values.add(value);
+      this.key = key;
       weight = key;
-   }
-
-   /**
-    * Updates the size, height and weight of this node.
-    * O(1).
-    */
-   protected void setSize() {
-      size   = getLeftSize() + 1 + getRightSize();
-      height = Math.max(getLeftHeight() + 1, getRightHeight() + 1);
-      weight = getLeftWeight() + a + getRightWeight();
-   }
-
-   /**
-    * Sets the given node as the left child, updates the size and height, and returns the replaced node.
-    * O(1).
-    */
-   protected WeightedTreeNode<E> setLeft(WeightedTreeNode that) {
-      WeightedTreeNode<E> old = left;
-      left = that;
-      left.parent = this;
-      setSize();
-      return old;
-   }
-
-   /**
-    * Sets the given node as the right child, updates the size and height, and returns the replaced node.
-    * O(1).
-    */
-   protected WeightedTreeNode<E> setRight(WeightedTreeNode that) {
-      WeightedTreeNode<E> old = right;
-      right = that;
-      right.parent = this;
-      setSize();
-      return old;
-   }
-
-   protected void replace(WeightedTreeNode old, WeightedTreeNode that) {
-      if(old == left) {
-         left = that;
-         if(that != null)
-            that.parent = this;
-      }
-      else if(old == right) {
-         right = that;
-         if(that != null)
-            that.parent = this;
-      }
-      setSize();
    }
 
    public int getHeight() {
@@ -102,9 +59,84 @@ public class WeightedTreeNode<E> extends Pair<Double, E> {
       return (right == null ? 0 : right.weight);
    }
 
+   /**
+    * Updates the size, height and weight of this node.
+    * O(1).
+    */
+   protected void updateSize() {
+      size   = getLeftSize() + values.size() + getRightSize();
+      height = Math.max(getLeftHeight() + 1, getRightHeight() + 1);
+      weight = getLeftWeight() + key * values.size() + getRightWeight();
+   }
+
+   public E getWeighted(double normIndex) {
+      double leftRatio  = getLeftWeight() / weight,
+             rightRatio = (weight - getRightWeight()) / weight;
+      if(normIndex < leftRatio)
+         return left.getWeighted(normIndex / leftRatio);
+      else if(normIndex > rightRatio)
+         return right.getWeighted(normIndex / rightRatio);
+      else
+         return values.get((int)((normIndex - leftRatio) * values.size()));
+   }
+
+   /**
+    * Adds the given (key, value) to this subtree and returns the node it ends up in.
+    * O(height).
+    */
+   public WeightedTreeNode<E> add(double key, E value) {
+      WeightedTreeNode<E> node = null;
+      if(key < this.key) {
+         if(left == null) {
+            node = new WeightedTreeNode<E>(key, value);
+            left = node;
+            left.parent = this;
+         }
+         else
+            node = left.add(key, value);
+      }
+      else if(key > this.key) {
+         if(right == null) {
+            node  = new WeightedTreeNode<E>(key, value);
+            right = node;
+            right.parent = this;
+         }
+         else
+            node = right.add(key, value);
+      }
+      else { // key == this.key
+         values.add(value);
+         node = this;
+      }
+      updateSize();
+      return node;
+   }
+
+   protected void replace(WeightedTreeNode old, WeightedTreeNode that) {
+      if(old == left) {
+         left = that;
+         if(that != null)
+            that.parent = this;
+      }
+      else if(old == right) {
+         right = that;
+         if(that != null)
+            that.parent = this;
+      }
+      updateSize();
+   }
+
+   public Pair<Double, E> peek() {
+      return new Pair(key, values.get(values.size() - 1));
+   }
+
+   public Pair<Double, E> pop() {
+      return new Pair(key, values.remove(values.size() - 1));
+   }
+
    @Override
    public String toString() {
-      return "TreeNode(" + a + "," + b + ")["+ size + "|" + height +"]{" + left + "," + right + "}";
+      return "TreeNode(" + key + "," + values + ")["+ size + "|" + height +"]{" + left + "," + right + "}";
    }
 
    public void print(String prefix) {
@@ -112,7 +144,7 @@ public class WeightedTreeNode<E> extends Pair<Double, E> {
          left.print(prefix + "\t");
       else
          System.out.println(prefix + "\tnull");
-      System.out.println(prefix + a + ": " + b);
+      System.out.println(prefix + key + ": " + values);
       if(right != null)
          right.print(prefix + "\t");
       else

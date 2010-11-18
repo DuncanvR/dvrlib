@@ -22,30 +22,11 @@ public class WeightedTree<E> {
    public boolean add(Double key, E value) {
       if(key == null)
          throw new NullPointerException("No null keys permitted in this Collection");
-
-      WeightedTreeNode<E> node = new WeightedTreeNode(key, value);
       if(root == null)
-         root = node;
-      else {
-         add(root, node);
-         rebalanceUp(node);
-      }
+         root = new WeightedTreeNode<E>(key, value);
+      else
+         rebalanceUp(root.add(key, value));
       return true;
-   }
-
-   protected void add(WeightedTreeNode<E> parent, WeightedTreeNode<E> node) {
-      if(node.a > parent.a) {
-         if(parent.right == null)
-            parent.setRight(node);
-         else
-            add(parent.right, node);
-      }
-      else {
-         if(parent.left == null)
-            parent.setLeft(node);
-         else
-            add(parent.left, node);
-      }
    }
 
    /*protected WeightedTreeNode<E> find(E e) {
@@ -65,26 +46,14 @@ public class WeightedTree<E> {
     * Returns the element from the tree, reached with the given normalized index.
     * In a tree with these four items: {(1, A), (2, B), (1.3, C), (1.7, D)}, the sum of the indices is 6.
     * A call to getWeighted(0.5) will then return the item with the summed index (0.5 * 6 = 3).
-    * Moving through the tree from the smallest index, (A: 1 < 3), (C: 1.3 < (3 - 1)), (D: 1.7 >= (3 - 1 - 1.3).
-    * This means the item with the largest index has the most chance to get selected.
-    * @param normIndex A number between 0 and 1.
-    * @return
+    * Moving through the tree from the smallest index, (A: 1 &lt; 3), (C: 1.3 &lt; (3 - 1)), (D: 1.7 &gt;= (3 - 1 - 1.3)).
+    * This means the item with the largest index has the most chance of getting selected.
+    * @param normIndex A double between 0 and 1.
     */
    protected E getWeighted(double normIndex) {
       if(normIndex < 0 || normIndex > 1)
          throw new IllegalArgumentException("The argument of WeightedTree.getWeighted(double) should be between 0 and 1");
-
-      WeightedTreeNode<E> node = root;
-      while(node != null) {
-         double weight = node.getWeight();
-         if(node.getLeftWeight() / weight > normIndex)
-            node = node.left;
-         else if((weight - node.getRightWeight()) / weight < normIndex)
-            node = node.right;
-         else
-            return node.b;
-      }
-      return node.b;
+      return (root == null ? null : root.getWeighted(normIndex));
    }
 
    protected WeightedTreeNode<E> getMin() {
@@ -110,33 +79,36 @@ public class WeightedTree<E> {
    }
 
    public Pair<Double, E> peekMin() {
-      return getMin();
+      return getMin().peek();
    }
 
    public Pair<Double, E> peekMax() {
-      return getMax();
+      return getMax().peek();
+   }
+
+   public Pair<Double, E> pop(WeightedTreeNode<E> node) {
+      Pair<Double, E> item = node.pop();
+      if(node.values.isEmpty())
+         removeExternal(node);
+      return item;
    }
 
    public Pair<Double, E> popMin() {
-      return removeExternal(getMin());
+      return pop(getMin());
    }
 
    public Pair<Double, E> popMax() {
-      return removeExternal(getMax());
+      return pop(getMax());
    }
 
-   protected WeightedTreeNode<E> removeExternal(WeightedTreeNode<E> node) {
-      if(node == null)
-         return null;
+   protected void removeExternal(WeightedTreeNode<E> node) {
       if(node == root)
          root = (node.left != null ? node.left : node.right);
-      else {
+      else if(node != null) {
          node.parent.replace(node, (node.left != null ? node.left : node.right));
          rebalanceUp(node.parent);
+         node.parent = null;
       }
-      node.parent = null;
-
-      return node;
    }
 
    /**
@@ -172,7 +144,7 @@ public class WeightedTree<E> {
                node = singleRotation(node, node.right, node.right.right, true);
          }
          else
-            node.setSize();
+            node.updateSize();
       }
       return node;
    }
@@ -209,8 +181,8 @@ public class WeightedTree<E> {
       }
 
       // Maintain metadata
-      z.setSize();
-      y.setSize();
+      z.updateSize();
+      y.updateSize();
 
       return y;
    }
@@ -255,15 +227,15 @@ public class WeightedTree<E> {
       }
 
       // Maintain metadata
-      z.setSize();
-      y.setSize();
-      x.setSize();
+      z.updateSize();
+      y.updateSize();
+      x.updateSize();
 
       return x;
    }
 
    public void print() {
-      System.out.println("dvrlib.generic.tree.AVLTree(" + size() + ")");
+      System.out.println("dvrlib.localsearch.WeightedTree(" + size() + ")");
       if(root != null)
          root.print("");
    }
