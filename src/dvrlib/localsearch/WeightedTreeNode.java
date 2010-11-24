@@ -69,15 +69,18 @@ public class WeightedTreeNode<E> {
       weight = getLeftWeight() + key * values.size() + getRightWeight();
    }
 
-   public E getWeighted(double normIndex) {
+   /**
+    * @see WeightedTree#getWeighted(double)
+    */
+   public Pair<Double, E> getWeighted(double normIndex) {
       double leftRatio  = getLeftWeight() / weight,
              rightRatio = (weight - getRightWeight()) / weight;
       if(normIndex < leftRatio)
-         return left.getWeighted(normIndex / leftRatio);
+         return new Pair(key, left.getWeighted(normIndex / leftRatio));
       else if(normIndex > rightRatio)
-         return right.getWeighted(normIndex / rightRatio);
+         return new Pair(key, right.getWeighted(normIndex / rightRatio));
       else
-         return values.get((int)((normIndex - leftRatio) * values.size()));
+         return new Pair(key, values.get((int)((normIndex - leftRatio) * values.size())));
    }
 
    /**
@@ -112,7 +115,20 @@ public class WeightedTreeNode<E> {
       return node;
    }
 
-   protected void replace(WeightedTreeNode old, WeightedTreeNode that) {
+   /**
+    * Adds the given (key, value) to this subtree and returns the node it ends up in.
+    * @see WeightedTreeNode#add(double, java.lang.Object)
+    */
+   public WeightedTreeNode<E> add(Pair<Double, E> kv) {
+      return add(kv.a, kv.b);
+   }
+
+   /**
+    * Replaces the old subtree by the new one.
+    * @param old The subtree that will be replaced, either <tt>old == left</tt> or <tt>old == right</tt> should hold.
+    * O(1).
+    */
+   protected void replace(WeightedTreeNode<E> old, WeightedTreeNode<E> that) {
       if(old == left) {
          left = that;
          if(that != null)
@@ -123,13 +139,23 @@ public class WeightedTreeNode<E> {
          if(that != null)
             that.parent = this;
       }
+      else
+         throw new IllegalArgumentException("WeightedTreeNode.replace(WeightedTreeNode, WeightedTreeNode) expects the first argument to be equal to either the left or the right subtree");
       updateSize();
    }
 
+   /**
+    * Returns the element that was added last along with the key.
+    * O(1).
+    */
    public Pair<Double, E> peek() {
       return new Pair(key, values.get(values.size() - 1));
    }
 
+   /**
+    * Removes the element that was added last and returns it along with the key.
+    * O(1).
+    */
    public Pair<Double, E> pop() {
       return new Pair(key, values.remove(values.size() - 1));
    }
@@ -139,6 +165,10 @@ public class WeightedTreeNode<E> {
       return "TreeNode(" + key + "," + values + ")["+ size + "|" + height +"]{" + left + "," + right + "}";
    }
 
+   /**
+    * Prints this node and its children to stdout.
+    * O(height).
+    */
    public void print(String prefix) {
       if(left != null)
          left.print(prefix + "\t");

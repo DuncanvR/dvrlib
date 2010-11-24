@@ -25,6 +25,11 @@ public class WeightedTreeTest {
 
          testBalance(instance.root);
       }
+
+      element = instance.peekMin();
+      assertEquals(1, element.a.intValue());
+      assertEquals(9, element.b.intValue());
+
       for(int i = 8; i > 0; i--) {
          assertEquals(i, instance.size());
          assertFalse(instance.isEmpty());
@@ -39,11 +44,14 @@ public class WeightedTreeTest {
 
          testBalance(instance.root);
       }
+
       assertTrue(instance.isEmpty());
+
       for(int i = 8; i > 0; i--) {
          instance.add((double) i, 10 + i);
          testBalance(instance.root);
       }
+
       for(int i = 1; i < 9; i++) {
          element = instance.peekMin();
          assertEquals(i, element.a.intValue());
