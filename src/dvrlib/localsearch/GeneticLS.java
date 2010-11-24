@@ -6,9 +6,7 @@
 
 package dvrlib.localsearch;
 
-import dvrlib.generic.HalfComparablePair;
-import java.util.ArrayList;
-import java.util.Collections;
+import dvrlib.generic.Pair;
 import java.util.Random;
 
 public class GeneticLS extends LocalSearch {
@@ -33,53 +31,42 @@ public class GeneticLS extends LocalSearch {
     */
    @Override
    public Solution search(Problem problem, Solution solution) {
-      return search(problem, solution, populationSize).get(0).b;
+      return search(problem, solution, populationSize).peekMin().b;
    }
 
    /**
     * Returns the population after searching for a solution for the given problem.
     * This algorithm keeps replacing the worst solution in the population by the new combined solution if it is better, until a predefined number of iterations give no improvement.
     */
-   public ArrayList<HalfComparablePair<Double, Solution>> search(Problem problem, Solution solution, int size) {
-      ArrayList<HalfComparablePair<Double, Solution>> population = new ArrayList<HalfComparablePair<Double, Solution>>();
-      population.ensureCapacity(populationSize);
-      population.add(new HalfComparablePair(problem.evaluate(solution), solution));
+   public WeightedTree<Solution> search(Problem problem, Solution solution, int size) {
+      WeightedTree<Solution> population = new WeightedTree<Solution>();
+      population.add(problem.evaluate(solution), solution);
 
       // Initialize population with random solutions
       for(int i = 1; i < populationSize; i++) {
          Solution s = problem.randomSolution();
          s.ensureMostCommon(solution);
-         double eval = problem.evaluate(s);
-         population.add(new HalfComparablePair(eval, s));
+         population.add(problem.evaluate(s), s);
       }
-      Collections.sort(population);
 
       Random r = new Random();
       int iterations = 0;
       for(int sc = 0; sc < stopCount; iterations++, sc++) {
-         // Pick two solutions from the population
-         int i = r.nextInt(populationSize), j;
-         do {
-            j = r.nextInt(populationSize);
-         }
-         while(i == j);
-
-         // Generate new solution
-         Solution newSolution = combiner.combine(population.get(i).b, population.get(j).b);
+         // Generate new solution from two solutions in the population
+         Solution newSolution = combiner.combine(population.getWeighted(r.nextDouble()).b, population.getWeighted(r.nextDouble()).b);
          combiner.mutate(newSolution);
          double newEval = problem.evaluate(newSolution);
 
          // Compare new solution with the worst
-         HalfComparablePair<Double, Solution> worst = population.get(populationSize - 1);
-         double worstEval = worst.a;
-         if(newEval < worstEval) {
-            population.set(populationSize - 1, new HalfComparablePair(newEval, newSolution));
-            Collections.sort(population);
+         WeightedTreeNode<Solution> worst = population.getMax();
+         if(newEval < worst.key) {
+            population.remove(worst);
+            population.add(newEval, newSolution);
             sc = 0;
          }
       }
 
-      for(HalfComparablePair<Double, Solution> p : population) {
+      for(Pair<Double, Solution> p : population) {
          p.b.increaseIterationCount(iterations);
       }
       
