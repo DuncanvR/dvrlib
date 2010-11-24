@@ -160,6 +160,22 @@ public class WeightedTreeNode<E> {
       return new Pair(key, values.remove(values.size() - 1));
    }
 
+   /**
+    * Returns the node with the smallest key in the subtree of this node.
+    * O(height).
+    */
+   protected WeightedTreeNode<E> getMin() {
+      return (left == null ? this : left.getMin());
+   }
+
+   /**
+    * Returns the node with the largest key in the subtree of this node.
+    * O(height).
+    */
+   protected WeightedTreeNode<E> getMax() {
+      return (right == null ? this : right.getMax());
+   }
+
    @Override
    public String toString() {
       return "TreeNode(" + key + "," + values + ")["+ size + "|" + height +"]{" + left + "," + right + "}";

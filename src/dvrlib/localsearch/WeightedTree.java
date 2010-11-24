@@ -76,19 +76,7 @@ public class WeightedTree<E> {
     * O(height).
     */
    protected WeightedTreeNode<E> getMin() {
-      return (root == null ? null : getMin(root));
-   }
-
-   /**
-    * Returns the node with the smallest key in the subtree of the given node.
-    * @param node
-    * @return
-    */
-   protected WeightedTreeNode<E> getMin(WeightedTreeNode<E> node) {
-      while(node.left != null) {
-         node = node.left;
-      }
-      return node;
+      return (root == null ? null : root.getMin());
    }
 
    /**
@@ -96,18 +84,7 @@ public class WeightedTree<E> {
     * O(height).
     */
    protected WeightedTreeNode<E> getMax() {
-      return (root == null ? null : getMax(root));
-   }
-
-   /**
-    * Returns the node with the largest key in the subtree of the given node.
-    * O(node.height).
-    */
-   protected WeightedTreeNode<E> getMax(WeightedTreeNode<E> node) {
-      while(node.right != null) {
-         node = node.right;
-      }
-      return node;
+      return (root == null ? null : root.getMax());
    }
 
    /**
