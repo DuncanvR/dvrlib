@@ -1,5 +1,5 @@
 /*
- * DvRLib - Generic
+ * DvRLib - Local search
  * Duncan van Roermund, 2010
  * WeightedTreeNode.java
  */
@@ -7,7 +7,7 @@
 package dvrlib.localsearch;
 
 import dvrlib.generic.Pair;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 public class WeightedTreeNode<E> {
@@ -17,7 +17,7 @@ public class WeightedTreeNode<E> {
    protected int size = 1, height = 0;
 
    public WeightedTreeNode(double key, E value) {
-      values = new LinkedList<E>();
+      values = new ArrayList<E>();
       values.add(value);
       this.key = key;
       weight = key;
