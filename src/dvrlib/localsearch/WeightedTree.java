@@ -93,7 +93,8 @@ public class WeightedTree<E> {
     * @see WeightedTreeNode#peek()
     */
    public Pair<Double, E> peekMin() {
-      return getMin().peek();
+      WeightedTreeNode node = getMin();
+      return new Pair(node.key, node.peek());
    }
 
    /**
@@ -102,7 +103,8 @@ public class WeightedTree<E> {
     * @see WeightedTreeNode#peek()
     */
    public Pair<Double, E> peekMax() {
-      return getMax().peek();
+      WeightedTreeNode node = getMax();
+      return new Pair(node.key, node.peek());
    }
 
    /**
@@ -112,7 +114,7 @@ public class WeightedTree<E> {
     * O(node.depth) if the given node contains only one element, O(1) otherwise.
     */
    protected Pair<Double, E> pop(WeightedTreeNode<E> node) {
-      Pair<Double, E> item = node.pop();
+      Pair<Double, E> item = new Pair(node.key, node.pop());
       if(node.values.isEmpty())
          remove(node);
       return item;

@@ -145,19 +145,19 @@ public class WeightedTreeNode<E> {
    }
 
    /**
-    * Returns the element that was added last along with the key.
+    * Returns the element that was added last.
     * O(1).
     */
-   public Pair<Double, E> peek() {
-      return new Pair(key, values.get(values.size() - 1));
+   public E peek() {
+      return values.get(values.size() - 1);
    }
 
    /**
-    * Removes the element that was added last and returns it along with the key.
+    * Removes the element that was added last.
     * O(1).
     */
-   public Pair<Double, E> pop() {
-      return new Pair(key, values.remove(values.size() - 1));
+   public E pop() {
+      return values.remove(values.size() - 1);
    }
 
    /**
