@@ -7,6 +7,7 @@
 package dvrlib.localsearch;
 
 import dvrlib.generic.Pair;
+import java.util.Iterator;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -66,7 +67,7 @@ public class WeightedTreeTest {
    }
 
    @Test
-   public void testAddRemove() {
+   public void testAdd() {
       WeightedTree<Integer> instance = new WeightedTree();
       assertNull(instance.root);
 
@@ -93,5 +94,29 @@ public class WeightedTreeTest {
             testBalance(node.right);
          }
       }
+   }
+
+   @Test
+   public void testIterator() {
+      WeightedTree<Integer> instance = new WeightedTree();
+      assertFalse(instance.iterator().hasNext());
+
+      for(int i = 0; i < 9; i++) {
+         for(int j = 0; j < 9; j++) {
+            instance.add((double) i, i + j);
+         }
+      }
+
+      Iterator<Pair<Double, Integer>> it = instance.iterator();
+      for(int i = 0; i < 9; i++) {
+         for(int j = 0; j < 9; j++) {
+            assertTrue(it.hasNext());
+            Pair<Double, Integer> e = it.next();
+            assertEquals(i, e.a.intValue());
+            assertEquals(i + j, e.b.intValue());
+         }
+      }
+
+      assertFalse(it.hasNext());
    }
 }

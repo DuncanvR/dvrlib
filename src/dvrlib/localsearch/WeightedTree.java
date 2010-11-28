@@ -1,5 +1,5 @@
 /*
- * DvRLib - Generic
+ * DvRLib - Local search
  * Duncan van Roermund, 2010
  * WeightedTree.java
  */
@@ -7,8 +7,9 @@
 package dvrlib.localsearch;
 
 import dvrlib.generic.Pair;
+import java.util.Iterator;
 
-public class WeightedTree<E> {
+public class WeightedTree<E> implements Iterable<Pair<Double, E>> {
    protected WeightedTreeNode<E> root = null;
 
    /**
@@ -312,6 +313,11 @@ public class WeightedTree<E> {
       x.updateSize();
 
       return x;
+   }
+
+   @Override
+   public Iterator<Pair<Double, E>> iterator() {
+      return new WeightedTreeIterator<E>(this);
    }
 
    /**
