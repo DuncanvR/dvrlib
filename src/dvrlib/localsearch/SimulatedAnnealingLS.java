@@ -53,8 +53,8 @@ public class SimulatedAnnealingLS extends LocalSearch {
     */
    @Override
    public Solution search(Problem problem, Solution solution) {
-      double temperature = initTemp, curEval = problem.evaluate(solution);
-      LinkedList<Object> changeList = new LinkedList<Object>();
+      double temperature = initTemp, curEval = problem.evaluate(solution), bestEval = curEval;
+      LinkedList<Object> changeList = new LinkedList();
 
       int iterations = 1; // Starts at 1, otherwise the temperature would be decreased at the first iteration
       // Main loop: j holds the number of iterations since the last improvement
@@ -69,10 +69,14 @@ public class SimulatedAnnealingLS extends LocalSearch {
 
          if(deltaE <= 0 || Math.random() < Math.exp(-deltaE / temperature)) {
             curEval = newEval;
-            // If new solution is better, reset stop-counter and clear list of changes
+            // If new solution is better, reset stop-counter
             if(deltaE < 0) {
                sc = 0;
-               changeList.clear();
+               // If new solution is better that the best solution found, clear list of changes
+               if(newEval < bestEval) {
+                  bestEval = newEval;
+                  changeList.clear();
+               }
             }
          }
          else {
@@ -85,10 +89,11 @@ public class SimulatedAnnealingLS extends LocalSearch {
             temperature *= tempMod;
       }
 
-      // Undo the changes since the last improvement
+      // Undo the changes since the last improvement, reverting to the best solution found
       while(!changeList.isEmpty())
          changer.undoChange(solution, changeList.pollLast());
 
+      problem.saveSolution(solution);
       return solution;
    }
 }

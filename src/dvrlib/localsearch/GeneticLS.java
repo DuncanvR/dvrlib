@@ -31,7 +31,9 @@ public class GeneticLS extends LocalSearch {
     */
    @Override
    public Solution search(Problem problem, Solution solution) {
-      return search(problem, solution, populationSize).peekMin().b;
+      Solution s = search(problem, solution, populationSize).peekMin().b;
+      problem.saveSolution(s);
+      return s;
    }
 
    /**

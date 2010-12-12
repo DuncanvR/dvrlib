@@ -41,6 +41,7 @@ public class HillClimbingLS extends LocalSearch {
       // Undo last change
       changer.undoChange(solution, change);
 
+      problem.saveSolution(solution);
       return solution;
    }
 }
