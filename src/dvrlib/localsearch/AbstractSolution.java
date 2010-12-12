@@ -6,7 +6,7 @@
 
 package dvrlib.localsearch;
 
-public class AbstractSolution implements Solution {
+public abstract class AbstractSolution implements Solution {
    protected int iterationCount = 0;
 
    /**
@@ -25,13 +25,5 @@ public class AbstractSolution implements Solution {
    @Override
    public void increaseIterationCount(int i) {
       iterationCount += i;
-   }
-
-   /**
-    * Makes this solution most like the given one.
-    */
-   @Override
-   public void ensureMostCommon(Solution s) {
-      // Do nothing
    }
 }

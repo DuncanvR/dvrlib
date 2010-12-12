@@ -19,7 +19,7 @@ public interface Solution {
 
    /**
     * Makes this solution most like the given one.
-    * Optional operation used by GeneticLS for ambigue solutions.
+    * Optional operation used by GeneticLS for ambiguous solutions.
     */
    public void ensureMostCommon(Solution s);
 }
