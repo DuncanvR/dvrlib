@@ -28,7 +28,7 @@ public class HillClimbingLS extends LocalSearch {
       Object change = null;
 
       // Keep mutating as long as it improves the solution
-      double e1, e2 = problem.evaluate(solution);
+      Evaluation e1, e2 = problem.evaluate(solution);
       do {
          e1 = e2;
          change = changer.generateChange(solution);
@@ -36,7 +36,7 @@ public class HillClimbingLS extends LocalSearch {
          solution.increaseIterationCount(1);
          e2 = problem.evaluate(solution);
       }
-      while(e2 < e1);
+      while(e2.better(e1));
 
       // Undo last change
       changer.undoChange(solution, change);

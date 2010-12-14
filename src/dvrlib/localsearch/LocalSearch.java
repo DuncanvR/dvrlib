@@ -6,7 +6,7 @@
 
 package dvrlib.localsearch;
 
-public abstract class LocalSearch<P extends Problem<S>, S extends Solution> {
+public abstract class LocalSearch<P extends Problem<S, ?>, S extends Solution> {
    /**
     * Search for a solution for the given problem, starting from a random solution.
     * @see LocalSearch#search(dvrlib.localsearch.Problem, dvrlib.localsearch.Solution)
