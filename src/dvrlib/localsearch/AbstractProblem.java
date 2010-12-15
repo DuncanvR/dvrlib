@@ -12,7 +12,7 @@ public abstract class AbstractProblem<S extends Solution, E extends Evaluation> 
     */
    @Override
    public boolean better(S s1, S s2) {
-      return evaluate(s1).better(evaluate(s2));
+      return (s1 == null ? false : (s2 == null ? true : evaluate(s1).better(evaluate(s2))));
    }
 
    /**
@@ -20,6 +20,6 @@ public abstract class AbstractProblem<S extends Solution, E extends Evaluation> 
     */
    @Override
    public boolean betterEq(S s1, S s2) {
-      return evaluate(s1).betterEq(evaluate(s2));
+      return (s1 == null ? false : (s2 == null ? true : evaluate(s1).betterEq(evaluate(s2))));
    }
 }
