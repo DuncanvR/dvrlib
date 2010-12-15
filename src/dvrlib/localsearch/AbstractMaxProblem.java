@@ -1,23 +1,23 @@
 /*
  * DvRLib - Local search
  * Duncan van Roermund, 2010
- * AbstractProblem.java
+ * AbstractMaxProblem.java
  */
 
 package dvrlib.localsearch;
 
-public abstract class AbstractProblem<S extends Solution, E extends Comparable<E>> implements Problem<S, E> {
+public abstract class AbstractMaxProblem<S extends Solution, E extends Comparable<E>> implements Problem<S, E> {
    /**
     * Returns an evaluation with the value 0.
     */
    protected abstract E zeroEval();
 
    /**
-    * Returns true if the first of the given evaluations is better than the second, i.e. <tt>diffEval(e1, e2) &lt; 0</tt>.
+    * Returns true if the first of the given evaluations is better than the second, i.e. <tt>diffEval(e1, e2) &gt; 0</tt>.
     */
    @Override
    public boolean better(E e1, E e2) {
-      return (diffEval(e1, e2).compareTo(zeroEval()) < 0);
+      return (diffEval(e1, e2).compareTo(zeroEval()) > 0);
    }
 
    /**
@@ -29,11 +29,11 @@ public abstract class AbstractProblem<S extends Solution, E extends Comparable<E
    }
 
    /**
-    * Returns true if the first of the given evaluations is better than or equal to the second, i.e. <tt>diffEval(e1, e2) &lt;= 0</tt>.
+    * Returns true if the first of the given evaluations is better than or equal to the second, i.e. <tt>diffEval(e1, e2) &gt;= 0</tt>.
     */
    @Override
    public boolean betterEq(E e1, E e2) {
-      return (diffEval(e1, e2).compareTo(zeroEval()) <= 0);
+      return (diffEval(e1, e2).compareTo(zeroEval()) >= 0);
    }
 
    /**
