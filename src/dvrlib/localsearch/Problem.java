@@ -6,7 +6,7 @@
 
 package dvrlib.localsearch;
 
-public interface Problem<S extends Solution, E extends Evaluation> {
+public interface Problem<S extends Solution, E extends Comparable<E>> {
    /**
     * Generates a random solution to this problem.
     */
@@ -18,12 +18,27 @@ public interface Problem<S extends Solution, E extends Evaluation> {
    public E evaluate(S s);
 
    /**
-    * Returns true if the first of the given solutions is better than the second, i.e. <tt>evaluate(s1).better(evaluate(s2))</tt>.
+    * Returns the difference between the two given evaluations, i.e. <tt>e1 - e2</tt>, where a negative value means an improvement.
+    */
+   public E diffEval(E e1, E e2);
+
+   /**
+    * Returns true if the first of the given evaluations is better than the second, i.e. <tt>diffEval(e1, e2) &lt; 0</tt>.
+    */
+   public boolean better(E e1, E e2);
+
+   /**
+    * Returns true if the first of the given solutions is better than the second, i.e. <tt>better(evaluate(s1), evaluate(s2))</tt>.
     */
    public boolean better(S s1, S s2);
 
    /**
-    * Returns true if the first of the given solutions is better than the second, i.e. <tt>evaluate(s1).betterEq(evaluate(s2))</tt>.
+    * Returns true if the first of the given evaluations is better than or equal to the second, i.e. <tt>diffEval(e1, e2) &lt;= 0</tt>.
+    */
+   public boolean betterEq(E e1, E e2);
+
+   /**
+    * Returns true if the first of the given solutions is better than or equal to the second, i.e. <tt>betterEq(evaluate(s1), evaluate(s2))</tt>.
     */
    public boolean betterEq(S s1, S s2);
 

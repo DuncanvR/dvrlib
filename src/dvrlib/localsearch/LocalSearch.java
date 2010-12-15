@@ -6,17 +6,17 @@
 
 package dvrlib.localsearch;
 
-public abstract class LocalSearch<P extends Problem<S, ?>, S extends Solution> {
+public abstract class LocalSearch<S extends Solution, E extends Comparable<E>> {
    /**
     * Search for a solution for the given problem, starting from a random solution.
     * @see LocalSearch#search(dvrlib.localsearch.Problem, dvrlib.localsearch.Solution)
     */
-   public S search(P problem) {
+   public S search(Problem<S, E> problem) {
       return search(problem, problem.randomSolution());
    }
 
    /**
     * Search for a solution for the given problem, starting from the given solution.
     */
-   public abstract S search(P problem, S solution);
+   public abstract S search(Problem<S, E> problem, S solution);
 }

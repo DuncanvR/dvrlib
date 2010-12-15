@@ -8,13 +8,13 @@ package dvrlib.localsearch;
 
 import java.util.LinkedList;
 
-public class SimulatedAnnealingLS extends LocalSearch {
+public class SimulatedAnnealingLS<S extends Solution, E extends Number & Comparable<E>> extends LocalSearch<S, E> {
    /** The default initial temperature is 2.4663035, so dE = 1 results in a 2/3 chance of acceptance. */
    public final static double defTemp = 2.4663035;
    /** The default temperature modifier is 0.98, leading to a 2% decrease in temperature every coolCount iterations. */
    public final static double defTempMod = 0.98;
 
-   protected final Changer changer;
+   protected final Changer<S, Object> changer;
    protected final int stopCount, coolCount;
    protected final double initTemp, tempMod;
 
@@ -25,7 +25,7 @@ public class SimulatedAnnealingLS extends LocalSearch {
     * @see SimulatedAnnealingLS#SimulatedAnnealingLS(dvrlib.localsearch.Changer, int, int, double, double)
     * O(1).
     */
-   public SimulatedAnnealingLS(Changer changer, int stopCount, int coolCount) {
+   public SimulatedAnnealingLS(Changer<S, Object> changer, int stopCount, int coolCount) {
       this(changer, stopCount, coolCount, defTemp, defTempMod);
    }
 
@@ -37,7 +37,7 @@ public class SimulatedAnnealingLS extends LocalSearch {
     * @param tempMod    The modifier for the temperature. Every coolCount iterations the temperature is multiplied with this value.
     * O(1).
     */
-   public SimulatedAnnealingLS(Changer changer, int stopCount, int coolCount, double initTemp, double tempMod) {
+   public SimulatedAnnealingLS(Changer<S, Object> changer, int stopCount, int coolCount, double initTemp, double tempMod) {
       this.changer   = changer;
       this.stopCount = stopCount;
       this.coolCount = coolCount;
@@ -52,9 +52,9 @@ public class SimulatedAnnealingLS extends LocalSearch {
     * After a predefined number of iterations in which no improvements were found, the current solution is returned.
     */
    @Override
-   public Solution search(Problem problem, Solution solution) {
+   public S search(Problem<S, E> problem, S solution) {
       double temperature = initTemp;
-      Evaluation curEval = problem.evaluate(solution), bestEval = curEval;
+      E curEval = problem.evaluate(solution), bestEval = curEval;
       LinkedList<Object> changeList = new LinkedList();
 
       int iterations = 1; // Starts at 1, otherwise the temperature would be decreased at the first iteration
@@ -65,8 +65,8 @@ public class SimulatedAnnealingLS extends LocalSearch {
          changer.doChange(solution, changeList.peekLast());
 
          // Calculate the difference in evaluation
-         Evaluation newEval = problem.evaluate(solution);
-         double deltaE = newEval.diff(curEval);
+         E newEval = problem.evaluate(solution);
+         double deltaE = problem.diffEval(newEval, curEval).doubleValue();
 
          if(deltaE <= 0 || Math.random() < Math.exp(-deltaE / temperature)) {
             curEval = newEval;
@@ -74,7 +74,7 @@ public class SimulatedAnnealingLS extends LocalSearch {
             if(deltaE < 0) {
                sc = 0;
                // If new solution is better that the best solution found, clear list of changes
-               if(newEval.betterEq(bestEval)) {
+               if(problem.betterEq(newEval, bestEval)) {
                   bestEval = newEval;
                   changeList.clear();
                }

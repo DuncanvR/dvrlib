@@ -6,15 +6,15 @@
 
 package dvrlib.localsearch;
 
-public class HillClimbingLS extends LocalSearch {
-   protected final Changer changer;
+public class HillClimbingLS<S extends Solution, E extends Comparable<E>> extends LocalSearch<S, E> {
+   protected final Changer<S, Object> changer;
 
    /**
     * HillClimbingLS constructor.
     * @param changer The changer used when searching for a solution.
     * O(1).
     */
-   public HillClimbingLS(Changer changer) {
+   public HillClimbingLS(Changer<S, Object> changer) {
       this.changer = changer;
    }
 
@@ -24,11 +24,11 @@ public class HillClimbingLS extends LocalSearch {
     * @return The solution that was reached.
     */
    @Override
-   public Solution search(Problem problem, Solution solution) {
+   public S search(Problem<S, E> problem, S solution) {
       Object change = null;
 
       // Keep mutating as long as it improves the solution
-      Evaluation e1, e2 = problem.evaluate(solution);
+      E e1, e2 = problem.evaluate(solution);
       do {
          e1 = e2;
          change = changer.generateChange(solution);
@@ -36,7 +36,7 @@ public class HillClimbingLS extends LocalSearch {
          solution.increaseIterationCount(1);
          e2 = problem.evaluate(solution);
       }
-      while(e2.better(e1));
+      while(problem.better(e2, e1));
 
       // Undo last change
       changer.undoChange(solution, change);
