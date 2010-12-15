@@ -6,8 +6,8 @@
 
 package dvrlib.localsearch;
 
-public class MultiStartLS extends LocalSearch {
-   protected final LocalSearch ls;
+public class MultiStartLS<P extends Problem<S, ?>, S extends Solution> extends LocalSearch<P, S> {
+   protected final LocalSearch<P, S> ls;
    protected final int count;
 
    /**
@@ -15,18 +15,33 @@ public class MultiStartLS extends LocalSearch {
     * @param ls    The search algorithm that will be used repeatedly to search for a solution.
     * @param count The number of times to search for a solution.
     */
-   public MultiStartLS(LocalSearch ls, int count) {
+   public MultiStartLS(LocalSearch<P, S> ls, int count) {
       this.ls    = ls;
       this.count = count;
    }
 
    /**
-    * Searches for a solution for the given problem by repeatedly applying the predefined search algorithm.
+    * Searches for a solution for the given problem by repeatedly applying the predefined search algorithm to a random solution.
     */
    @Override
-   public Solution search(Problem problem, Solution bestSolution) {
+   public S search(P problem) {
+      S bestSolution = null;
       for(int i = 0; i < count; i++) {
-         Solution newSolution = ls.search(problem);
+         S newSolution = ls.search(problem);
+         if(problem.better(newSolution, bestSolution))
+            bestSolution = newSolution;
+      }
+      return bestSolution;
+   }
+
+   /**
+    * Searches for a solution for the given problem by repeatedly applying the predefined search algorithm to the given solution.
+    */
+   @Override
+   public S search(P problem, S startSolution) {
+      S bestSolution = startSolution;
+      for(int i = 0; i < count; i++) {
+         S newSolution = ls.search(problem, startSolution);
          if(problem.better(newSolution, bestSolution))
             bestSolution = newSolution;
       }
