@@ -52,4 +52,10 @@ public interface Problem<S extends Solution, E extends Comparable<E>> {
     * Returns the best solution currently known.
     */
    public S getBestSolution();
+
+   /**
+    * Returns the weight of the given evaluation.
+    * Optional operation used by GeneticLS to insert solutions into a weightedtree.
+    */
+   public double getWeight(S s);
 }

@@ -42,13 +42,13 @@ public class GeneticLS<S extends Solution, E extends Number & Comparable<E>> ext
     */
    public WeightedTree<S> search(Problem<S, E> problem, S solution, int size) {
       WeightedTree<S> population = new WeightedTree<S>();
-      population.add(problem.evaluate(solution).doubleValue(), solution);
+      population.add(problem.getWeight(solution), solution);
 
       // Initialize population with random solutions
       for(int i = 1; i < populationSize; i++) {
          S s = problem.randomSolution();
          s.ensureMostCommon(solution);
-         population.add(problem.evaluate(s).doubleValue(), s);
+         population.add(problem.getWeight(s), s);
       }
 
       Random r = new Random();
@@ -62,7 +62,7 @@ public class GeneticLS<S extends Solution, E extends Number & Comparable<E>> ext
          WeightedTreeNode<S> worst = population.getMax();
          if(problem.better(newSolution, worst.peek())) {
             population.remove(worst);
-            population.add(problem.evaluate(newSolution).doubleValue(), newSolution);
+            population.add(problem.getWeight(newSolution), newSolution);
             sc = 0;
          }
       }

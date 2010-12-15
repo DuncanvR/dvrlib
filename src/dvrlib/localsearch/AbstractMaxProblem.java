@@ -6,7 +6,7 @@
 
 package dvrlib.localsearch;
 
-public abstract class AbstractMaxProblem<S extends Solution, E extends Comparable<E>> implements Problem<S, E> {
+public abstract class AbstractMaxProblem<S extends Solution, E extends Number & Comparable<E>> implements Problem<S, E> {
    /**
     * Returns an evaluation with the value 0.
     */
@@ -42,5 +42,10 @@ public abstract class AbstractMaxProblem<S extends Solution, E extends Comparabl
    @Override
    public boolean betterEq(S s1, S s2) {
       return (s1 == null ? false : (s2 == null ? true : betterEq(evaluate(s1), evaluate(s2))));
+   }
+
+   @Override
+   public double getWeight(S s) {
+      return evaluate(s).doubleValue();
    }
 }
