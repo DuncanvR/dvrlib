@@ -9,8 +9,8 @@ package dvrlib.localsearch;
 import dvrlib.generic.Pair;
 import java.util.Random;
 
-public class GeneticLS extends LocalSearch {
-   protected final Combiner combiner;
+public class GeneticLS<S extends Solution, E extends Number & Comparable<E>> extends LocalSearch<S, E> {
+   protected final Combiner<S> combiner;
    protected final int populationSize, stopCount;
 
    /**
@@ -19,7 +19,7 @@ public class GeneticLS extends LocalSearch {
     * @param populationSize The number of solutions kept in the population.
     * @param stopCount      The number of iterations in which no better solution was found after which the algorithm will stop.
     */
-   public GeneticLS(Combiner combiner, int populationSize, int stopCount) {
+   public GeneticLS(Combiner<S> combiner, int populationSize, int stopCount) {
       this.combiner = combiner;
       this.populationSize = Math.max(1, populationSize);
       this.stopCount = stopCount;
@@ -30,8 +30,8 @@ public class GeneticLS extends LocalSearch {
     * @see GeneticLS#search(dvrlib.localsearch.Problem, dvrlib.localsearch.Solution, int)
     */
    @Override
-   public Solution search(Problem problem, Solution solution) {
-      Solution s = search(problem, solution, populationSize).peekMin().b;
+   public S search(Problem<S, E> problem, S solution) {
+      S s = search(problem, solution, populationSize).peekMin().b;
       problem.saveSolution(s);
       return s;
    }
@@ -40,38 +40,37 @@ public class GeneticLS extends LocalSearch {
     * Returns the population after searching for a solution for the given problem.
     * This algorithm keeps replacing the worst solution in the population by the new combined solution if it is better, until a predefined number of iterations give no improvement.
     */
-   public WeightedTree<Solution> search(Problem problem, Solution solution, int size) {
-      WeightedTree<Solution> population = new WeightedTree<Solution>();
-      population.add(problem.evaluate(solution), solution);
+   public WeightedTree<S> search(Problem<S, E> problem, S solution, int size) {
+      WeightedTree<S> population = new WeightedTree<S>();
+      population.add(problem.evaluate(solution).doubleValue(), solution);
 
       // Initialize population with random solutions
       for(int i = 1; i < populationSize; i++) {
-         Solution s = problem.randomSolution();
+         S s = problem.randomSolution();
          s.ensureMostCommon(solution);
-         population.add(problem.evaluate(s), s);
+         population.add(problem.evaluate(s).doubleValue(), s);
       }
 
       Random r = new Random();
       int iterations = 0;
       for(int sc = 0; sc < stopCount; iterations++, sc++) {
          // Generate new solution from two solutions in the population
-         Solution newSolution = combiner.combine(population.getWeighted(r.nextDouble()).b, population.getWeighted(r.nextDouble()).b);
+         S newSolution = combiner.combine(population.getWeighted(r.nextDouble()).b, population.getWeighted(r.nextDouble()).b);
          combiner.mutate(newSolution);
-         double newEval = problem.evaluate(newSolution);
 
          // Compare new solution with the worst
-         WeightedTreeNode<Solution> worst = population.getMax();
-         if(newEval < worst.key) {
+         WeightedTreeNode<S> worst = population.getMax();
+         if(problem.better(newSolution, worst.peek())) {
             population.remove(worst);
-            population.add(newEval, newSolution);
+            population.add(problem.evaluate(newSolution).doubleValue(), newSolution);
             sc = 0;
          }
       }
 
-      for(Pair<Double, Solution> p : population) {
+      for(Pair<Double, S> p : population) {
          p.b.increaseIterationCount(iterations);
       }
-      
+
       return population;
    }
 }
