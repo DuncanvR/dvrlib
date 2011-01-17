@@ -73,14 +73,25 @@ public class WeightedTreeNode<E> {
     * @see WeightedTree#getWeighted(double)
     */
    public Pair<Double, E> getWeighted(double normIndex) {
-      double leftRatio  = getLeftWeight() / weight,
-             rightRatio = (weight - getRightWeight()) / weight;
-      if(normIndex < leftRatio)
-         return new Pair(key, left.getWeighted(normIndex / leftRatio));
-      else if(normIndex > rightRatio)
-         return new Pair(key, right.getWeighted(normIndex / rightRatio));
+      if(normIndex < 0 || normIndex >= 1.0)
+         throw new IllegalArgumentException("normIndex should be between 0 (inclusive) and 1 (exclusive), got " + normIndex);
+
+      double l = getLeftWeight();
+      if(l > 0) {
+         l = l / weight;
+         if(normIndex < l)
+            return left.getWeighted(normIndex / l);
+      }
+      double r = getRightWeight();
+      if(r > 0) {
+         r = (weight - r) / weight;
+         if(normIndex > r)
+            return right.getWeighted((normIndex - r) / (1 - r));
+      }
       else
-         return new Pair(key, values.get((int)((normIndex - leftRatio) * values.size())));
+         r = 1.0;
+
+      return new Pair(key, values.get((int)(values.size() * (normIndex - l) / (r - l))));
    }
 
    /**

@@ -203,7 +203,7 @@ public class WeightedTree<E> implements Iterable<Pair<Double, E>> {
    }
 
    /**
-    * Rebalances the given node by performing rotations if necesary.
+    * Rebalances the given node by performing rotations if necessary.
     * @return The node at the original position of the given node after the rebalancing.
     * O(1).
     */
@@ -237,7 +237,7 @@ public class WeightedTree<E> implements Iterable<Pair<Double, E>> {
     *   y   becomes  / \   and    y   becomes  / \
     *    \          z   x        /            x   z
     *     x                     x
-    * @param ZLeft   Indicates wheter the z node ends up as the left child of the node
+    * @param ZLeft   Indicates whether the z node ends up as the left child of the node
     * @return        The new top node: y
     * O(1).
     */
@@ -253,11 +253,11 @@ public class WeightedTree<E> implements Iterable<Pair<Double, E>> {
 
       // Set children
       if(ZLeft) {
-         z.right = y.left;
+         z.replace(z.right, y.left);
          y.left  = z;
       }
       else {
-         z.left  = y.right;
+         z.replace(z.left, y.right);
          y.right = z;
       }
 
@@ -278,7 +278,7 @@ public class WeightedTree<E> implements Iterable<Pair<Double, E>> {
     *    /                       \
     *   x                         x
     *
-    * @param ZLeft   Indicates wheter the z node ends up as the left child of the top node
+    * @param ZLeft   Indicates whether the z node ends up as the left child of the top node
     * @return        The new top node: x
     * O(1).
     */
@@ -295,14 +295,14 @@ public class WeightedTree<E> implements Iterable<Pair<Double, E>> {
 
       // Set children
       if(ZLeft) {
-         z.right = x.left;
-         y.left  = x.right;
+         z.replace(z.right, x.left);
+         y.replace(y.left, x.right);
          x.left  = z;
          x.right = y;
       }
       else {
-         z.left  = x.right;
-         y.right = x.left;
+         z.replace(z.left, x.right);
+         y.replace(y.right, x.left);
          x.left  = y;
          x.right = z;
       }

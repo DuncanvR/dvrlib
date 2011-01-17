@@ -116,7 +116,46 @@ public class WeightedTreeTest {
             assertEquals(i + j, e.b.intValue());
          }
       }
-
       assertFalse(it.hasNext());
+   }
+
+   @Test
+   public void testWeighted() {
+      WeightedTree<Integer> instance = new WeightedTree();
+      assertNull(instance.getWeighted(0.5));
+
+      instance.add(0.3, 10);
+      assertEqualsWeighted(0.3, 10, instance.getWeighted(0.0));
+      assertEqualsWeighted(0.3, 10, instance.getWeighted(0.5));
+      assertEqualsWeighted(0.3, 10, instance.getWeighted(0.9999999));
+
+      instance.add(0.5, 15);
+      assertEqualsWeighted(0.3, 10, instance.getWeighted(0.0));
+      assertEqualsWeighted(0.3, 10, instance.getWeighted(0.3749999));
+      assertEqualsWeighted(0.5, 15, instance.getWeighted(0.3750001));
+      assertEqualsWeighted(0.5, 15, instance.getWeighted(0.9999999));
+
+      instance.add(0.2, 20);
+      assertEqualsWeighted(0.2, 20, instance.getWeighted(0.0));
+      assertEqualsWeighted(0.2, 20, instance.getWeighted(0.1999999));
+      assertEqualsWeighted(0.3, 10, instance.getWeighted(0.2000001));
+      assertEqualsWeighted(0.3, 10, instance.getWeighted(0.4999999));
+      assertEqualsWeighted(0.5, 15, instance.getWeighted(0.5000001));
+      assertEqualsWeighted(0.5, 15, instance.getWeighted(0.9999999));
+
+      instance.add(0.5, 25);
+      assertEqualsWeighted(0.2, 20, instance.getWeighted(0.0));
+      assertEqualsWeighted(0.2, 20, instance.getWeighted(0.1333332));
+      assertEqualsWeighted(0.3, 10, instance.getWeighted(0.1333334));
+      assertEqualsWeighted(0.3, 10, instance.getWeighted(0.3333332));
+      assertEqualsWeighted(0.5, 15, instance.getWeighted(0.3333334));
+      assertEqualsWeighted(0.5, 15, instance.getWeighted(0.6666665));
+      assertEqualsWeighted(0.5, 25, instance.getWeighted(0.6666667));
+      assertEqualsWeighted(0.5, 25, instance.getWeighted(0.9999999));
+   }
+
+   public void assertEqualsWeighted(double k, int v, Pair<Double, Integer> e) {
+      assertEquals(k, e.a.doubleValue(), 0.0);
+      assertEquals(v, e.b.intValue());
    }
 }
