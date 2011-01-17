@@ -45,10 +45,10 @@ public class GeneticLS<S extends Solution, E extends Number & Comparable<E>> ext
       population.add(problem.getWeight(solution), solution);
 
       // Initialize population with random solutions
-      for(int i = 1; i < populationSize; i++) {
-         S s = problem.randomSolution();
-         s.ensureMostCommon(solution);
-         population.add(problem.getWeight(s), s);
+      while(population.size() < populationSize) {
+         S newSolution = problem.randomSolution();
+         newSolution.ensureMostCommon(solution);
+         population.add(problem.getWeight(newSolution), newSolution);
       }
 
       Random r = new Random();
