@@ -152,8 +152,10 @@ public class WeightedTree<E> implements Iterable<Pair<Double, E>> {
          int dH = node.getLeftHeight() - node.getRightHeight(),
              dS = node.getLeftSize() - node.getRightSize();
          if(dH > 0 || (dH == 0 && dS > 0)) {
-            if(root == node)
+            if(root == node) {
                root = node.left;
+               root.parent = null;
+            }
             else
                node.parent.replace(node, node.left);
 
@@ -162,8 +164,10 @@ public class WeightedTree<E> implements Iterable<Pair<Double, E>> {
             rebalanceUp(n);
          }
          else {
-            if(root == node)
+            if(root == node) {
                root = node.right;
+               root.parent = null;
+            }
             else
                node.parent.replace(node, node.right);
 
@@ -182,10 +186,14 @@ public class WeightedTree<E> implements Iterable<Pair<Double, E>> {
     * O(node.depth).
     */
    protected void removeExternal(WeightedTreeNode<E> node) {
-      if(node == root)
+      if(node == null)
+         throw new IllegalArgumentException("Cannot remove null node");
+      else if(node == root) {
          root = (node.left != null ? node.left : node.right);
-      else if(node != null) {
-         node.parent.replace(node, (node.left != null ? node.left : node.right));
+         root.parent = null;
+      }
+      else {
+         node.parent.replaceChild(node, (node.left != null ? node.left : node.right));
          rebalanceUp(node.parent);
          node.parent = null;
       }
@@ -242,22 +250,27 @@ public class WeightedTree<E> implements Iterable<Pair<Double, E>> {
     * O(1).
     */
    protected WeightedTreeNode singleRotation(WeightedTreeNode z, WeightedTreeNode y, WeightedTreeNode x, boolean ZLeft) {
+      /*if(z == null || y == null)
+         throw new IllegalArgumentException("Cannot rotate on null nodes");
+      if(z != null && z.parent == null && z != root)
+         throw new IllegalStateException("Node without parent other than the root encountered");*/
+
       // Maintain root and parents
       if(z == root) {
          root = y;
-         y.parent = null;
+         root.parent = null;
       }
       else
-         z.parent.replace(z, y);
+         z.parent.replaceChild(z, y);
       z.parent = y;
 
       // Set children
       if(ZLeft) {
-         z.replace(z.right, y.left);
+         z.replaceChild(z.right, y.left);
          y.left  = z;
       }
       else {
-         z.replace(z.left, y.right);
+         z.replaceChild(z.left, y.right);
          y.right = z;
       }
 
@@ -283,26 +296,31 @@ public class WeightedTree<E> implements Iterable<Pair<Double, E>> {
     * O(1).
     */
    protected WeightedTreeNode doubleRotation(WeightedTreeNode z, WeightedTreeNode y, WeightedTreeNode x, boolean ZLeft) {
+      /*if(z == null || y == null)
+         throw new IllegalArgumentException("Cannot rotate on null nodes");
+      if(z != null && z.parent == null && z != root)
+         throw new IllegalStateException("Node without parent other than the root encountered");*/
+
       // Maintain root and parents
       if(z == root) {
          root = x;
-         x.parent = null;
+         root.parent = null;
       }
       else
-         z.parent.replace(z, x);
+         z.parent.replaceChild(z, x);
       y.parent = x;
       z.parent = x;
 
       // Set children
       if(ZLeft) {
-         z.replace(z.right, x.left);
-         y.replace(y.left, x.right);
+         z.replaceChild(z.right, x.left);
+         y.replaceChild(y.left, x.right);
          x.left  = z;
          x.right = y;
       }
       else {
-         z.replace(z.left, x.right);
-         y.replace(y.right, x.left);
+         z.replaceChild(z.left, x.right);
+         y.replaceChild(y.right, x.left);
          x.left  = y;
          x.right = z;
       }

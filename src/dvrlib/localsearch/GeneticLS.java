@@ -41,7 +41,7 @@ public class GeneticLS<S extends Solution, E extends Number & Comparable<E>> ext
     * This algorithm keeps replacing the worst solution in the population by the new combined solution if it is better, until a predefined number of iterations give no improvement.
     */
    public WeightedTree<S> search(Problem<S, E> problem, S solution, int size) {
-      WeightedTree<S> population = new WeightedTree<S>();
+      WeightedTree<S> population = new WeightedTree();
       population.add(problem.getWeight(solution), solution);
 
       // Initialize population with random solutions
@@ -59,9 +59,9 @@ public class GeneticLS<S extends Solution, E extends Number & Comparable<E>> ext
          combiner.mutate(newSolution);
 
          // Compare new solution with the worst
-         WeightedTreeNode<S> worst = population.getMax();
+         WeightedTreeNode<S> worst = population.getMin();
          if(problem.better(newSolution, worst.peek())) {
-            population.remove(worst);
+            population.pop(worst);
             population.add(problem.getWeight(newSolution), newSolution);
             sc = 0;
          }

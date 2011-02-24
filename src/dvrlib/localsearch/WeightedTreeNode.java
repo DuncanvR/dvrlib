@@ -102,8 +102,7 @@ public class WeightedTreeNode<E> {
       WeightedTreeNode<E> node = null;
       if(key < this.key) {
          if(left == null) {
-            node = new WeightedTreeNode<E>(key, value);
-            left = node;
+            left = node = new WeightedTreeNode<E>(key, value);
             left.parent = this;
          }
          else
@@ -111,8 +110,7 @@ public class WeightedTreeNode<E> {
       }
       else if(key > this.key) {
          if(right == null) {
-            node  = new WeightedTreeNode<E>(key, value);
-            right = node;
+            right = node = new WeightedTreeNode<E>(key, value);
             right.parent = this;
          }
          else
@@ -139,19 +137,16 @@ public class WeightedTreeNode<E> {
     * @param old The subtree that will be replaced, either <tt>old == left</tt> or <tt>old == right</tt> should hold.
     * O(1).
     */
-   protected void replace(WeightedTreeNode<E> old, WeightedTreeNode<E> that) {
-      if(old == left) {
+   protected void replaceChild(WeightedTreeNode<E> old, WeightedTreeNode<E> that) {
+      if(old == left)
          left = that;
-         if(that != null)
-            that.parent = this;
-      }
-      else if(old == right) {
+      else if(old == right)
          right = that;
-         if(that != null)
-            that.parent = this;
-      }
       else
-         throw new IllegalArgumentException("WeightedTreeNode.replace(WeightedTreeNode, WeightedTreeNode) expects the first argument to be equal to either the left or the right subtree");
+         throw new IllegalArgumentException("WeightedTreeNode.replaceChild(WeightedTreeNode, WeightedTreeNode) expects the first argument to be one of it's subnodes");
+
+      if(that != null)
+         that.parent = this;
       updateSize();
    }
 
