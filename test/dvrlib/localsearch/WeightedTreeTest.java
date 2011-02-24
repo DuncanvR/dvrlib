@@ -68,21 +68,56 @@ public class WeightedTreeTest {
 
    @Test
    public void testAdd() {
-      WeightedTree<Integer> instance = new WeightedTree();
+      WeightedTree<Number> instance;
+      instance = testAdd(new Integer[]{1, 2, 3, 4, 5, 6, 7, 8, 9});
+      instance = testAdd(new Integer[]{9, 8, 7, 6, 5, 4, 3, 2, 1});
+      instance = testAdd(new Integer[]{1, 9, 2, 8, 3, 7, 4, 6, 5});
+      instance = testAdd(new Integer[]{5, 4, 6, 3, 7, 2, 8, 1, 9});
+      instance = testAdd(new Integer[]{4, 2, 6, 3, 7, 8, 1, 5, 9});
+      instance = testAdd(new Double []{0.1, 0.2, 0.3, 0.4, 0.5, 0.6});
+      instance = testAdd(new Double []{0.6, 0.5, 0.4, 0.3, 0.2, 0.1});
+      instance = testAdd(new Double []{0.1, 0.6, 0.2, 0.5, 0.3, 0.4});
+      instance = testAdd(new Double []{0.3, 0.4, 0.2, 0.5, 0.1, 0.6});
+
+      instance = testAdd(new Double []{0.5, 0.3, 0.2, 0.6, 0.1, 0.4});
+      instance.popMax();
+      testBalance(instance.root);
+      assertEquals(0.1, instance.getMin().key, 0.0);
+      assertEquals(0.5, instance.getMax().key, 0.0);
+      instance.popMin();
+      assertEquals(0.2, instance.getMin().key, 0.0);
+      assertEquals(0.5, instance.getMax().key, 0.0);
+      instance.popMax();
+      testBalance(instance.root);
+      assertEquals(0.2, instance.getMin().key, 0.0);
+      assertEquals(0.4, instance.getMax().key, 0.0);
+   }
+   public WeightedTree<Number> testAdd(Number keys[]) {
+      WeightedTree<Number> instance = new WeightedTree();
       assertNull(instance.root);
 
-      for(int i = 0; i < 5; i++) {
-         for(int j = 0; j < 23; j++) {
-            instance.add((double) j, i * j);
-         }
+      double min = Double.MAX_VALUE, max = Double.MIN_VALUE;
+      for(Number n : keys) {
+         double nd = n.doubleValue();
+         instance.add(nd, n);
+
+         if(nd < min)
+            min = nd;
+         if(nd > max)
+            max = nd;
+
          testBalance(instance.root);
       }
 
       assertNotNull(instance.root);
       assertNull(instance.root.parent);
-   }
+      assertEquals(min, instance.getMin().key, 0.0);
+      assertEquals(max, instance.getMax().key, 0.0);
+      assertEquals(keys.length, instance.size());
 
-   public void testBalance(WeightedTreeNode<Integer> node) {
+      return instance;
+   }
+   public void testBalance(WeightedTreeNode node) {
       if(node != null) {
          assertTrue(Math.abs(node.getLeftHeight() - node.getRightHeight()) < 2);
          if(node.left != null) {
@@ -153,7 +188,6 @@ public class WeightedTreeTest {
       assertEqualsWeighted(0.5, 25, instance.getWeighted(0.6666667));
       assertEqualsWeighted(0.5, 25, instance.getWeighted(0.9999999));
    }
-
    public void assertEqualsWeighted(double k, int v, Pair<Double, Integer> e) {
       assertEquals(k, e.a.doubleValue(), 0.0);
       assertEquals(v, e.b.intValue());
