@@ -21,7 +21,7 @@ public class MultiStartLS<S extends Solution, E extends Comparable<E>> extends L
    }
 
    /**
-    * Searches for a solution for the given problem by repeatedly applying the predefined search algorithm to a random solution.
+    * Searches for a solution for the given problem by applying the predefined search algorithm to multiple random solution.
     */
    @Override
    public S search(Problem<S, E> problem) {
@@ -46,5 +46,13 @@ public class MultiStartLS<S extends Solution, E extends Comparable<E>> extends L
             bestSolution = newSolution;
       }
       return bestSolution;
+   }
+
+   /**
+    * Does <tt>n</tt> iterations on the given solution with the predefined search algorithm.
+    */
+   @Override
+   public S iterate(Problem<S, E> problem, S solution, int n) {
+      return ls.iterate(problem, solution, n);
    }
 }

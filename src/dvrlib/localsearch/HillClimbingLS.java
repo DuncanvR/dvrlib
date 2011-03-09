@@ -7,7 +7,8 @@
 package dvrlib.localsearch;
 
 public class HillClimbingLS<S extends Solution, E extends Comparable<E>> extends LocalSearch<S, E> {
-   protected final Changer<S, Object> changer;
+   protected final Changer<S, Object> changer          ;
+   protected       Object             lastChange = null;
 
    /**
     * HillClimbingLS constructor.
@@ -19,29 +20,50 @@ public class HillClimbingLS<S extends Solution, E extends Comparable<E>> extends
    }
 
    /**
-    * Search for a solution for the given problem, using hill climbing.
-    * This algorithm keeps generating changes to the solution until they no longer improve it.
-    * @return The solution that was reached.
+    * Searches for a solution for the given problem, using hill climbing, which is saved and returned.
+    * This algorithm keeps generating changes for the solution until they no longer improve it.
+    * @see HillClimbingLS#iterate(dvrlib.localsearch.Problem, dvrlib.localsearch.Solution, int)
     */
    @Override
    public S search(Problem<S, E> problem, S solution) {
-      Object change = null;
+      return iterate(problem, solution, -1);
+   }
 
-      // Keep mutating as long as it improves the solution
+   /**
+    * Searches for a solution for the given problem, with a maximum of <tt>n</tt> iterations, which is saved and returned.
+    * A negative value of <tt>n</tt> indicates there is no limit to the number of iterations.
+    * @see HillClimbingLS#iterate(dvrlib.localsearch.Solution)
+    */
+   @Override
+   public S iterate(Problem<S, E> problem, S solution, int n) {
+      int iterations = 1;
+      // Keep mutating as long as it improves the solution and the maximum number of iterations has not been reached
       E e1, e2 = problem.evaluate(solution);
       do {
          e1 = e2;
-         change = changer.generateChange(solution);
-         changer.doChange(solution, change);
-         solution.increaseIterationCount(1);
-         e2 = problem.evaluate(solution);
+         e2 = problem.evaluate(iterate(solution));
       }
-      while(problem.better(e2, e1));
+      while(problem.better(e2, e1) && (n < 0 || iterations++ < n));
 
-      // Undo last change
-      changer.undoChange(solution, change);
+      if(n < 0 || iterations <= n) {
+         // Undo last change
+         changer.undoChange(solution, lastChange);
+         lastChange = null;
+      }
 
+      solution.increaseIterationCount(iterations);
+
+      // Save and return solution
       problem.saveSolution(solution);
+      return solution;
+   }
+
+   /**
+    * Does one iteration on the given solution and returns it.
+    */
+   protected S iterate(S solution) {
+      lastChange = changer.generateChange(solution);
+      changer.doChange(solution, lastChange);
       return solution;
    }
 }
