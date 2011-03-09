@@ -190,7 +190,8 @@ public class WeightedTree<E> implements Iterable<Pair<Double, E>> {
          throw new IllegalArgumentException("Cannot remove null node");
       else if(node == root) {
          root = (node.left != null ? node.left : node.right);
-         root.parent = null;
+         if(root != null)
+            root.parent = null;
       }
       else {
          node.parent.replaceChild(node, (node.left != null ? node.left : node.right));
