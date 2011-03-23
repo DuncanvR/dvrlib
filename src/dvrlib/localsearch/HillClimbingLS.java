@@ -38,10 +38,10 @@ public class HillClimbingLS<S extends Solution, E extends Comparable<E>> extends
    public S iterate(Problem<S, E> problem, S solution, int n) {
       int iterations = 1;
       // Keep mutating as long as it improves the solution and the maximum number of iterations has not been reached
-      E e1, e2 = problem.evaluate(solution);
+      E e1, e2 = problem.evaluate(solution, iterations);
       do {
          e1 = e2;
-         e2 = problem.evaluate(iterate(solution));
+         e2 = problem.evaluate(iterate(solution), iterations);
       }
       while(problem.better(e2, e1) && (n < 0 || iterations++ < n));
 

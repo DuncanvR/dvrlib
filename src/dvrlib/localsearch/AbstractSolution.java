@@ -7,23 +7,23 @@
 package dvrlib.localsearch;
 
 public abstract class AbstractSolution implements Solution {
-   protected int iterationCount = 0;
+   protected long iterationCount = 0;
 
    /**
     * Returns the number of iterations it took to reach this solution.
     * O(1).
     */
    @Override
-   public int getIterationCount() {
+   public long getIterationCount() {
       return iterationCount;
    }
 
    /**
-    * Increases the number of iterations it took to reach this solution.
+    * Sets the number of iterations it took to reacht this solution.
     * O(1).
     */
    @Override
-   public void increaseIterationCount(int i) {
-      iterationCount += i;
+   public void setIterationCount(long n) {
+      iterationCount = n;
    }
 }

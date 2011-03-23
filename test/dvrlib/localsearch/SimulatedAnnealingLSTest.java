@@ -25,7 +25,7 @@ public class SimulatedAnnealingLSTest extends AbstractMinProblem<SimulatedAnneal
 
    // Problem methods
    @Override
-   public Integer evaluate(TestSolution s) {
+   public Integer evaluate(TestSolution s, long iterationNumber) {
       return s.value;
    }
 

@@ -28,7 +28,7 @@ public class MultiStartLS<S extends Solution, E extends Comparable<E>> extends L
       S bestSolution = null;
       for(int i = 0; i < count; i++) {
          S newSolution = ls.search(problem);
-         if(problem.better(newSolution, bestSolution))
+         if(problem.better(newSolution, bestSolution, -1))
             bestSolution = newSolution;
       }
       return bestSolution;
@@ -42,7 +42,7 @@ public class MultiStartLS<S extends Solution, E extends Comparable<E>> extends L
       S bestSolution = startSolution;
       for(int i = 0; i < count; i++) {
          S newSolution = ls.search(problem, startSolution);
-         if(problem.better(newSolution, bestSolution))
+         if(problem.better(newSolution, bestSolution, -1))
             bestSolution = newSolution;
       }
       return bestSolution;

@@ -56,11 +56,11 @@ public class SimulatedAnnealingLS<S extends Solution, E extends Number & Compara
     */
    @Override
    public S search(Problem<S, E> problem, S solution) {
+      long iterations = 1; // Starts at 1, otherwise the temperature would be decreased at the first iteration
       double temperature = initTemp;
-      E curEval = problem.evaluate(solution), bestEval = curEval;
+      E curEval = problem.evaluate(solution, iterations), bestEval = curEval;
       LinkedList<Object> changeList = new LinkedList();
 
-      int iterations = 1; // Starts at 1, otherwise the temperature would be decreased at the first iteration
       // Main loop: j holds the number of iterations since the last improvement
       for(int sc = 0; sc < stopCount; iterations++, sc++) {
          // Mutate the solution
@@ -68,7 +68,7 @@ public class SimulatedAnnealingLS<S extends Solution, E extends Number & Compara
          changer.doChange(solution, changeList.peekLast());
 
          // Calculate the difference in evaluation
-         E newEval = problem.evaluate(solution);
+         E newEval = problem.evaluate(solution, iterations);
          double deltaE = problem.diffEval(newEval, curEval).doubleValue();
 
          if(deltaE <= 0 || Math.random() < Math.exp(-deltaE / temperature)) {
@@ -97,7 +97,7 @@ public class SimulatedAnnealingLS<S extends Solution, E extends Number & Compara
       while(!changeList.isEmpty())
          changer.undoChange(solution, changeList.pollLast());
 
-      solution.increaseIterationCount(iterations - 1);
+      solution.setIterationCount(solution.getIterationCount() + iterations - 1);
       problem.saveSolution(solution);
       return solution;
    }
