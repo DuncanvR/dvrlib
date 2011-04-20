@@ -1,6 +1,6 @@
 /*
  * DvRLib - Local search
- * Duncan van Roermund, 2010
+ * Duncan van Roermund, 2010-2011
  * GeneticLS.java
  */
 
@@ -32,8 +32,8 @@ public class GeneticLS<S extends Solution, E extends Number & Comparable<E>> ext
    }
 
    /**
-    * Searches for solutions for the given problem, of which the best is saved and returned.
-    * @see GeneticLS#search(dvrlib.localsearch.Problem, dvrlib.localsearch.Solution, int)
+    * Searches for an optimal solution for the given problem, which is saved and returned.
+    * @see GeneticLS#search(dvrlib.localsearch.PluralSearchState)
     */
    @Override
    public S search(Problem<S, E> problem, S solution) {
@@ -43,9 +43,9 @@ public class GeneticLS<S extends Solution, E extends Number & Comparable<E>> ext
    }
 
    /**
-    * Returns the population after searching for a solution for the given problem.
+    * Searches for an optimal solution using the given search state, after which the best found solution is saved and the state is returned.
     * This algorithm keeps replacing the worst solution in the population by the new combined solution if it is better, until a predefined number of iterations give no improvement.
-    * @param maxPopSize The maximum size of the population.
+    * @see GeneticLS#iterate(dvrlib.localsearch.PluralSearchState, int)
     */
    public WeightedTree<S> search(Problem<S, E> problem, S solution, int maxPopSize) {
       WeightedTree<S> population = createPopulation(problem, solution);
@@ -60,8 +60,7 @@ public class GeneticLS<S extends Solution, E extends Number & Comparable<E>> ext
    }
 
    /**
-    * Does <tt>n</tt> iterations on the given solution using the default population size, after which the best found solution is saved and returned.
-    * @see GeneticLS#iterate(dvrlib.localsearch.Problem, dvrlib.localsearch.Solution, int, int)
+    * Does <tt>n</tt> iterations using the given search state, after which it is returned.
     */
    @Override
    public S iterate(Problem<S, E> problem, S solution, int n) {

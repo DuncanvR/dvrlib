@@ -18,9 +18,9 @@ public class UndirectedListGraph extends ListGraph {
    }
 
    /**
-    * Adds and returns an edge between nodes a and b.
-    * If the edge already existed, that edge is returned.
+    * Adds an edge between nodes a and b.
     * @see MatrixGraph#addEdge(int, int)
+    * @return true when the edge was successfully added, false otherwise.
     * O(1) if the edge already existed, O(e) otherwise.
     */
    @Override
@@ -60,6 +60,5 @@ public class UndirectedListGraph extends ListGraph {
    @Override
    protected String printEdge(int a, int b) {
       return (a < b ? super.printEdge(a, b) : "-");
-      //return (a < b ? super.printEdge(a, b) : "-       ");
    }
 }

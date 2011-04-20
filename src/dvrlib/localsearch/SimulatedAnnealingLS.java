@@ -1,6 +1,6 @@
 /*
  * DvRLib - Local search
- * Duncan van Roermund, 2010
+ * Duncan van Roermund, 2010-2011
  * SimulatedAnnealingLS.java
  */
 
@@ -9,9 +9,9 @@ package dvrlib.localsearch;
 import java.util.LinkedList;
 
 public class SimulatedAnnealingLS<S extends Solution, E extends Number & Comparable<E>> extends LocalSearch<S, E> {
-   /** The default initial temperature is 2.4663035, so dE = 1 results in a 2/3 chance of acceptance. */
+   /** The default initial temperature is 2.4663035, so <tt>dE = 1</tt> results in a 2/3 chance of acceptance. */
    public final static double defTemp    = 2.4663035;
-   /** The default temperature modifier is 0.98, leading to a 2% decrease in temperature every coolCount iterations. */
+   /** The default temperature modifier is 0.98, leading to a 2% decrease in temperature every <tt>coolCount</tt> iterations. */
    public final static double defTempMod = 0.98     ;
 
    protected final Changer<S, Object> changer  ;
@@ -48,7 +48,7 @@ public class SimulatedAnnealingLS<S extends Solution, E extends Number & Compara
    }
 
    /**
-    * Searches for a solution for the given problem.
+    * Searches for a solution for the given problem, starting from the given solution.
     * This algorithm repeatedly generates changes for the current solution and applies them if they improve it.
     * If a change does not improve the solution, it is applied with a certain chance based on the current temperature, which decreases as time passes by.
     * After a predefined number of iterations in which no improvements were found, the best known solution is returned.

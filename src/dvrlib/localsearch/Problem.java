@@ -1,6 +1,6 @@
 /*
  * DvRLib - Local search
- * Duncan van Roermund, 2010
+ * Duncan van Roermund, 2010-2011
  * Problem.java
  */
 
@@ -8,7 +8,7 @@ package dvrlib.localsearch;
 
 public interface Problem<S extends Solution, E extends Comparable<E>> {
    /**
-    * Generates a random solution to this problem.
+    * Returns the difference between the two given evaluations, e.g. <tt>e1 - e2</tt>.
     */
    public S randomSolution();
 

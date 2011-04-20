@@ -1,6 +1,6 @@
 /*
  * DvRLib - Local search
- * Duncan van Roermund, 2010
+ * Duncan van Roermund, 2010-2011
  * WeightedTree.java
  */
 
@@ -112,7 +112,7 @@ public class WeightedTree<E> implements Iterable<Pair<Double, E>> {
     * Removes an element from the given node and returns its key along with its data.
     * If the node contains only one element, it is removed from the tree.
     * @see WeightedTree#remove(dvrlib.localsearch.WeightedTreeNode)
-    * O(node.depth) if the given node contains only one element, O(1) otherwise.
+    * O(node.depth).
     */
    protected Pair<Double, E> pop(WeightedTreeNode<E> node) {
       Pair<Double, E> item = new Pair(node.key, node.pop());

@@ -1,6 +1,6 @@
 /*
  * DvRLib - Local search
- * Duncan van Roermund, 2010
+ * Duncan van Roermund, 2010-2011
  * HillClimbingLS.java
  */
 
@@ -20,9 +20,9 @@ public class HillClimbingLS<S extends Solution, E extends Comparable<E>> extends
    }
 
    /**
-    * Searches for a solution for the given problem, using hill climbing, which is saved and returned.
+    * Searches for an optimal solution for the given problem, starting from the given solution, which is saved and returned.
     * This algorithm keeps generating changes for the solution until they no longer improve it.
-    * @see HillClimbingLS#iterate(dvrlib.localsearch.Problem, dvrlib.localsearch.Solution, int)
+    * @see HillClimbingLS#iterate(dvrlib.localsearch.SingularSearchState, int)
     */
    @Override
    public S search(Problem<S, E> problem, S solution) {
@@ -30,7 +30,7 @@ public class HillClimbingLS<S extends Solution, E extends Comparable<E>> extends
    }
 
    /**
-    * Searches for a solution for the given problem, with a maximum of <tt>n</tt> iterations, which is saved and returned.
+    * Searches for an optimal solution using the given search state, with a maximum of <tt>n</tt> iterations, after which the state is returned.
     * A negative value of <tt>n</tt> indicates there is no limit to the number of iterations.
     * @see HillClimbingLS#iterate(dvrlib.localsearch.Solution)
     */

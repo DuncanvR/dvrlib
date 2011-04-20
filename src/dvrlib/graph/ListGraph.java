@@ -66,7 +66,7 @@ public class ListGraph extends AbstractGraph<ListGraphNode> {
 
    /**
     * Adds an edge between nodes a and b.
-    * @return true if an edge was added, false otherwise.
+    * @return true if the edge was added, false otherwise.
     * O(1) if the edge already existed, O(e) otherwise.
     */
    @Override
