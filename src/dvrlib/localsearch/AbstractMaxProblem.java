@@ -6,44 +6,14 @@
 
 package dvrlib.localsearch;
 
-public abstract class AbstractMaxProblem<S extends Solution, E extends Number & Comparable<E>> implements Problem<S, E> {
+public abstract class AbstractMaxProblem<S extends Solution, E extends Number & Comparable<E>> extends AbstractProblem<S, E> {
    /**
-    * Returns an evaluation with the value 0.
+    * Returns the direction of the search, e.g. <tt>1d</tt>.
+    * @see Math#signum(double)
     */
-   protected abstract E zeroEval();
-
-   /**
-    * Returns true if the first of the given evaluations is better than the second, i.e. <tt>diffEval(e1, e2) &gt; 0</tt>.
-    */
-   @Override
-   public boolean better(E e1, E e2) {
-      return (diffEval(e1, e2).compareTo(zeroEval()) > 0);
-   }
-
-   /**
-    * Returns true if the first of the given solutions is better than the second, i.e. <tt>evaluate(s1).better(evaluate(s2))</tt>.
-    * @param iterationNumber Indicates the iteration number in the current search.
-    */
-   @Override
-   public boolean better(S s1, S s2, long iterationNumber) {
-      return (s1 == null ? false : (s2 == null ? true : better(evaluate(s1, iterationNumber), evaluate(s2, iterationNumber))));
-   }
-
-   /**
-    * Returns true if the first of the given evaluations is better than or equal to the second, i.e. <tt>diffEval(e1, e2) &gt;= 0</tt>.
-    */
-   @Override
-   public boolean betterEq(E e1, E e2) {
-      return (diffEval(e1, e2).compareTo(zeroEval()) >= 0);
-   }
-
-   /**
-    * Returns true if the first of the given solutions is better than the second, i.e. <tt>evaluate(s1).betterEq(evaluate(s2))</tt>.
-    * @param iterationNumber Indicates the iteration number in the current search.
-    */
-   @Override
-   public boolean betterEq(S s1, S s2, long iterationNumber) {
-      return (s1 == null ? false : (s2 == null ? true : betterEq(evaluate(s1, iterationNumber), evaluate(s2, iterationNumber))));
+  @Override
+   public double getDirection() {
+      return 1d;
    }
 
    /**
@@ -53,15 +23,5 @@ public abstract class AbstractMaxProblem<S extends Solution, E extends Number & 
    @Override
    public double getWeight(E e) {
       return e.doubleValue();
-   }
-
-   /**
-    * Returns the weight of the given solution.
-    * Optional operation used by GeneticLS to insert solutions into the population.
-    * @param iterationNumber Indicates the iteration number in the current search.
-    */
-   @Override
-   public double getWeight(S s, long iterationNumber) {
-      return getWeight(evaluate(s, iterationNumber));
    }
 }

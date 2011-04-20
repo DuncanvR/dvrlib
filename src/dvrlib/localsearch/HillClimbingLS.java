@@ -6,16 +6,16 @@
 
 package dvrlib.localsearch;
 
-public class HillClimbingLS<S extends Solution, E extends Comparable<E>> extends LocalSearch<S, E> {
-   protected final Changer<S, Object> changer          ;
-   protected       Object             lastChange = null;
+public class HillClimbingLS<S extends Solution, E extends Comparable<E>> extends StatefulLocalSearch<S, E, SingularSearchState<Problem<S, E>, S>> {
+   protected final Changer<Problem<S, E>, S, Object> changer          ;
+   protected       Object                            lastChange = null;
 
    /**
     * HillClimbingLS constructor.
     * @param changer The changer used when searching for a solution.
     * O(1).
     */
-   public HillClimbingLS(Changer<S, Object> changer) {
+   public HillClimbingLS(Changer<Problem<S, E>, S, Object> changer) {
       this.changer = changer;
    }
 
@@ -26,7 +26,9 @@ public class HillClimbingLS<S extends Solution, E extends Comparable<E>> extends
     */
    @Override
    public S search(Problem<S, E> problem, S solution) {
-      return iterate(problem, solution, -1);
+      SingularSearchState<Problem<S, E>, S> state = newState(problem, solution);
+      iterate(state, -1).saveSolution();
+      return state.getSolution();
    }
 
    /**
@@ -35,35 +37,30 @@ public class HillClimbingLS<S extends Solution, E extends Comparable<E>> extends
     * @see HillClimbingLS#iterate(dvrlib.localsearch.Solution)
     */
    @Override
-   public S iterate(Problem<S, E> problem, S solution, int n) {
+   public SingularSearchState<Problem<S, E>, S> iterate(SingularSearchState<Problem<S, E>, S> state, long n) {
       int iterations = 1;
       // Keep mutating as long as it improves the solution and the maximum number of iterations has not been reached
-      E e1, e2 = problem.evaluate(solution, iterations);
+      E e1, e2 = state.problem.evaluate(state);
       do {
          e1 = e2;
-         e2 = problem.evaluate(iterate(solution), iterations);
+         lastChange = changer.generateChange(state);
+         changer.doChange(state, lastChange);
+         e2 = state.problem.evaluate(state);
       }
-      while(problem.better(e2, e1) && (n < 0 || iterations++ < n));
+      while(state.problem.better(e2, e1) && (n < 0 || iterations++ < n));
 
       if(n < 0 || iterations <= n) {
          // Undo last change
-         changer.undoChange(solution, lastChange);
+         changer.undoChange(state, lastChange);
          lastChange = null;
       }
 
-      solution.increaseIterationCount(iterations);
-
-      // Save and return solution
-      problem.saveSolution(solution);
-      return solution;
+      state.solution.setIterationCount(state.getIterationNumber());
+      return state;
    }
 
-   /**
-    * Does one iteration on the given solution and returns it.
-    */
-   protected S iterate(S solution) {
-      lastChange = changer.generateChange(solution);
-      changer.doChange(solution, lastChange);
-      return solution;
+   @Override
+   public SingularSearchState<Problem<S, E>, S> newState(Problem<S, E> problem, S solution) {
+      return new SingularSearchState(problem, solution);
    }
 }

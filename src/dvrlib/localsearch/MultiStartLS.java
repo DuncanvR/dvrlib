@@ -7,8 +7,8 @@
 package dvrlib.localsearch;
 
 public class MultiStartLS<S extends Solution, E extends Comparable<E>> extends LocalSearch<S, E> {
-   protected final LocalSearch<S, E> ls;
-   protected final int count;
+   protected LocalSearch<S, E> ls;
+   protected int count;
 
    /**
     * MultiStartLS Constructor.
@@ -28,7 +28,7 @@ public class MultiStartLS<S extends Solution, E extends Comparable<E>> extends L
       S bestSolution = null;
       for(int i = 0; i < count; i++) {
          S newSolution = ls.search(problem);
-         if(problem.better(newSolution, bestSolution, -1))
+         if(problem.better(newSolution, bestSolution))
             bestSolution = newSolution;
       }
       return bestSolution;
@@ -42,17 +42,9 @@ public class MultiStartLS<S extends Solution, E extends Comparable<E>> extends L
       S bestSolution = startSolution;
       for(int i = 0; i < count; i++) {
          S newSolution = ls.search(problem, startSolution);
-         if(problem.better(newSolution, bestSolution, -1))
+         if(problem.better(newSolution, bestSolution))
             bestSolution = newSolution;
       }
       return bestSolution;
-   }
-
-   /**
-    * Does <tt>n</tt> iterations on the given solution with the predefined search algorithm.
-    */
-   @Override
-   public S iterate(Problem<S, E> problem, S solution, int n) {
-      return ls.iterate(problem, solution, n);
    }
 }

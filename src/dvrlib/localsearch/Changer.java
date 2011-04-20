@@ -6,19 +6,19 @@
 
 package dvrlib.localsearch;
 
-public interface Changer<S extends Solution, C> {
+public interface Changer<P extends Problem<S, ? extends Comparable<?>>, S extends Solution, C> {
    /**
     * Returns a change that can turn the solution into one that closely resembles it.
     */
-   public C generateChange(S solution);
+   public C    generateChange(SearchState<P, S> ss);
 
    /**
     * Executes the given change.
     */
-   public void doChange(S solution, C change);
+   public void       doChange(SearchState<P, S> ss, C change);
 
    /**
     * Undoes the given change.
     */
-   public void undoChange(S solution, C change);
+   public void     undoChange(SearchState<P, S> ss, C change);
 }

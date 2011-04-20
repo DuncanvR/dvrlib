@@ -6,13 +6,32 @@
 
 package dvrlib.localsearch;
 
-import dvrlib.generic.Pair;
 import java.util.Random;
 
-public class GeneticLS<S extends Solution, E extends Number & Comparable<E>> extends LocalSearch<S, E> {
-   protected final Combiner<S> combiner      ;
-   protected final int         populationSize,
-                               stopCount     ;
+public class GeneticLS<S extends Solution, E extends Number & Comparable<E>> extends StatefulLocalSearch<S, E, GeneticLS.GLSSearchState<S, E>> {
+   public static class GLSSearchState<S extends Solution, E extends Comparable<E>> extends AbstractSearchState<Problem<S, E>, S> {
+      // static inner class: workaround of bug 6557954 in jdk6
+      protected WeightedTree<S> population            ;
+      protected S               solution        = null;
+      protected long            lastImprovement       ;
+
+      protected GLSSearchState(Problem<S, E> problem, WeightedTree<S> population) {
+         super(problem);
+         this.population = population;
+      }
+
+      @Override
+      public S getSolution() {
+         return (solution == null ? population.getMax().peek() : solution);
+      }
+
+      public WeightedTree<S> getPopulation() {
+         return population;
+      }
+   }
+   protected final Combiner<Problem<S, E>, S> combiner ;
+   protected final int                        popSize  ,
+                                              stopCount;
 
    /**
     * GeneticLS constructor.
@@ -20,15 +39,15 @@ public class GeneticLS<S extends Solution, E extends Number & Comparable<E>> ext
     * @param populationSize The default number of solutions kept in a population.
     * @param stopCount      The number of iterations in which no better solution was found after which the algorithm will stop.
     */
-   public GeneticLS(Combiner<S> combiner, int populationSize, int stopCount) {
+   public GeneticLS(Combiner<Problem<S, E>, S> combiner, int populationSize, int stopCount) {
       if(populationSize < 1)
          throw new IllegalArgumentException("populationSize should be > 0");
       if(stopCount < 1)
          throw new IllegalArgumentException("stopCount should be > 0");
 
-      this.combiner       = combiner;
-      this.populationSize = populationSize;
-      this.stopCount      = stopCount;
+      this.combiner  = combiner;
+      this.popSize   = populationSize;
+      this.stopCount = stopCount;
    }
 
    /**
@@ -37,9 +56,7 @@ public class GeneticLS<S extends Solution, E extends Number & Comparable<E>> ext
     */
    @Override
    public S search(Problem<S, E> problem, S solution) {
-      S s = search(problem, solution, populationSize).peekMin().b;
-      problem.saveSolution(s);
-      return s;
+      return search(newState(problem, solution)).getSolution();
    }
 
    /**
@@ -47,82 +64,55 @@ public class GeneticLS<S extends Solution, E extends Number & Comparable<E>> ext
     * This algorithm keeps replacing the worst solution in the population by the new combined solution if it is better, until a predefined number of iterations give no improvement.
     * @see GeneticLS#iterate(dvrlib.localsearch.PluralSearchState, int)
     */
-   public WeightedTree<S> search(Problem<S, E> problem, S solution, int maxPopSize) {
-      WeightedTree<S> population = createPopulation(problem, solution);
-
-      // Keep iterating until no further improvements are found
-      for(int n = stopCount; n > 0; ) {
-         int li = iterate(problem, population, n, maxPopSize);
-         n = (li < 0 ? 0 : stopCount - (n - li));
+   public GLSSearchState<S, E> search(GLSSearchState<S, E> state) {
+      long n;
+      do {
+         n = stopCount - (state.iteration - state.lastImprovement);
+         iterate(state, n);
       }
-
-      return population;
+      while(n > 0);
+      state.getSolution().setIterationCount(state.getIterationNumber());
+      state.saveSolution();
+      return state;
    }
 
    /**
     * Does <tt>n</tt> iterations using the given search state, after which it is returned.
     */
    @Override
-   public S iterate(Problem<S, E> problem, S solution, int n) {
-      return iterate(problem, solution, n, populationSize);
-   }
+   public GLSSearchState<S, E> iterate(GLSSearchState<S, E> state, long n) {
+      Random r = new Random();
 
-   /**
-    * Does <tt>n</tt> iterations on the given solution, after which the best found solution is saved and returned.
-    * @param maxPopSize The maximum size of the population.
-    * @see GeneticLS#iterate(dvrlib.localsearch.Problem, dvrlib.localsearch.WeightedTree, int, int)
-    */
-   public S iterate(Problem<S, E> problem, S solution, int n, int maxPopSize) {
-      WeightedTree<S> population = createPopulation(problem, solution);
-      iterate(problem, population, n, maxPopSize);
-      S s = population.peekMin().b;
-      problem.saveSolution(s);
-      return s;
+      while(state.population.size() > popSize)
+         state.population.popMin();
+
+      for(long i = state.getIterationNumber(), iMax = state.getIterationNumber() + n; i < iMax; i++) {
+         // Generate new solution from two random solutions in the population
+         state.solution = combiner.combine(state, state.population.getWeighted(r.nextDouble()).b, state.population.getWeighted(r.nextDouble()).b);
+
+         if(state.population.size() >= popSize) {
+            // Compare the new solution with the worst solution in the population
+            WeightedTreeNode<S> worst = state.population.getMin();
+            if(state.getProblem().better(state, worst.peek())) {
+               state.population.pop(worst);
+               state.population.add(state.problem.getWeight(state), state.solution);
+               state.lastImprovement = i;
+            }
+         }
+         else {
+            state.population.add(state.getProblem().getWeight(state), state.solution);
+            state.lastImprovement = i;
+         }
+
+         state.solution = null;
+      }
+
+      state.increaseIterationCount(n);
+      return state;
   }
 
-   /**
-    * Does <tt>n</tt> iterations on the given population.
-    * @param maxPopSize The maximum size of the population. If the given population is larger, excess solutions are dropped.
-    * @return the iteration number at which the last improvement was made, or -1 if no improvement was made.
-    */
-   public int iterate(Problem<S, E> problem, WeightedTree<S> population, int n, int maxPopSize) {
-      if(n < 0)
-         throw new IllegalArgumentException("n should be >= 0");
-
-      Random r = new Random();
-      int lastImprovement = -1;
-
-      while(population.size() > maxPopSize)
-         population.popMin();
-
-      for(int i = 0; i < n; i++) {
-         // Generate new solution from two solutions in the population
-         S newSolution = combiner.combine(population.getWeighted(r.nextDouble()).b, population.getWeighted(r.nextDouble()).b);
-         combiner.mutate(newSolution);
-
-         // Compare new solution with the worst
-         WeightedTreeNode<S> worst = population.getMin();
-         if(problem.better(newSolution, worst.peek())) {
-            if(population.size() >= maxPopSize)
-               population.pop(worst);
-            population.add(problem.getWeight(newSolution), newSolution);
-            lastImprovement = i;
-         }
-      }
-
-      for(Pair<Double, S> p : population) {
-         p.b.increaseIterationCount(n);
-      }
-
-      return lastImprovement;
-   }
-
-   /**
-    * Creates a new population with the given solution in it.
-    */
-   protected WeightedTree<S> createPopulation(Problem<S, E> problem, S solution) {
-      WeightedTree<S> population = new WeightedTree();
-      population.add(problem.getWeight(solution), solution);
-      return population;
+   @Override
+   public GLSSearchState<S, E> newState(Problem<S, E> problem, S solution) {
+      return new GLSSearchState(problem, combiner.createPopulation(problem, solution, popSize));
    }
 }
