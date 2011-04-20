@@ -11,7 +11,8 @@ import java.util.Random;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class SimulatedAnnealingLSTest extends AbstractMinProblem<SimulatedAnnealingLSTest.TestSolution, Integer> implements Changer<SimulatedAnnealingLSTest.TestSolution, Pair<Integer, Integer>> {
+public class SimulatedAnnealingLSTest extends    AbstractMinProblem<SimulatedAnnealingLSTest.TestSolution, Integer>
+                                      implements Changer<SimulatedAnnealingLSTest, SimulatedAnnealingLSTest.TestSolution, Pair<Integer, Integer>> {
    protected class TestSolution extends AbstractSolution {
       protected int value;
       public TestSolution(int value) {
@@ -21,11 +22,12 @@ public class SimulatedAnnealingLSTest extends AbstractMinProblem<SimulatedAnneal
       public void ensureMostCommon(dvrlib.localsearch.Solution s) { }
    }
 
-   protected int values[] = new int[]{11, 22, 33, 44, 55, 66, 77, 88, 99, 111 };
+   protected final int    values[] = new int[]{11, 22, 33, 44, 55, 66, 77, 88, 99, 111 };
+   protected final Random r        = new Random()                                       ;
 
    // Problem methods
    @Override
-   public Integer evaluate(TestSolution s, long iterationNumber) {
+   public Integer evaluate(TestSolution s) {
       return s.value;
    }
 
@@ -43,30 +45,40 @@ public class SimulatedAnnealingLSTest extends AbstractMinProblem<SimulatedAnneal
    }
 
    @Override
-   protected Integer zeroEval() {
-      return 0;
-   }
-
-   @Override
    public Integer diffEval(Integer e1, Integer e2) {
       return (e1 - e2);
    }
 
    // Changer methods
    @Override
-   public Pair<Integer, Integer> generateChange(TestSolution s) {
-      Random r = new Random();
-      return new Pair(s.value, values[r.nextInt(values.length)]);
+   public Pair<Integer, Integer> generateChange(SearchState<SimulatedAnnealingLSTest, TestSolution> state) {
+      return new Pair(state.getSolution().value, values[r.nextInt(values.length)]);
    }
 
    @Override
-   public void doChange(TestSolution s, Pair<Integer, Integer> c) {
-      s.value = c.b;
+   public void doChange(SearchState<SimulatedAnnealingLSTest, TestSolution> state, Pair<Integer, Integer> c) {
+      state.getSolution().value = c.b;
    }
 
    @Override
-   public void undoChange(TestSolution s, Pair<Integer, Integer> c) {
-      s.value = c.a;
+   public void undoChange(SearchState<SimulatedAnnealingLSTest, TestSolution> state, Pair<Integer, Integer> c) {
+      state.getSolution().value = c.a;
+   }
+
+   @Override
+   public boolean better(Integer e1, Integer e2) {
+      boolean b = super.better(e1, e2);
+      if((e1 >= e2 && b) || (e1 < e2 && !b))
+         System.out.println("\tSATest.better(" + e1 + ", " + e2 + ") = " + b);
+      return b;
+   }
+
+   @Override
+   public boolean betterEq(Integer e1, Integer e2) {
+      boolean b = super.betterEq(e1, e2);
+      if((e1 > e2 && b) || (e1 <= e2 && !b))
+         System.out.println("\tSATest.betterEq(" + e1 + ", " + e2 + ") = " + b);
+      return b;
    }
 
    // Test methods
