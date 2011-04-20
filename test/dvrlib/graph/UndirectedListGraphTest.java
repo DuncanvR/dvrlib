@@ -52,6 +52,17 @@ public class UndirectedListGraphTest extends ListGraphTest {
       assertTrue(instance.addEdge(4, 5));
       assertDegrees(new int[]{1,2,3,1,1,2});
 
+      assertTrue(instance.removeEdge(3, 2));
+      assertDegrees(new int[]{1,2,2,0,1,2});
+      assertTrue(instance.removeEdge(1, 0));
+      assertDegrees(new int[]{0,1,2,0,1,2});
+      assertTrue(instance.removeEdge(1, 2));
+      assertDegrees(new int[]{0,0,1,0,1,2});
+      assertTrue(instance.removeEdge(5, 4));
+      assertDegrees(new int[]{0,0,1,0,0,1});
+      assertTrue(instance.removeEdge(5, 2));
+      assertDegrees(new int[]{0,0,0,0,0,0});
+
       instance = newInstance(5);
       assertDegrees(new int[]{0,0,0,0,0});
       assertTrue(instance.addEdge(0, 1));

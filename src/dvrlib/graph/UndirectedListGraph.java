@@ -34,7 +34,7 @@ public class UndirectedListGraph extends ListGraph {
             return true;
          }
          else
-            super.removeEdge(a, b);
+            throw new IllegalStateException();
       }
       return false;
    }
@@ -52,7 +52,7 @@ public class UndirectedListGraph extends ListGraph {
             return true;
          }
          else
-            super.addEdge(a, b);
+            throw new IllegalStateException();
       }
       return false;
    }

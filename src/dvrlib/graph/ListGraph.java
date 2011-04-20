@@ -71,16 +71,17 @@ public class ListGraph extends AbstractGraph<ListGraphNode> {
     */
    @Override
    public boolean addEdge(int a, int b) {
-      ListGraphNode na = getNode(a), nb = getNode(b);
-      if(na == null || nb == null)
+      if(a == b)
          return false;
-      else {
+      ListGraphNode na = getNode(a), nb = getNode(b);
+      if(na != null && nb != null && !na.hasEdge(nb)) {
          na.neighbours.add(nb);
          edgeCount++;
-         if(na.getDegree() > maxDegree)
+         if(na.getDegree() > getMaxDegree())
             maxDegree = na.getDegree();
          return true;
       }
+      return false;
    }
 
    /**
