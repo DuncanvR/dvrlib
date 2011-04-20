@@ -6,7 +6,9 @@
 
 package dvrlib.localsearch;
 
+import dvrlib.generic.IterableOnce;
 import dvrlib.generic.Pair;
+import java.util.Collection;
 import java.util.Iterator;
 
 public class WeightedTree<E> implements Iterable<Pair<Double, E>> {
@@ -44,19 +46,6 @@ public class WeightedTree<E> implements Iterable<Pair<Double, E>> {
          rebalanceUp(root.add(key, value));
       return true;
    }
-
-   /*protected WeightedTreeNode<E> find(E e) {
-      for(WeightedTreeNode<E> node = root; node != null;) {
-         int compare = e.compareTo(node.key);
-         if(compare > 0)
-            node = node.right;
-         else if(compare < 0)
-            node = node.left;
-         else
-            return node;
-      }
-      return null;
-   }*/
 
    /**
     * Returns a (key, element) from the tree, reached with the given normalized index.
@@ -118,6 +107,8 @@ public class WeightedTree<E> implements Iterable<Pair<Double, E>> {
       Pair<Double, E> item = new Pair(node.key, node.pop());
       if(node.values.isEmpty())
          remove(node);
+      else
+         updateSizeUp(node);
       return item;
    }
 
@@ -196,8 +187,21 @@ public class WeightedTree<E> implements Iterable<Pair<Double, E>> {
       else {
          node.parent.replaceChild(node, (node.left != null ? node.left : node.right));
          rebalanceUp(node.parent);
+         updateSizeUp(node.parent);
          node.parent = null;
       }
+   }
+
+   /**
+    * Updates the size, weight and height of the given node and all its ancestors.
+    * @see WeightedTreeNode#updateSize()
+    * O(node.depth).
+    */
+   protected void updateSizeUp(WeightedTreeNode node) {
+      for(; node.parent != null; node = node.parent) {
+         node.updateSize();
+      }
+      node.updateSize();
    }
 
    /**
@@ -337,6 +341,33 @@ public class WeightedTree<E> implements Iterable<Pair<Double, E>> {
    @Override
    public Iterator<Pair<Double, E>> iterator() {
       return new WeightedTreeIterator<E>(this);
+   }
+
+   /**
+    * @see Collection#toArray()
+    */
+   public Object[] toArray() {
+      Object array[] = new Object[size()];
+      int i = 0;
+      for(Pair<Double, E> p : new IterableOnce<Pair<Double, E>>(iterator())) {
+         array[i++] = p.b;
+      }
+      return array;
+   }
+
+   /**
+    * @see Collection#toArray(T[])
+    */
+   public E[] toArray(E[] array) {
+      if(size() > array.length)
+         throw new IllegalArgumentException("Unable to fit all items in the given array, provide a larger one");
+      int i = 0;
+      for(Pair<Double, E> p : new IterableOnce<Pair<Double, E>>(iterator())) {
+         array[i++] = p.b;
+      }
+      if(i < array.length)
+         array[i] = null;
+      return array;
    }
 
    /**
