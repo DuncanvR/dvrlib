@@ -91,13 +91,9 @@ public class GeneticLS<S extends Solution, E extends Number & Comparable<E>> ext
          state.solution = combiner.combine(state, state.population.getWeighted(r.nextDouble()).b, state.population.getWeighted(r.nextDouble()).b);
 
          if(state.population.size() >= popSize) {
-            // Compare the new solution with the worst solution in the population
-            WeightedTreeNode<S> worst = state.population.getMin();
-            if(state.getProblem().better(state, worst.peek())) {
-               state.population.pop(worst);
-               state.population.add(state.problem.getWeight(state), state.solution);
+            // Replace the worst solution in the population with the new solution if its better
+            if(state.population.replaceMin(state.problem.getWeight(state), state.solution) != null)
                state.lastImprovement = i;
-            }
          }
          else {
             state.population.add(state.getProblem().getWeight(state), state.solution);
