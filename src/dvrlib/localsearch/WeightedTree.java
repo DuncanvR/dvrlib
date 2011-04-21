@@ -193,6 +193,20 @@ public class WeightedTree<E> implements Iterable<Pair<Double, E>> {
    }
 
    /**
+    * Replaces the element with the smallest key with the given element if the given key is larger.
+    * @return The replaced elements data, or <tt>null</tt> if the given key is smaller.
+    */
+   public Pair<Double, E> replaceMin(Double key, E value) {
+      WeightedTreeNode<E> min = getMin();
+      if(key > min.key) {
+         add(key, value);
+         return pop(min);
+      }
+      else
+         return null;
+   }
+
+   /**
     * Updates the size, weight and height of the given node and all its ancestors.
     * @see WeightedTreeNode#updateSize()
     * O(node.depth).
