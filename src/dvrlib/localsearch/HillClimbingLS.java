@@ -26,6 +26,7 @@ public class HillClimbingLS<S extends Solution, E extends Comparable<E>> extends
     */
    @Override
    public S search(Problem<S, E> problem, S solution) {
+      changer.reinitialize();
       SingularSearchState<Problem<S, E>, S> state = newState(problem, solution);
       iterate(state, -1).saveSolution();
       return state.getSolution();

@@ -65,6 +65,7 @@ public class GeneticLS<S extends Solution, E extends Number & Comparable<E>> ext
     * @see GeneticLS#iterate(dvrlib.localsearch.PluralSearchState, int)
     */
    public GLSSearchState<S, E> search(GLSSearchState<S, E> state) {
+      combiner.reinitialize();
       long n;
       do {
          n = stopCount - (state.iteration - state.lastImprovement);

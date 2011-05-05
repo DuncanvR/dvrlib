@@ -9,11 +9,6 @@ package dvrlib.localsearch;
 import java.util.LinkedList;
 
 public class SimulatedAnnealingLS<S extends Solution, E extends Number & Comparable<E>> extends LocalSearch<S, E> {
-   /** The default initial temperature is 2.4663035, so <tt>dE = 1</tt> results in a 2/3 chance of acceptance. */
-   public final static double defTemp    = 2.4663035;
-   /** The default temperature modifier is 0.98, leading to a 2% decrease in temperature every <tt>coolCount</tt> iterations. */
-   public final static double defTempMod = 0.98     ;
-
    public class SASearchState extends AbstractSearchState<Problem<S, E>, S> {
       protected LinkedList<Object>         changes     = new LinkedList();
       protected S                          solution                      ;
@@ -43,6 +38,11 @@ public class SimulatedAnnealingLS<S extends Solution, E extends Number & Compara
          return solution;
       }
    }
+
+   /** The default initial temperature is 2.4663035, so <tt>dE = 1</tt> results in a 2/3 chance of acceptance. */
+   public final static double defTemp    = 2.4663035;
+   /** The default temperature modifier is 0.98, leading to a 2% decrease in temperature every <tt>coolCount</tt> iterations. */
+   public final static double defTempMod = 0.98     ;
 
    protected final Changer<Problem<S, E>, S, Object> changer;
    protected final int                               stopCount,
@@ -86,6 +86,7 @@ public class SimulatedAnnealingLS<S extends Solution, E extends Number & Compara
     */
    @Override
    public S search(Problem<S, E> problem, S solution) {
+      changer.reinitialize();
       SASearchState state = new SASearchState(problem, solution);
       E curEval = problem.evaluate(state), bestEval = curEval;
 

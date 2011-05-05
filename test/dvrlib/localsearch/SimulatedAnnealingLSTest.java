@@ -51,6 +51,9 @@ public class SimulatedAnnealingLSTest extends    AbstractMinProblem<SimulatedAnn
 
    // Changer methods
    @Override
+   public void reinitialize() { }
+
+   @Override
    public Pair<Integer, Integer> generateChange(SearchState<SimulatedAnnealingLSTest, TestSolution> state) {
       return new Pair(state.getSolution().value, values[r.nextInt(values.length)]);
    }
