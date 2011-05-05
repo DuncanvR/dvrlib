@@ -18,16 +18,22 @@ public class WeightedTree<E> implements Iterable<Pair<Double, E>> {
     * Returns the number of elements in this tree.
     * O(1).
     */
-   public int size() {
+   public int     size   () {
       return (root == null ? 0 : root.size);
    }
-
    /**
     * Returns true if this tree holds no elements, false otherwise.
     * O(1).
     */
    public boolean isEmpty() {
       return root == null;
+   }
+   /**
+    * Removes all elements from this tree.
+    * O(1).
+    */
+   public void    clear  () {
+      root = null;
    }
 
    /**
@@ -68,7 +74,6 @@ public class WeightedTree<E> implements Iterable<Pair<Double, E>> {
    protected WeightedTreeNode<E> getMin() {
       return (root == null ? null : root.getMin());
    }
-
    /**
     * Returns the node with the largest key in this tree.
     * O(height).
@@ -86,7 +91,6 @@ public class WeightedTree<E> implements Iterable<Pair<Double, E>> {
       WeightedTreeNode node = getMin();
       return new Pair(node.key, node.peek());
    }
-
    /**
     * Returns an element from the node with the largest key along with that key.
     * @see WeightedTree#getMax()
@@ -103,7 +107,7 @@ public class WeightedTree<E> implements Iterable<Pair<Double, E>> {
     * @see WeightedTree#remove(dvrlib.localsearch.WeightedTreeNode)
     * O(node.depth).
     */
-   protected Pair<Double, E> pop(WeightedTreeNode<E> node) {
+   protected Pair<Double, E> pop   (WeightedTreeNode<E> node) {
       Pair<Double, E> item = new Pair(node.key, node.pop());
       if(node.values.isEmpty())
          remove(node);
@@ -111,22 +115,20 @@ public class WeightedTree<E> implements Iterable<Pair<Double, E>> {
          updateSizeUp(node);
       return item;
    }
-
    /**
     * Removes an element from the node with the smallest key and returns its key and its data.
     * @see WeightedTree#getMin()
     * @see WeightedTree#pop(dvrlib.localsearch.WeightedTreeNode)
     */
-   public Pair<Double, E> popMin() {
+   public    Pair<Double, E> popMin()                         {
       return pop(getMin());
    }
-
    /**
     * Removes an element from the node with the largest key and returns its key along with its data.
     * @see WeightedTree#getMax()
     * @see WeightedTree#pop(dvrlib.localsearch.WeightedTreeNode)
     */
-   public Pair<Double, E> popMax() {
+   public    Pair<Double, E> popMax()                         {
       return pop(getMax());
    }
 
@@ -134,7 +136,7 @@ public class WeightedTree<E> implements Iterable<Pair<Double, E>> {
     * Removes the given node from this tree.
     * O(node.height + node.depth).
     */
-   protected void remove(WeightedTreeNode<E> node) {
+   protected void remove        (WeightedTreeNode<E> node) {
       if(node.left == null || node.right == null)
          removeExternal(node);
       else {
@@ -168,7 +170,6 @@ public class WeightedTree<E> implements Iterable<Pair<Double, E>> {
          }*/
       }
    }
-
    /**
     * Removes the given external node from this tree.
     * Do not call this method directly but use <tt>remove(WeightedTreeNode)</tt>.
@@ -197,13 +198,16 @@ public class WeightedTree<E> implements Iterable<Pair<Double, E>> {
     * @return The replaced elements data, or <tt>null</tt> if the given key is smaller.
     */
    public Pair<Double, E> replaceMin(Double key, E value) {
-      WeightedTreeNode<E> min = getMin();
-      if(key > min.key) {
+      if(root == null)
          add(key, value);
-         return pop(min);
+      else {
+         WeightedTreeNode<E> min = getMin();
+         if(key > min.key) {
+            add(key, value);
+            return pop(min);
+         }
       }
-      else
-         return null;
+      return null;
    }
 
    /**
@@ -223,18 +227,17 @@ public class WeightedTree<E> implements Iterable<Pair<Double, E>> {
     * @see WeightedTree#rebalance(dvrlib.localsearch.WeightedTreeNode)
     * O(node.depth).
     */
-   protected void rebalanceUp(WeightedTreeNode node) {
+   protected void             rebalanceUp(WeightedTreeNode node) {
       for(; node != null; node = node.parent) {
          node = rebalance(node);
       }
    }
-
    /**
     * Rebalances the given node by performing rotations if necessary.
     * @return The node at the original position of the given node after the rebalancing.
     * O(1).
     */
-   protected WeightedTreeNode rebalance(WeightedTreeNode node) {
+   protected WeightedTreeNode rebalance  (WeightedTreeNode node) {
       if(node != null) {
          int balance = node.getLeftHeight() - node.getRightHeight();
          if(balance > 1) {
@@ -299,7 +302,6 @@ public class WeightedTree<E> implements Iterable<Pair<Double, E>> {
 
       return y;
    }
-
    /**
     * Performs a double rotation with the three given nodes:
     * z                             z
@@ -360,7 +362,7 @@ public class WeightedTree<E> implements Iterable<Pair<Double, E>> {
    /**
     * @see Collection#toArray()
     */
-   public Object[] toArray() {
+   public Object[] toArray()          {
       Object array[] = new Object[size()];
       int i = 0;
       for(Pair<Double, E> p : new IterableOnce<Pair<Double, E>>(iterator())) {
@@ -368,11 +370,10 @@ public class WeightedTree<E> implements Iterable<Pair<Double, E>> {
       }
       return array;
    }
-
    /**
     * @see Collection#toArray(T[])
     */
-   public E[] toArray(E[] array) {
+   public E[]      toArray(E[] array) {
       if(size() > array.length)
          throw new IllegalArgumentException("Unable to fit all items in the given array, provide a larger one");
       int i = 0;
