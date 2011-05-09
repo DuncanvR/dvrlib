@@ -1,12 +1,11 @@
 /*
- * DvRLib - Local search
+ * DvRLib - Generic
  * Duncan van Roermund, 2010-2011
  * WeightedTreeNode.java
  */
 
-package dvrlib.localsearch;
+package dvrlib.generic;
 
-import dvrlib.generic.Pair;
 import java.util.ArrayList;
 import java.util.List;
 

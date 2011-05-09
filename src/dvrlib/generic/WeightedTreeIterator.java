@@ -1,15 +1,14 @@
 /*
- * DvRLib - Local search
+ * DvRLib - Generic
  * Duncan van Roermund, 2010-2011
  * WeightedTreeIterator.java
  */
 
-package dvrlib.localsearch;
+package dvrlib.generic;
 
-import dvrlib.generic.Pair;
 import java.util.Iterator;
 
-public class WeightedTreeIterator<E> implements Iterator<Pair<Double, E>> {
+public class WeightedTreeIterator<E> implements Iterator<E> {
    protected final WeightedTree<E> tree;
    protected WeightedTreeNode<E> node;
    protected Iterator<E> nodeIterator = null;
@@ -27,12 +26,11 @@ public class WeightedTreeIterator<E> implements Iterator<Pair<Double, E>> {
    }
 
    @Override
-   public Pair<Double, E> next() {
-      // Sanity check
-      if(!hasNext()) throw new NullPointerException("!hasNext()");
-      if(node == null) throw new NullPointerException("node == null");
+   public E next() {
+      assert hasNext()      : "!hasNext()";
+      assert (node != null) : "node == null";
 
-      Pair<Double, E> next = new Pair(node.key, nodeIterator.next());
+      E next = nodeIterator.next();
       if(!nodeIterator.hasNext()) {
          if(node.right != null)
             node = node.right.getMin();
@@ -55,5 +53,4 @@ public class WeightedTreeIterator<E> implements Iterator<Pair<Double, E>> {
    public void remove() {
       throw new UnsupportedOperationException(this.getClass().getName() + ".remove() is not supported");
    }
-
 }

@@ -1,17 +1,15 @@
 /*
- * DvRLib - Local search
+ * DvRLib - Generic
  * Duncan van Roermund, 2010-2011
  * WeightedTree.java
  */
 
-package dvrlib.localsearch;
+package dvrlib.generic;
 
-import dvrlib.generic.IterableOnce;
-import dvrlib.generic.Pair;
 import java.util.Collection;
 import java.util.Iterator;
 
-public class WeightedTree<E> implements Iterable<Pair<Double, E>> {
+public class WeightedTree<E> implements Iterable<E> {
    protected WeightedTreeNode<E> root = null;
 
    /**
@@ -61,7 +59,7 @@ public class WeightedTree<E> implements Iterable<Pair<Double, E>> {
     * This means the item with the largest index has the most chance of getting selected.
     * @param normIndex A double between 0 and 1.
     */
-   protected Pair<Double, E> getWeighted(double normIndex) {
+   public Pair<Double, E> getWeighted(double normIndex) {
       if(normIndex < 0 || normIndex > 1)
          throw new IllegalArgumentException("The argument of WeightedTree.getWeighted(double) should be between 0 and 1");
       return (root == null ? null : root.getWeighted(normIndex));
@@ -194,23 +192,6 @@ public class WeightedTree<E> implements Iterable<Pair<Double, E>> {
    }
 
    /**
-    * Replaces the element with the smallest key with the given element if the given key is larger.
-    * @return The replaced elements data, or <tt>null</tt> if the given key is smaller.
-    */
-   public Pair<Double, E> replaceMin(Double key, E value) {
-      if(root == null)
-         add(key, value);
-      else {
-         WeightedTreeNode<E> min = getMin();
-         if(key > min.key) {
-            add(key, value);
-            return pop(min);
-         }
-      }
-      return null;
-   }
-
-   /**
     * Updates the size, weight and height of the given node and all its ancestors.
     * @see WeightedTreeNode#updateSize()
     * O(node.depth).
@@ -317,10 +298,8 @@ public class WeightedTree<E> implements Iterable<Pair<Double, E>> {
     * O(1).
     */
    protected WeightedTreeNode doubleRotation(WeightedTreeNode z, WeightedTreeNode y, WeightedTreeNode x, boolean ZLeft) {
-      /*if(z == null || y == null)
-         throw new IllegalArgumentException("Cannot rotate on null nodes");
-      if(z != null && z.parent == null && z != root)
-         throw new IllegalStateException("Node without parent other than the root encountered");*/
+      assert (z != null && y != null) : "Cannot rotate on null nodes";
+      assert (z == root || z.parent != null) : "Node without parent other than the root encountered";
 
       // Maintain root and parents
       if(z == root) {
@@ -355,7 +334,7 @@ public class WeightedTree<E> implements Iterable<Pair<Double, E>> {
    }
 
    @Override
-   public Iterator<Pair<Double, E>> iterator() {
+   public Iterator<E> iterator() {
       return new WeightedTreeIterator<E>(this);
    }
 
@@ -365,8 +344,8 @@ public class WeightedTree<E> implements Iterable<Pair<Double, E>> {
    public Object[] toArray()          {
       Object array[] = new Object[size()];
       int i = 0;
-      for(Pair<Double, E> p : new IterableOnce<Pair<Double, E>>(iterator())) {
-         array[i++] = p.b;
+      for(E e : this) {
+         array[i++] = e;
       }
       return array;
    }
@@ -377,8 +356,8 @@ public class WeightedTree<E> implements Iterable<Pair<Double, E>> {
       if(size() > array.length)
          throw new IllegalArgumentException("Unable to fit all items in the given array, provide a larger one");
       int i = 0;
-      for(Pair<Double, E> p : new IterableOnce<Pair<Double, E>>(iterator())) {
-         array[i++] = p.b;
+      for(E e : this) {
+         array[i++] = e;
       }
       if(i < array.length)
          array[i] = null;
