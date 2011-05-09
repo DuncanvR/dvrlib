@@ -85,6 +85,16 @@ public abstract class AbstractProblem<S extends Solution, E extends Number & Com
    /**
     * Returns the weight of the given solution.
     * Optional operation used by GeneticLS to insert solutions into the population.
+    * @see Problem#getWeight(dvrlib.localsearch.Solution)
+    * @see Problem#evaluate(dvrlib.localsearch.Solution)
+    */
+   @Override
+   public double getWeight(S s) {
+      return getWeight(evaluate(s));
+   }
+   /**
+    * Returns the weight of the given solution at the given iteration.
+    * Optional operation used by GeneticLS to insert solutions into the population.
     * @param iterationNumber Indicates the iteration number in the current search.
     * @see Problem#getWeight(java.lang.Comparable)
     * @see AbstractProblem#evaluate(dvrlib.localsearch.Solution, long)

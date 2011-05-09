@@ -88,6 +88,12 @@ public interface Problem<S extends Solution, E extends Comparable<E>> {
    /**
     * Returns the weight of the given solution.
     * Optional operation used by GeneticLS to insert solutions into the population.
+    * @see Problem#getWeight(java.lang.Comparable)
+    */
+   public double getWeight(S s);
+   /**
+    * Returns the weight of the given solution at the given iteration.
+    * Optional operation used by GeneticLS to insert solutions into the population.
     * @param iterationNumber Indicates the iteration number in the current search.
     * @see Problem#getWeight(java.lang.Comparable)
     */
