@@ -11,7 +11,7 @@ public interface Combiner<P extends Problem<S, ? extends Comparable<?>>, S exten
     * Reinitializes this combiner, used when a new search is started.
     * @see LocalSearch#search(dvrlib.localsearch.Problem, dvrlib.localsearch.Solution)
     */
-   public void   reinitialize();
+   public void reinitialize();
 
    /**
     * Returns a combination of the two given solutions.
@@ -23,5 +23,5 @@ public interface Combiner<P extends Problem<S, ? extends Comparable<?>>, S exten
     * Creates a new population with at least the given solution and at most <tt>popSize</tt> solutions.
     * A simple implementation would include the given solution, and some random solutions.
     */
-   public WeightedTree<S> createPopulation(P problem, S solution, int popSize);
+   public WeightedTreePopulation<S> createPopulation(P problem, S solution, int popSize);
 }

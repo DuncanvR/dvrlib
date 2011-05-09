@@ -6,26 +6,24 @@
 
 package dvrlib.localsearch;
 
-import java.util.Random;
-
 public class GeneticLS<S extends Solution, E extends Number & Comparable<E>> extends StatefulLocalSearch<S, E, GeneticLS.GLSSearchState<S, E>> {
    public static class GLSSearchState<S extends Solution, E extends Comparable<E>> extends AbstractSearchState<Problem<S, E>, S> {
       // static inner class: workaround of bug 6557954 in jdk6
-      protected WeightedTree<S> population            ;
-      protected S               solution        = null;
-      protected long            lastImprovement       ;
+      protected WeightedTreePopulation<S> population;
+      protected S                         solution        = null;
+      protected long                      lastImprovement;
 
-      protected GLSSearchState(Problem<S, E> problem, WeightedTree<S> population) {
+      protected GLSSearchState(Problem<S, E> problem, WeightedTreePopulation<S> population) {
          super(problem);
          this.population = population;
       }
 
       @Override
       public S getSolution() {
-         return (solution == null ? population.getMax().peek() : solution);
+         return (solution == null ? population.peekBest() : solution);
       }
 
-      public WeightedTree<S> getPopulation() {
+      public WeightedTreePopulation<S> getPopulation() {
          return population;
       }
    }
@@ -82,22 +80,20 @@ public class GeneticLS<S extends Solution, E extends Number & Comparable<E>> ext
     */
    @Override
    public GLSSearchState<S, E> iterate(GLSSearchState<S, E> state, long n) {
-      Random r = new Random();
-
       while(state.population.size() > popSize)
-         state.population.popMin();
+         state.population.popWorst();
 
       for(long i = state.getIterationNumber(), iMax = state.getIterationNumber() + n; i < iMax; i++) {
          // Generate new solution from two random solutions in the population
-         state.solution = combiner.combine(state, state.population.getWeighted(r.nextDouble()).b, state.population.getWeighted(r.nextDouble()).b);
+         state.solution = combiner.combine(state, state.population.peekRandom(), state.population.peekRandom());
 
          if(state.population.size() >= popSize) {
             // Replace the worst solution in the population with the new solution if its better
-            if(state.population.replaceMin(state.problem.getWeight(state), state.solution) != null)
+            if(state.population.replaceWorst(state.solution) != null)
                state.lastImprovement = i;
          }
          else {
-            state.population.add(state.getProblem().getWeight(state), state.solution);
+            state.population.add(state.solution);
             state.lastImprovement = i;
          }
 
