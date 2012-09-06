@@ -4,9 +4,8 @@
  * WeightedTreeTest.java
  */
 
-package dvrlib.localsearch;
+package dvrlib.generic;
 
-import dvrlib.generic.Pair;
 import java.util.Iterator;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -142,13 +141,11 @@ public class WeightedTreeTest {
          }
       }
 
-      Iterator<Pair<Double, Integer>> it = instance.iterator();
+      Iterator<Integer> it = instance.iterator();
       for(int i = 0; i < 9; i++) {
          for(int j = 0; j < 9; j++) {
             assertTrue(it.hasNext());
-            Pair<Double, Integer> e = it.next();
-            assertEquals(i, e.a.intValue());
-            assertEquals(i + j, e.b.intValue());
+            assertEquals(i + j, it.next().intValue());
          }
       }
       assertFalse(it.hasNext());

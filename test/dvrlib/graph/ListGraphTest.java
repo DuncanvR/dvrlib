@@ -15,7 +15,7 @@ public class ListGraphTest extends AbstractGraphTest {
 
    @Override
    protected AbstractEdge addEdge(int a, int b) {
-      if(instance.addEdge(a, b))
+      if(instance.addEdge(a, b, null))
          return new AbstractEdge(a, b);
       else
          return null;

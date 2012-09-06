@@ -6,7 +6,7 @@
 
 package dvrlib.graph;
 
-public class ListGraphIterator implements java.util.Iterator<ListGraphNode> {
+public class ListGraphIterator<NodeData, EdgeData> implements java.util.Iterator<ListGraphNode<NodeData, EdgeData>> {
    protected final ListGraph graph;
    protected int node = 0;
 
@@ -28,5 +28,4 @@ public class ListGraphIterator implements java.util.Iterator<ListGraphNode> {
    public void remove() {
       throw new UnsupportedOperationException(this.getClass().getName() + ".remove() is not supported");
    }
-
 }

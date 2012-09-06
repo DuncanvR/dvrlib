@@ -20,7 +20,7 @@ public class UndirectedListGraphTest extends ListGraphTest {
       instance = newInstance(10);
       for(int i = 1; i < instance.nodeCount; i += 2) {
          for(int j = 0; j < i; j += 2) {
-            instance.addEdge(i, j);
+            instance.addEdge(i, j, null);
          }
       }
 
@@ -41,49 +41,50 @@ public class UndirectedListGraphTest extends ListGraphTest {
    public void testDegrees() {
       instance = newInstance(6);
       assertDegrees(new int[]{0,0,0,0,0,0});
-      assertTrue(instance.addEdge(0, 1));
+      assertTrue(instance.addEdge(0, 1, null));
       assertDegrees(new int[]{1,1,0,0,0,0});
-      assertTrue(instance.addEdge(2, 1));
+      assertTrue(instance.addEdge(2, 1, null));
       assertDegrees(new int[]{1,2,1,0,0,0});
-      assertTrue(instance.addEdge(2, 3));
+      assertTrue(instance.addEdge(2, 3, null));
       assertDegrees(new int[]{1,2,2,1,0,0});
-      assertTrue(instance.addEdge(2, 5));
+      assertTrue(instance.addEdge(2, 5, null));
       assertDegrees(new int[]{1,2,3,1,0,1});
-      assertTrue(instance.addEdge(4, 5));
+      assertTrue(instance.addEdge(4, 5, null));
       assertDegrees(new int[]{1,2,3,1,1,2});
 
-      assertTrue(instance.removeEdge(3, 2));
+      assertNull(instance.removeEdge(3, 2));
       assertDegrees(new int[]{1,2,2,0,1,2});
-      assertTrue(instance.removeEdge(1, 0));
+      assertNull(instance.removeEdge(1, 0));
       assertDegrees(new int[]{0,1,2,0,1,2});
-      assertTrue(instance.removeEdge(1, 2));
+      assertNull(instance.removeEdge(1, 2));
       assertDegrees(new int[]{0,0,1,0,1,2});
-      assertTrue(instance.removeEdge(5, 4));
+      assertNull(instance.removeEdge(5, 4));
       assertDegrees(new int[]{0,0,1,0,0,1});
-      assertTrue(instance.removeEdge(5, 2));
+      assertNull(instance.removeEdge(5, 2));
       assertDegrees(new int[]{0,0,0,0,0,0});
 
       instance = newInstance(5);
       assertDegrees(new int[]{0,0,0,0,0});
-      assertTrue(instance.addEdge(0, 1));
+      assertTrue(instance.addEdge(0, 1, null));
       assertDegrees(new int[]{1,1,0,0,0});
-      assertTrue(instance.addEdge(2, 3));
+      assertTrue(instance.addEdge(2, 3, null));
       assertDegrees(new int[]{1,1,1,1,0});
-      assertTrue(instance.addEdge(0, 4));
+      assertTrue(instance.addEdge(0, 4, null));
       assertDegrees(new int[]{2,1,1,1,1});
-      assertTrue(instance.addEdge(2, 4));
+      assertTrue(instance.addEdge(2, 4, null));
       assertDegrees(new int[]{2,1,2,1,2});
-      assertTrue(instance.addEdge(0, 3));
+      assertTrue(instance.addEdge(0, 3, null));
+
       assertDegrees(new int[]{3,1,2,2,2});
-      assertTrue(instance.removeEdge(2, 4));
+      assertNull(instance.removeEdge(2, 4));
       assertDegrees(new int[]{3,1,1,2,1});
-      assertTrue(instance.removeEdge(2, 3));
+      assertNull(instance.removeEdge(2, 3));
       assertDegrees(new int[]{3,1,0,1,1});
-      assertTrue(instance.removeEdge(0, 1));
+      assertNull(instance.removeEdge(0, 1));
       assertDegrees(new int[]{2,0,0,1,1});
-      assertTrue(instance.removeEdge(0, 4));
+      assertNull(instance.removeEdge(0, 4));
       assertDegrees(new int[]{1,0,0,1,0});
-      assertTrue(instance.removeEdge(0, 3));
+      assertNull(instance.removeEdge(0, 3));
       assertDegrees(new int[]{0,0,0,0,0});
    }
 }

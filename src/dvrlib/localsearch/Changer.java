@@ -11,7 +11,7 @@ public interface Changer<P extends Problem<S, ? extends Comparable<?>>, S extend
     * Reinitializes this changer, used when a new search is started.
     * @see LocalSearch#search(dvrlib.localsearch.Problem, dvrlib.localsearch.Solution)
     */
-   public void   reinitialize();
+   public void   reinitialize(P problem);
 
    /**
     * Returns a change that can turn the solution into one that closely resembles it.

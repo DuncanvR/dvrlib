@@ -1,6 +1,6 @@
 /*
  * DvRLib - Generic
- * Duncan van Roermund, 2010
+ * Duncan van Roermund, 2010-2011
  * IterableArray.java
  */
 

@@ -26,9 +26,9 @@ public class HillClimbingLS<S extends Solution, E extends Comparable<E>> extends
     */
    @Override
    public S search(Problem<S, E> problem, S solution) {
-      changer.reinitialize();
       SingularSearchState<Problem<S, E>, S> state = newState(problem, solution);
       iterate(state, -1).saveSolution();
+      state.solution.setIterationCount(state.getIterationNumber());
       return state.getSolution();
    }
 
@@ -47,21 +47,22 @@ public class HillClimbingLS<S extends Solution, E extends Comparable<E>> extends
          lastChange = changer.generateChange(state);
          changer.doChange(state, lastChange);
          e2 = state.problem.evaluate(state);
+         state.increaseIterationCount(1);
       }
       while(state.problem.better(e2, e1) && (n < 0 || iterations++ < n));
 
-      if(n < 0 || iterations <= n) {
+      if(state.problem.better(e1, e2)) {
          // Undo last change
          changer.undoChange(state, lastChange);
          lastChange = null;
       }
 
-      state.solution.setIterationCount(state.getIterationNumber());
       return state;
    }
 
    @Override
    public SingularSearchState<Problem<S, E>, S> newState(Problem<S, E> problem, S solution) {
+      changer.reinitialize(problem);
       return new SingularSearchState(problem, solution);
    }
 }

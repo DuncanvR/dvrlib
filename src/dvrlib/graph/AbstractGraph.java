@@ -7,8 +7,9 @@
 package dvrlib.graph;
 
 import java.util.Iterator;
+import java.util.Map;
 
-public abstract class AbstractGraph<N extends AbstractGraphNode> {
+public abstract class AbstractGraph<Node extends AbstractGraphNode, EdgeData> {
    protected int nodeCount, edgeCount = 0, maxDegree = 0;
 
    /**
@@ -75,19 +76,19 @@ public abstract class AbstractGraph<N extends AbstractGraphNode> {
     * Returns the node at the given index.
     * May return null if the node index is out of bounds.
     */
-   public abstract N getNode(int index);
+   public abstract Node getNode(int index);
 
    /**
     * Returns an iterator to the neighbouring nodes of the given node.
     */
-   public Iterator<N> neighbourIterator(int index) {
+   public Iterator<Map.Entry<Node, EdgeData>> neighbourIterator(int index) {
       return getNode(index).neighbourIterator();
    }
 
    /**
     * Returns an iterator to the nodes of this graph.
     */
-   public abstract Iterator<N> nodesIterator();
+   public abstract Iterator<Node> nodesIterator();
 
    /**
     * Returns true if there is an edge between nodes a and b, false otherwise.
@@ -95,16 +96,29 @@ public abstract class AbstractGraph<N extends AbstractGraphNode> {
    public abstract boolean hasEdge(int a, int b);
 
    /**
+    * Returns the data associated with the edge between nodes a and b.
+    * @throws IllegalArgumentException If the given edge does not exist in this graph.
+    */
+   public abstract EdgeData getEdge(int a, int b) throws IllegalArgumentException;
+
+   /**
+    * Sets the data associated with the edge between nodes a and b, and returns the old data.
+    * @throws IllegalArgumentException If the given edge does not exist in this graph.
+    */
+   public abstract EdgeData setEdgeData(int a, int b, EdgeData ed) throws IllegalArgumentException;
+
+   /**
     * Adds an edge between nodes a and b.
     * @return true if the edge was added, false otherwise.
     */
-   public abstract boolean addEdge(int a, int b);
+   public abstract boolean addEdge(int a, int b, EdgeData ed);
 
    /**
     * Removes the edge between nodes a and b.
-    * @return true if the edge was removed, false otherwise.
+    * @return The data that was associated with the edge.
+    * @throws IllegalArgumentException If the given edge does not exist in this graph.
     */
-   public abstract boolean removeEdge(int a, int b);
+   public abstract EdgeData removeEdge(int a, int b) throws IllegalArgumentException;
 
    @Override
    public String toString() {
