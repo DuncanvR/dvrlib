@@ -15,6 +15,7 @@ public class FlatMatrix<E> extends AbstractMatrix<E> {
     * @param n The number of columns.
     */
    public FlatMatrix(int m, int n) {
+      super(m, n);
       elements = new Object[m][n];
    }
 
@@ -22,6 +23,7 @@ public class FlatMatrix<E> extends AbstractMatrix<E> {
     * Returns the value at the given index.
     * @param i The row index.
     * @param j The column index.
+    * @return The requested element.
     * @see AbstractMatrix#get(int,int)
     */
    public E get(int i, int j) {

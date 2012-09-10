@@ -31,6 +31,7 @@ public class VerticalMatrix<E> extends AbstractAdjustableMatrix<E> {
     * Returns the value at the given index.
     * @param i The row index.
     * @param j The column index.
+    * @return The requested element.
     * @see AbstractMatrix#get(int,int)
     */
    public E get(int i, int j) {
