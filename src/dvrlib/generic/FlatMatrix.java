@@ -7,15 +7,15 @@
 package dvrlib.generic;
 
 public class FlatMatrix<E> extends AbstractMatrix<E> {
-   protected E elements[][];
+   protected Object elements[][];
 
    /**
     * FlatMatrix constructor.
     * @param m The number of rows.
     * @param n The number of columns.
     */
-   public FlatMatrix(Class<E> c, int m, int n) {
-      elements = (E[][]) java.lang.reflect.Array.newInstance(c, m, n);
+   public FlatMatrix(int m, int n) {
+      elements = new Object[m][n];
    }
 
    /**
@@ -25,7 +25,7 @@ public class FlatMatrix<E> extends AbstractMatrix<E> {
     * @see AbstractMatrix#get(int,int)
     */
    public E get(int i, int j) {
-      return elements[i][j];
+      return (E) elements[i][j];
    }
 
    /**
