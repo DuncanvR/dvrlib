@@ -9,9 +9,8 @@ package dvrlib.graph;
 public class UndirectedListGraph<NodeData, EdgeData> extends ListGraph<NodeData, EdgeData> {
 
    /**
-    * UndirectedListGraph constructor, using itself as edgeCreator.
+    * UndirectedListGraph constructor.
     * @param nodeCount The number of nodes in this graph.
-    * @see UndirectedList(int, dvrlib.generic.EdgeCreator)
     */
    public UndirectedListGraph(int nodeCount) {
       super(nodeCount);
@@ -19,8 +18,8 @@ public class UndirectedListGraph<NodeData, EdgeData> extends ListGraph<NodeData,
 
    /**
     * Adds an edge between nodes a and b.
-    * @see MatrixGraph#addEdge(int, int)
     * @return true when the edge was successfully added, false otherwise.
+    * @see MatrixGraph#addEdge(int, int)
     * O(1) if the edge already existed, O(e) otherwise.
     */
    @Override
@@ -41,6 +40,7 @@ public class UndirectedListGraph<NodeData, EdgeData> extends ListGraph<NodeData,
 
    /**
     * Sets the data associated with the edge between nodes a and b, and returns the old data.
+    * @return The old data associated with the indicated edge.
     * @see ListGraph#setEdgeData(int, int, java.lang.Object)
     */
    @Override

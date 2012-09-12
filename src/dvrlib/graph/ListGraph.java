@@ -99,6 +99,7 @@ public class ListGraph<NodeData, EdgeData> extends AbstractGraph<ListGraphNode<N
 
    /**
     * Sets the data associated with the edge between nodes a and b, and returns the old data.
+    * @return The old data associated with the indicated edge.
     * @throws IllegalArgumentException If the given edge does not exist in this graph.
     */
    @Override
