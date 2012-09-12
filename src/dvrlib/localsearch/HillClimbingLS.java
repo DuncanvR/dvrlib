@@ -1,14 +1,13 @@
 /*
  * DvRLib - Local search
- * Duncan van Roermund, 2010-2011
+ * Duncan van Roermund, 2010-2012
  * HillClimbingLS.java
  */
 
 package dvrlib.localsearch;
 
 public class HillClimbingLS<S extends Solution, E extends Comparable<E>> extends StatefulLocalSearch<S, E, SingularSearchState<Problem<S, E>, S>> {
-   protected final Changer<Problem<S, E>, S, Object> changer          ;
-   protected       Object                            lastChange = null;
+   protected final Changer<Problem<S, E>, S, Object> changer;
 
    /**
     * HillClimbingLS constructor.
@@ -39,23 +38,22 @@ public class HillClimbingLS<S extends Solution, E extends Comparable<E>> extends
     */
    @Override
    public SingularSearchState<Problem<S, E>, S> iterate(SingularSearchState<Problem<S, E>, S> state, long n) {
-      int iterations = 1;
-      // Keep mutating as long as it improves the solution and the maximum number of iterations has not been reached
+      Object change;
       E e1, e2 = state.problem.evaluate(state);
+      int iterations = 1;
+
+      // Keep mutating as long as it improves the solution and the maximum number of iterations has not been reached
       do {
          e1 = e2;
-         lastChange = changer.generateChange(state);
-         changer.doChange(state, lastChange);
+         change = changer.generateChange(state);
+         changer.doChange(state, change);
          e2 = state.problem.evaluate(state);
          state.increaseIterationCount(1);
       }
       while(state.problem.better(e2, e1) && (n < 0 || iterations++ < n));
 
-      if(state.problem.better(e1, e2)) {
-         // Undo last change
-         changer.undoChange(state, lastChange);
-         lastChange = null;
-      }
+      if(state.problem.better(e1, e2)) // Undo last change
+         changer.undoChange(state, change);
 
       return state;
    }
