@@ -71,7 +71,7 @@ public class WeightedTreeNode<E> {
    /**
     * @see WeightedTree#getWeighted(double)
     */
-   public Pair<Double, E> getWeighted(double normIndex) {
+   public Tuple<Double, E> getWeighted(double normIndex) {
       if(normIndex < 0 || normIndex >= 1.0)
          throw new IllegalArgumentException("normIndex should be between 0 (inclusive) and 1 (exclusive), got " + normIndex);
 
@@ -90,7 +90,7 @@ public class WeightedTreeNode<E> {
       else
          r = 1.0;
 
-      return new Pair(key, values.get((int)(values.size() * (normIndex - l) / (r - l))));
+      return new Tuple(key, values.get((int)(values.size() * (normIndex - l) / (r - l))));
    }
 
    /**
@@ -127,7 +127,7 @@ public class WeightedTreeNode<E> {
     * Adds the given (key, value) to this subtree and returns the node it ends up in.
     * @see WeightedTreeNode#add(double, java.lang.Object)
     */
-   public WeightedTreeNode<E> add(Pair<Double, E> kv) {
+   public WeightedTreeNode<E> add(Tuple<Double, E> kv) {
       return add(kv.a, kv.b);
    }
 

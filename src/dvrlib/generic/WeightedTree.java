@@ -59,7 +59,7 @@ public class WeightedTree<E> implements Iterable<E> {
     * This means the item with the largest index has the most chance of getting selected.
     * @param normIndex A double between 0 and 1.
     */
-   public Pair<Double, E> getWeighted(double normIndex) {
+   public Tuple<Double, E> getWeighted(double normIndex) {
       if(normIndex < 0 || normIndex > 1)
          throw new IllegalArgumentException("The argument of WeightedTree.getWeighted(double) should be between 0 and 1");
       return (root == null ? null : root.getWeighted(normIndex));
@@ -85,18 +85,18 @@ public class WeightedTree<E> implements Iterable<E> {
     * @see WeightedTree#getMin()
     * @see WeightedTreeNode#peek()
     */
-   public Pair<Double, E> peekMin() {
+   public Tuple<Double, E> peekMin() {
       WeightedTreeNode node = getMin();
-      return new Pair(node.key, node.peek());
+      return new Tuple(node.key, node.peek());
    }
    /**
     * Returns an element from the node with the largest key along with that key.
     * @see WeightedTree#getMax()
     * @see WeightedTreeNode#peek()
     */
-   public Pair<Double, E> peekMax() {
+   public Tuple<Double, E> peekMax() {
       WeightedTreeNode node = getMax();
-      return new Pair(node.key, node.peek());
+      return new Tuple(node.key, node.peek());
    }
 
    /**
@@ -105,8 +105,8 @@ public class WeightedTree<E> implements Iterable<E> {
     * @see WeightedTree#remove(dvrlib.localsearch.WeightedTreeNode)
     * O(node.depth).
     */
-   protected Pair<Double, E> pop   (WeightedTreeNode<E> node) {
-      Pair<Double, E> item = new Pair(node.key, node.pop());
+   protected Tuple<Double, E> pop   (WeightedTreeNode<E> node) {
+      Tuple<Double, E> item = new Tuple(node.key, node.pop());
       if(node.values.isEmpty())
          remove(node);
       else
@@ -118,7 +118,7 @@ public class WeightedTree<E> implements Iterable<E> {
     * @see WeightedTree#getMin()
     * @see WeightedTree#pop(dvrlib.localsearch.WeightedTreeNode)
     */
-   public    Pair<Double, E> popMin()                         {
+   public    Tuple<Double, E> popMin()                         {
       return pop(getMin());
    }
    /**
@@ -126,7 +126,7 @@ public class WeightedTree<E> implements Iterable<E> {
     * @see WeightedTree#getMax()
     * @see WeightedTree#pop(dvrlib.localsearch.WeightedTreeNode)
     */
-   public    Pair<Double, E> popMax()                         {
+   public    Tuple<Double, E> popMax()                         {
       return pop(getMax());
    }
 
