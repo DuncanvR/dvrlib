@@ -7,6 +7,7 @@
 package dvrlib.graph;
 
 import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Graph class, using lists to keep track of edges.
@@ -134,5 +135,12 @@ public class ListGraph<NodeData, EdgeData> extends AbstractGraph<ListGraphNode<N
    @Override
    public Iterator<ListGraphNode<NodeData, EdgeData>> nodesIterator() {
       return new ListGraphIterator(this);
+   }
+
+   /**
+    * Returns an iterator to the neighbouring nodes of the given node.
+    */
+   public Iterator<Map.Entry<ListGraphNode<NodeData, EdgeData>, EdgeData>> neighbourIterator(int index) {
+      return getNode(index).neighbourIterator();
    }
 }

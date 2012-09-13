@@ -65,7 +65,6 @@ public class ListGraphNode<NodeData, EdgeData> extends AbstractGraphNode<ListGra
     * Returns an iterator to the neighbouring nodes of this node.
     * O(1).
     */
-   @Override
    public Iterator<Map.Entry<ListGraphNode, EdgeData>> neighbourIterator() {
       return neighbours.entrySet().iterator();
    }

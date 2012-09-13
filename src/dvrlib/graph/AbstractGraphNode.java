@@ -7,7 +7,6 @@
 package dvrlib.graph;
 
 import java.util.Iterator;
-import java.util.Map;
 
 public abstract class AbstractGraphNode<Node extends AbstractGraphNode, NodeData, EdgeData> {
    public final int      index;
@@ -42,9 +41,4 @@ public abstract class AbstractGraphNode<Node extends AbstractGraphNode, NodeData
     * Returns the degree of this node.
     */
    public abstract int getDegree();
-
-   /**
-    * Returns an iterator to the neighbouring nodes.
-    */
-   public abstract Iterator<Map.Entry<Node, EdgeData>> neighbourIterator();
 }
