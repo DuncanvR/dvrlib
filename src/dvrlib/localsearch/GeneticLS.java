@@ -8,7 +8,7 @@ package dvrlib.localsearch;
 
 public class GeneticLS<S extends Solution, E extends Number & Comparable<E>> extends StatefulLocalSearch<S, E, GeneticLS.GLSSearchState<S, E>> {
    public static class GLSSearchState<S extends Solution, E extends Comparable<E>> extends AbstractSearchState<Problem<S, E>, S> {
-      // static inner class: workaround of bug 6557954 in jdk6
+      // static inner class: workaround of bug 6557954 in jdk6 -- Bug is fixed jdk7, but without the static it still doesn't work
       protected WeightedTreePopulation<S> population;
       protected S                         solution        = null;
       protected long                      lastImprovement;

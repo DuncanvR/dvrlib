@@ -9,32 +9,23 @@ package dvrlib.localsearch;
 import java.util.LinkedList;
 
 public class SimulatedAnnealingLS<S extends Solution, E extends Number & Comparable<E>> extends LocalSearch<S, E> {
-   protected class SASearchState extends AbstractSearchState<Problem<S, E>, S> {
+   protected class SASearchState extends SingularSearchState<Problem<S, E>, S> {
       protected LinkedList<Object> changes     = new LinkedList();
-      protected S                  solution;
       protected double             temperature;
 
       public SASearchState(Problem<S, E> problem, S solution) {
-         super(problem);
-
-         this.solution = solution;
-         temperature   = initTemp;
-
-         iteration = 1; // Start at 1, otherwise the temperature would be decreased at the first iteration
-      }
-
-      @Override
-      public S getSolution() {
-         return solution;
+         super(problem, solution);
+         temperature = initTemp;
+         iteration   = 1; // Start at 1, otherwise the temperature would be decreased at the first iteration
       }
 
       public S getBestSolution() {
          // Undo the changes since the last improvement, reverting to the best known solution
+         solution.setIterationCount(solution.getIterationCount() - changes.size());
          while(!changes.isEmpty())
             changer.undoChange(this, changes.pollLast());
 
-         solution.setIterationCount(solution.getIterationCount() + getIterationNumber() - 1);
-         problem.saveSolution(solution);
+         saveSolution();
          return solution;
       }
    }
