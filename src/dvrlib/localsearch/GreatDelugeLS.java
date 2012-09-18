@@ -6,14 +6,19 @@
 
 package dvrlib.localsearch;
 
+import java.util.LinkedList;
+
 public abstract class GreatDelugeLS<S extends Solution, E extends Comparable<E>> extends StatefulLocalSearch<S, E, GreatDelugeLS.GDSearchState<S, E>> {
    public static class GDSearchState<S extends Solution, E extends Comparable<E>> extends SingularSearchState<Problem<S, E>, S> {
-      protected E tolerance;
+      protected LinkedList<Object> changes   = new LinkedList();
+      protected E                  tolerance;
+
       protected GDSearchState(Problem<S, E> problem, S solution, E tolerance) {
          super(problem, solution);
          this.tolerance = tolerance;
       }
    }
+
    protected final Changer<Problem<S, E>, S, Object> changer;
    protected final E                                 initTolerance;
 
@@ -54,28 +59,32 @@ public abstract class GreatDelugeLS<S extends Solution, E extends Comparable<E>>
       if(n < 0)
          throw new IllegalArgumentException("The number of requested operations should not be less than zero");
 
-      Object change = null;
-      E e1 = null, e2 = state.problem.evaluate(state);
+      E best = state.problem.evaluate(state), current;
 
       // Keep mutating as long as the maximum number of iterations has not been reached
-      // TODO: Add another stopping criterium
-      for(int i = 0; i < n; i++) {
-         change = changer.generateChange(state);
-         changer.doChange(state, change);
-         e2 = state.problem.evaluate(state);
+      // TODO: Add another stopping criterium, in order to support n < 0
+      for(int i = 0; i < n; i++, state.increaseIterationCount(1)) {
+         state.changes.add(changer.generateChange(state));
+         changer.doChange(state, state.changes.peekLast());
+         current = state.problem.evaluate(state);
 
-         if(state.problem.better(e2, state.tolerance)) { // Keep the change
-            e1 = e2;
+         if(state.problem.better(current, state.tolerance)) { // Keep the change
+            if(state.problem.better(current, best)) {
+               best = current;
+               state.changes.clear();
+            }
             decay(state);
          }
          else // Revert the change
-            changer.undoChange(state, change);
-
-         state.increaseIterationCount(1);
+            changer.undoChange(state, state.changes.pollLast());
       }
 
-      if(state.problem.better(e1, e2)) // Undo last change
-         changer.undoChange(state, change);
+      // Undo the changes since the last improvement, reverting to the best known solution
+      state.solution.setIterationCount(state.solution.getIterationCount() - state.changes.size());
+      while(!state.changes.isEmpty())
+         changer.undoChange(state, state.changes.pollLast());
+
+      state.saveSolution();
 
       return state;
    }
