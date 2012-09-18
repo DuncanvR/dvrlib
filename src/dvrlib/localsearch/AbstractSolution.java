@@ -1,6 +1,6 @@
 /*
  * DvRLib - Local search
- * Duncan van Roermund, 2010-2011
+ * Duncan van Roermund, 2010-2012
  * AbstractSolution.java
  */
 

@@ -1,6 +1,6 @@
 /*
  * DvRLib - Local search
- * Duncan van Roermund, 2010-2011
+ * Duncan van Roermund, 2010-2012
  * SimulatedAnnealingLS.java
  */
 
@@ -21,7 +21,7 @@ public class SimulatedAnnealingLS<S extends Solution, E extends Number & Compara
 
       public S getBestSolution() {
          // Undo the changes since the last improvement, reverting to the best known solution
-         solution.setIterationCount(solution.getIterationCount() - changes.size());
+         increaseIterationCount(-changes.size());
          while(!changes.isEmpty())
             changer.undoChange(this, changes.pollLast());
 

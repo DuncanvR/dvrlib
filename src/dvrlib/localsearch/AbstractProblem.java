@@ -21,7 +21,7 @@ public abstract class AbstractProblem<S extends Solution, E extends Number & Com
     */
    @Override
    public E evaluate(SearchState<Problem<S, E>, S> ss) {
-      return evaluate(ss.getSolution(), ss.getIterationNumber());
+      return evaluate(ss.getSolution(), ss.getIterationCount());
    }
 
    /**
@@ -46,11 +46,11 @@ public abstract class AbstractProblem<S extends Solution, E extends Number & Com
       return (ss == null ? false : better(evaluate(ss), e));
    }
    /**
-    * Returns true if the current solution of the given search state is better than the given solution, i.e. <tt>better(evaluate(ss), evaluate(s, ss.getIterationNumber()))</tt>.
+    * Returns true if the current solution of the given search state is better than the given solution, i.e. <tt>better(evaluate(ss), evaluate(s, ss.getIterationCount()))</tt>.
     */
    @Override
    public boolean better(SearchState<Problem<S, E>, S> ss, S s) {
-      return (ss == null ? false : (s == null ? true : better(evaluate(ss), evaluate(s, ss.getIterationNumber()))));
+      return (ss == null ? false : (s == null ? true : better(evaluate(ss), evaluate(s, ss.getIterationCount()))));
    }
    /**
     * Returns true if the first of the given evaluations is better than or equal to the second.
@@ -75,11 +75,11 @@ public abstract class AbstractProblem<S extends Solution, E extends Number & Com
       return (ss == null ? false : betterEq(evaluate(ss), e));
    }
    /**
-    * Returns true if the current solution of the given search state is better than or equal to the given solution, i.e. <tt>betterEq(evaluate(ss), evaluate(s, ss.getIterationNumber()))</tt>.
+    * Returns true if the current solution of the given search state is better than or equal to the given solution, i.e. <tt>betterEq(evaluate(ss), evaluate(s, ss.getIterationCount()))</tt>.
     */
    @Override
    public boolean betterEq(SearchState<Problem<S, E>, S> ss, S s) {
-      return (ss == null ? false : (s == null ? true : betterEq(evaluate(ss), evaluate(s, ss.getIterationNumber()))));
+      return (ss == null ? false : (s == null ? true : betterEq(evaluate(ss), evaluate(s, ss.getIterationCount()))));
    }
 
    /**
@@ -110,6 +110,6 @@ public abstract class AbstractProblem<S extends Solution, E extends Number & Com
     */
    @Override
    public double getWeight(SearchState<Problem<S, E>, S> ss) {
-      return getWeight(ss.getSolution(), ss.getIterationNumber());
+      return getWeight(ss.getSolution(), ss.getIterationCount());
    }
 }

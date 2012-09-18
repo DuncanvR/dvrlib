@@ -1,6 +1,6 @@
 /*
  * DvRLib - Local search
- * Duncan van Roermund, 2011
+ * Duncan van Roermund, 2011-2012
  * SingularSearchState.java
  */
 
@@ -16,6 +16,7 @@ public class SingularSearchState<P extends Problem<S, ? extends Comparable<?>>, 
 
    @Override
    public S getSolution() {
+      solution.setIterationCount(iteration);
       return solution;
    }
 }

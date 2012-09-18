@@ -1,6 +1,6 @@
 /*
  * DvRLib - Local search
- * Duncan van Roermund, 2011
+ * Duncan van Roermund, 2011-2012
  * SearchState.java
  */
 
@@ -25,7 +25,7 @@ public interface SearchState<P extends Problem<S, ? extends Comparable<?>>, S ex
    /**
     * Returns the number of iterations this search has done.
     */
-   public long getIterationNumber();
+   public long getIterationCount();
 
    /**
     * Increases the number of iterations by <tt>n</tt>.

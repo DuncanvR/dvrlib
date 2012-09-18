@@ -70,7 +70,7 @@ public class GeneticLS<S extends Solution, E extends Number & Comparable<E>> ext
          iterate(state, n);
       }
       while(n > 0);
-      state.getSolution().setIterationCount(state.getIterationNumber());
+      state.getSolution().setIterationCount(state.getIterationCount());
       state.saveSolution();
       return state;
    }
@@ -83,7 +83,7 @@ public class GeneticLS<S extends Solution, E extends Number & Comparable<E>> ext
       while(state.population.size() > popSize)
          state.population.popWorst();
 
-      for(long i = state.getIterationNumber(), iMax = state.getIterationNumber() + n; i < iMax; i++) {
+      for(long i = state.getIterationCount(), iMax = state.getIterationCount() + n; i < iMax; i++) {
          // Generate new solution from two random solutions in the population
          state.solution = combiner.combine(state, state.population.peekRandom(), state.population.peekRandom());
 

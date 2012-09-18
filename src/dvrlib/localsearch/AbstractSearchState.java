@@ -1,6 +1,6 @@
 /*
  * DvRLib - Local search
- * Duncan van Roermund, 2011
+ * Duncan van Roermund, 2011-2012
  * AbstractSearchState.java
  */
 
@@ -25,7 +25,7 @@ public abstract class AbstractSearchState<P extends Problem<S, ? extends Compara
    }
 
    @Override
-   public long getIterationNumber()           {
+   public long getIterationCount()            {
       return iteration;
    }
 
