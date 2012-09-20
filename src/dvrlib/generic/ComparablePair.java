@@ -1,6 +1,6 @@
 /*
  * DvRLib - Generic
- * Duncan van Roermund, 2010 - 2012
+ * Duncan van Roermund, 2010-2012
  * ComparablePair.java
  */
 
