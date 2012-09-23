@@ -1,11 +1,12 @@
 /*
  * DvRLib - Graph
- * Duncan van Roermund, 2010
+ * Duncan van Roermund, 2010-2012
  * ListGraph.java
  */
 
 package dvrlib.graph;
 
+import java.lang.Iterable;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -13,7 +14,7 @@ import java.util.Map;
  * Graph class, using lists to keep track of edges.
  * This makes it slow at inserting and checking for edges, but fast at retreiving neighbouring nodes.
  */
-public class ListGraph<NodeData, EdgeData> extends AbstractGraph<ListGraphNode<NodeData, EdgeData>, EdgeData> {
+public class ListGraph<NodeData, EdgeData> extends AbstractGraph<ListGraphNode<NodeData, EdgeData>, NodeData, EdgeData> {
    protected final ListGraphNode<NodeData, EdgeData> nodes[];
 
    /**
@@ -36,7 +37,7 @@ public class ListGraph<NodeData, EdgeData> extends AbstractGraph<ListGraphNode<N
    protected void calcMaxDegree() {
       maxDegree = 0;
       for(int i = 0; i < nodes.length; i++) {
-         maxDegree = Math.max(maxDegree, nodes[i].getDegree());
+         maxDegree = Math.max(maxDegree, nodes[i].degree());
       }
    }
 
@@ -45,7 +46,7 @@ public class ListGraph<NodeData, EdgeData> extends AbstractGraph<ListGraphNode<N
     * O(1).
     */
    @Override
-   public ListGraphNode getNode(int index) {
+   public ListGraphNode<NodeData, EdgeData> getNode(int index) {
       if(checkIndex(index))
          return nodes[index];
       else
@@ -91,8 +92,8 @@ public class ListGraph<NodeData, EdgeData> extends AbstractGraph<ListGraphNode<N
       if(na != null && nb != null && !na.hasEdge(nb)) {
          na.neighbours.put(nb, ed);
          edgeCount++;
-         if(na.getDegree() > getMaxDegree())
-            maxDegree = na.getDegree();
+         if(na.degree() > maxDegree())
+            maxDegree = na.degree();
          return true;
       }
       return false;
@@ -124,23 +125,73 @@ public class ListGraph<NodeData, EdgeData> extends AbstractGraph<ListGraphNode<N
       if(na == null || nb == null || !na.hasEdge(nb))
          throw new IllegalArgumentException("Edge " + a + "," + b + " does not exist");
       edgeCount--;
-      if(maxDegree <= na.getDegree())
+      if(maxDegree <= na.degree())
          maxDegree = -1;
       return na.neighbours.remove(nb);
    }
 
    /**
-    * Returns an iterator to the nodes of this graph.
+    * Returns an iterable to the nodes of this graph.
     */
    @Override
-   public Iterator<ListGraphNode<NodeData, EdgeData>> nodesIterator() {
-      return new ListGraphIterator(this);
+   public Iterable<ListGraphNode<NodeData, EdgeData>> nodeIterable() {
+      return new Iterable<ListGraphNode<NodeData, EdgeData>>() {
+         @Override
+         public Iterator<ListGraphNode<NodeData, EdgeData>> iterator() {
+            return new Iterator() {
+               protected int node = 0;
+
+               @Override
+               public boolean hasNext() {
+                  return (node < nodeCount);
+               }
+               @Override
+               public ListGraphNode next() {
+                  return nodes[node++];
+               }
+               @Override
+               public void remove() {
+                  throw new UnsupportedOperationException(this.getClass().getName() + ".remove() is not supported");
+               }
+            };
+         }
+      };
    }
 
    /**
-    * Returns an iterator to the neighbouring nodes of the given node.
+    * Returns an iterable to the data of the nodes of this graph.
+    * @see dvrlib.graph.ListGraph#nodeIterable()
     */
-   public Iterator<Map.Entry<ListGraphNode<NodeData, EdgeData>, EdgeData>> neighbourIterator(int index) {
-      return getNode(index).neighbourIterator();
+   @Override
+   public Iterable<NodeData> nodeDataIterable() {
+      return new Iterable<NodeData>() {
+         @Override
+         public Iterator<NodeData> iterator() {
+            return new Iterator() {
+               protected int node = 0;
+
+               @Override
+               public boolean hasNext() {
+                  return (node < nodeCount);
+               }
+               @Override
+               public NodeData next() {
+                  return nodes[node++].data;
+               }
+               @Override
+               public void remove() {
+                  throw new UnsupportedOperationException(this.getClass().getName() + ".remove() is not supported");
+               }
+            };
+         }
+      };
+   }
+
+   /**
+    * Returns an iterable to the edges of the given node.
+    */
+   @Override
+   public Iterable<dvrlib.generic.Tuple<EdgeData, ListGraphNode<NodeData, EdgeData>>> edgeIterable(int index) {
+      return getNode(index).edgeIterable();
    }
 }

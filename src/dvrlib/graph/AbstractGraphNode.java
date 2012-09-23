@@ -1,6 +1,6 @@
 /*
  * DvRLib - Graph
- * Duncan van Roermund, 2010
+ * Duncan van Roermund, 2010-2012
  * AbstractGraphNode.java
  */
 
@@ -40,5 +40,10 @@ public abstract class AbstractGraphNode<Node extends AbstractGraphNode, NodeData
    /**
     * Returns the degree of this node.
     */
-   public abstract int getDegree();
+   public abstract int degree();
+
+   /**
+    * Returns an iterable to the edges of this node.
+    */
+   public abstract java.lang.Iterable<dvrlib.generic.Tuple<EdgeData, Node>> edgeIterable();
 }

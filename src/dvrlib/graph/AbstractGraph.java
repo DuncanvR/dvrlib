@@ -1,14 +1,14 @@
 /*
  * DvRLib - Graph
- * Duncan van Roermund, 2010
+ * Duncan van Roermund, 2010-2012
  * AbstractGraph.java
  */
 
 package dvrlib.graph;
 
-import java.util.Iterator;
+import java.lang.Iterable;
 
-public abstract class AbstractGraph<Node extends AbstractGraphNode, EdgeData> {
+public abstract class AbstractGraph<Node extends AbstractGraphNode<Node, NodeData, EdgeData>, NodeData, EdgeData> {
    protected int nodeCount, edgeCount = 0, maxDegree = 0;
 
    /**
@@ -31,7 +31,7 @@ public abstract class AbstractGraph<Node extends AbstractGraphNode, EdgeData> {
     * Returns the number of nodes in this graph.
     * O(1).
     */
-   public int getNodeCount() {
+   public int nodeCount() {
       return nodeCount;
    }
 
@@ -39,7 +39,7 @@ public abstract class AbstractGraph<Node extends AbstractGraphNode, EdgeData> {
     * Returns the number of edges in this graph.
     * O(1).
     */
-   public int getEdgeCount() {
+   public int edgeCount() {
       return edgeCount;
    }
 
@@ -48,19 +48,19 @@ public abstract class AbstractGraph<Node extends AbstractGraphNode, EdgeData> {
     * Returns -1 if the node index is out of bounds.
     * O(1).
     */
-   public int getDegree(int a) {
+   public int degree(int a) {
       AbstractGraphNode n = getNode(a);
       if(n == null)
          return -1;
       else
-         return n.getDegree();
+         return n.degree();
    }
 
    /**
     * Returns the largest degree.
     * O(calcMaxDegree()) if maxDegree was invalidated, O(1) otherwise.
     */
-   public int getMaxDegree() {
+   public int maxDegree() {
       if(maxDegree < 0)
          calcMaxDegree();
       return maxDegree;
@@ -78,9 +78,20 @@ public abstract class AbstractGraph<Node extends AbstractGraphNode, EdgeData> {
    public abstract Node getNode(int index);
 
    /**
-    * Returns an iterator to the nodes of this graph.
+    * Returns an iterable to the nodes of this graph.
     */
-   public abstract Iterator<Node> nodesIterator();
+   public abstract Iterable<Node> nodeIterable();
+
+   /**
+    * Returns an iterable to the data of the nodes of this graph.
+    * @see dvrlib.graph.AbstractGraph#nodesIterable()
+    */
+   public abstract Iterable<NodeData> nodeDataIterable();
+
+   /**
+    * Returns an iterable to the edges of the given node.
+    */
+   public abstract Iterable<dvrlib.generic.Tuple<EdgeData, Node>> edgeIterable(int index);
 
    /**
     * Returns true if there is an edge between nodes a and b, false otherwise.
@@ -127,7 +138,7 @@ public abstract class AbstractGraph<Node extends AbstractGraphNode, EdgeData> {
          for(int j = 0; j < nodeCount; j++) {
             System.out.print(printEdge(i, j) + " ");
          }
-         System.out.println("] :d " + getNode(i).getDegree());
+         System.out.println("] :d " + getNode(i).degree());
       }
    }
 
