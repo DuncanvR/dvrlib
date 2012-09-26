@@ -1,10 +1,10 @@
 /*
- * DvRLib - Generic
+ * DvRLib - Container
  * Duncan van Roermund, 2010
  * BucketArray.java
  */
 
-package dvrlib.generic;
+package dvrlib.container;
 
 public class BucketArray<I extends AbstractBucketItem> {
    protected final int min, max;

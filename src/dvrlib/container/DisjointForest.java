@@ -1,10 +1,12 @@
 /*
- * DvRLib - Generic
+ * DvRLib - Container
  * Duncan van Roermund, 2012
  * DisjointForest.java
  */
 
-package dvrlib.generic;
+package dvrlib.container;
+
+import dvrlib.generic.Tuple;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -151,7 +153,7 @@ public class DisjointForest<E> implements java.util.Set<E> {
     */
    @Override
    public java.util.Iterator<E> iterator() {
-      return new ReadOnlyIterator(forest.keySet().iterator());
+      return new dvrlib.generic.ReadOnlyIterator(forest.keySet().iterator());
    }
 
    /**

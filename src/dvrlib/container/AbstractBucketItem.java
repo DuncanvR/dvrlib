@@ -1,10 +1,10 @@
 /*
- * DvRLib - Generic
+ * DvRLib - Container
  * Duncan van Roermund, 2010
  * AbstractBucketItem.java
  */
 
-package dvrlib.generic;
+package dvrlib.container;
 
 public class AbstractBucketItem {
    protected int itemIndex;

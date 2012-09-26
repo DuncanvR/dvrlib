@@ -1,10 +1,12 @@
 /*
- * DvRLib - Generic
+ * DvRLib - Container
  * Duncan van Roermund, 2010-2011
  * WeightedTreeNode.java
  */
 
-package dvrlib.generic;
+package dvrlib.container;
+
+import dvrlib.generic.Tuple;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,7 +92,7 @@ public class WeightedTreeNode<E> {
       else
          r = 1.0;
 
-      return new Tuple(key, values.get((int)(values.size() * (normIndex - l) / (r - l))));
+      return new Tuple<Double, E>(key, values.get((int)(values.size() * (normIndex - l) / (r - l))));
    }
 
    /**

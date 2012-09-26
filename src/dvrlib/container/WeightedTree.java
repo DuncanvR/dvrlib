@@ -1,10 +1,12 @@
 /*
- * DvRLib - Generic
+ * DvRLib - Container
  * Duncan van Roermund, 2010-2011
  * WeightedTree.java
  */
 
-package dvrlib.generic;
+package dvrlib.container;
+
+import dvrlib.generic.Tuple;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -86,8 +88,8 @@ public class WeightedTree<E> implements Iterable<E> {
     * @see WeightedTreeNode#peek()
     */
    public Tuple<Double, E> peekMin() {
-      WeightedTreeNode node = getMin();
-      return new Tuple(node.key, node.peek());
+      WeightedTreeNode<E> node = getMin();
+      return new Tuple<Double, E>(node.key, node.peek());
    }
    /**
     * Returns an element from the node with the largest key along with that key.
@@ -95,8 +97,8 @@ public class WeightedTree<E> implements Iterable<E> {
     * @see WeightedTreeNode#peek()
     */
    public Tuple<Double, E> peekMax() {
-      WeightedTreeNode node = getMax();
-      return new Tuple(node.key, node.peek());
+      WeightedTreeNode<E> node = getMax();
+      return new Tuple<Double, E>(node.key, node.peek());
    }
 
    /**
@@ -106,7 +108,7 @@ public class WeightedTree<E> implements Iterable<E> {
     * O(node.depth).
     */
    protected Tuple<Double, E> pop   (WeightedTreeNode<E> node) {
-      Tuple<Double, E> item = new Tuple(node.key, node.pop());
+      Tuple<Double, E> item = new Tuple<Double, E>(node.key, node.pop());
       if(node.values.isEmpty())
          remove(node);
       else

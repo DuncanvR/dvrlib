@@ -1,10 +1,10 @@
 /*
- * DvRLib - Generic
+ * DvRLib - Container
  * Duncan van Roermund, 2010
  * Bucket.java
  */
 
-package dvrlib.generic;
+package dvrlib.container;
 
 import java.util.ArrayList;
 

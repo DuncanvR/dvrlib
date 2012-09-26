@@ -6,7 +6,8 @@
 
 package dvrlib.localsearch;
 
-import dvrlib.generic.WeightedTree;
+import dvrlib.container.WeightedTree;
+
 import java.util.Iterator;
 
 public class WeightedTreePopulation<S extends Solution> implements Population<S> {

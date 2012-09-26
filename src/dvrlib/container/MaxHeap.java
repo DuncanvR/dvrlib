@@ -1,10 +1,10 @@
 /*
- * DvRLib - Generic
+ * DvRLib - Container
  * Duncan van Roermund, 2010-2011
  * MaxHeap.java
  */
 
-package dvrlib.generic;
+package dvrlib.container;
 
 import java.util.Iterator;
 
