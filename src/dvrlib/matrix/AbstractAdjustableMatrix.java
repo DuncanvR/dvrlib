@@ -1,10 +1,10 @@
 /*
- * DvRLib - Generic
+ * DvRLib - Matrix
  * Duncan van Roermund, 2010-2012
  * AbstractAdjustableMatrix.java
  */
 
-package dvrlib.generic;
+package dvrlib.matrix;
 
 import java.util.Vector;
 

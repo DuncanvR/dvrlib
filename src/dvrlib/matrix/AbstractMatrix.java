@@ -1,10 +1,10 @@
 /*
- * DvRLib - Generic
+ * DvRLib - Matrix
  * Duncan van Roermund, 2010-2012
  * AbstractMatrix.java
  */
 
-package dvrlib.generic;
+package dvrlib.matrix;
 
 public abstract class AbstractMatrix<E> {
    protected int m, n;

@@ -1,29 +1,29 @@
 /*
- * DvRLib - Generic
+ * DvRLib - Matrix
  * Duncan van Roermund, 2010-2012
- * VerticalMatrix.java
+ * HorizontalMatrix.java
  */
 
-package dvrlib.generic;
+package dvrlib.matrix;
 
 import java.util.Vector;
 
 /**
- * VerticalMatrix is an implementation of AbstractAdjustableMatrix using vectors for each column.
- * This allows for O(1) addition and removal of columns, but O(m) operations affecting for rows.
+ * HorizontalMatrix is an implementation of AbstractAdjustableMatrix using vectors for each row.
+ * This allows for O(1) addition and removal of rows, but O(m) operations affecting for columns.
  */
-public class VerticalMatrix<E> extends AbstractAdjustableMatrix<E> {
+public class HorizontalMatrix<E> extends AbstractAdjustableMatrix<E> {
    /**
-    * VerticalMatrix constructor.
+    * HorizontalMatrix constructor.
     * @param m The number of rows.
     * @param n The number of columns.
     * O(m).
     */
-   public VerticalMatrix(int m, int n) {
+   public HorizontalMatrix(int m, int n) {
       super(m, n);
-      elements = new Vector<Vector<E>>(n);
-      for(int i = 0; i < n; i++) {
-         elements.add(i, new Vector<E>(m));
+      elements = new Vector<Vector<E>>(m);
+      for(int i = 0; i < m; i++) {
+         elements.add(i, new Vector<E>(n));
       }
    }
 
@@ -35,7 +35,7 @@ public class VerticalMatrix<E> extends AbstractAdjustableMatrix<E> {
     * @see AbstractMatrix#get(int,int)
     */
    public E get(int i, int j) {
-      return elements.get(j).get(i);
+      return elements.get(i).get(j);
    }
 
    /**
@@ -46,7 +46,7 @@ public class VerticalMatrix<E> extends AbstractAdjustableMatrix<E> {
     * @see AbstractMatrix#set(int,int,E)
     */
    public void set(int i, int j, E e) {
-      elements.get(j).set(i, e);
+      elements.get(i).set(j, e);
    }
 
    /**
@@ -54,7 +54,7 @@ public class VerticalMatrix<E> extends AbstractAdjustableMatrix<E> {
     * @see AbstractAdjustableMatrix#addColumn()
     */
    public void addColumn() {
-      elements.add(new Vector<E>(m));
+      throw new IllegalStateException("HorizontalMatrix.addColumn() has not yet been implemented");
    }
 
    /**
@@ -62,6 +62,6 @@ public class VerticalMatrix<E> extends AbstractAdjustableMatrix<E> {
     * @see AbstractAdjustableMatrix#addRow()
     */
    public void addRow() {
-      throw new IllegalStateException("VerticalMatrix.addRow() has not yet been implemented");
+      elements.add(new Vector<E>(n));
    }
 }

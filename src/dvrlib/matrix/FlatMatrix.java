@@ -1,10 +1,10 @@
 /*
- * DvRLib - Generic
+ * DvRLib - Matrix
  * Duncan van Roermund, 2010-2012
  * FlatMatrix.java
  */
 
-package dvrlib.generic;
+package dvrlib.matrix;
 
 public class FlatMatrix<E> extends AbstractMatrix<E> {
    protected Object elements[][];
