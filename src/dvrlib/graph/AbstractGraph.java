@@ -9,7 +9,7 @@ package dvrlib.graph;
 import java.lang.Iterable;
 
 public abstract class AbstractGraph<Node extends AbstractGraphNode<Node, NodeData, EdgeData>, NodeData, EdgeData> {
-   protected int nodeCount, edgeCount = 0, maxDegree = 0;
+   protected int nodeCount, edgeCount = 0, maxInDegree = 0, maxOutDegree = 0;
 
    /**
     * AbstractGraph constructor.
@@ -44,38 +44,70 @@ public abstract class AbstractGraph<Node extends AbstractGraphNode<Node, NodeDat
    }
 
    /**
-    * Returns the number of edges starting in node a.
+    * Returns the number of edges coming into the given node.
     * Returns -1 if the node index is out of bounds.
     * O(1).
     */
-   public int degree(int a) {
-      AbstractGraphNode n = getNode(a);
+   public int inDegree(int a) {
+      AbstractGraphNode n = node(a);
       if(n == null)
          return -1;
       else
-         return n.degree();
+         return n.inDegree();
    }
 
    /**
-    * Returns the largest degree.
-    * O(calcMaxDegree()) if maxDegree was invalidated, O(1) otherwise.
+    * Returns the number of edges going out of the given node.
+    * Returns -1 if the node index is out of bounds.
+    * O(1).
     */
-   public int maxDegree() {
-      if(maxDegree < 0)
-         calcMaxDegree();
-      return maxDegree;
+   public int outDegree(int a) {
+      AbstractGraphNode n = node(a);
+      if(n == null)
+         return -1;
+      else
+         return n.outDegree();
    }
 
    /**
-    * Calculates the maximum degree.
+    * Returns the largest in-degree.
+    * @see AbstractGraph#inDegree(int)
+    * @see AbstractGraph#calcMaxInDegree()
+    * O(calcMaxInDegree()) if maxInDegree was invalidated, O(1) otherwise.
     */
-   protected abstract void calcMaxDegree();
+   public int maxInDegree() {
+      if(maxInDegree < 0)
+         calcMaxInDegree();
+      return maxInDegree;
+   }
+
+   /**
+    * Returns the largest out-degree.
+    * @see AbstractGraph#outDegree(int)
+    * @see AbstractGraph#calcMaxOutDegree()
+    * O(calcMaxOutDegree()) if maxOutDegree was invalidated, O(1) otherwise.
+    */
+   public int maxOutDegree() {
+      if(maxOutDegree < 0)
+         calcMaxOutDegree();
+      return maxOutDegree;
+   }
+
+   /**
+    * Calculates the maximum in-degree.
+    */
+   protected abstract void calcMaxInDegree();
+
+   /**
+    * Calculates the maximum out-degree.
+    */
+   protected abstract void calcMaxOutDegree();
 
    /**
     * Returns the node at the given index.
     * May return null if the node index is out of bounds.
     */
-   public abstract Node getNode(int index);
+   public abstract Node node(int index);
 
    /**
     * Returns an iterable to the nodes of this graph.
@@ -102,19 +134,19 @@ public abstract class AbstractGraph<Node extends AbstractGraphNode<Node, NodeDat
     * Returns the data associated with the edge between nodes a and b.
     * @throws IllegalArgumentException If the given edge does not exist in this graph.
     */
-   public abstract EdgeData getEdge(int a, int b) throws IllegalArgumentException;
-
-   /**
-    * Sets the data associated with the edge between nodes a and b, and returns the old data.
-    * @throws IllegalArgumentException If the given edge does not exist in this graph.
-    */
-   public abstract EdgeData setEdgeData(int a, int b, EdgeData ed) throws IllegalArgumentException;
+   public abstract EdgeData edge(int a, int b) throws IllegalArgumentException;
 
    /**
     * Adds an edge between nodes a and b.
     * @return true if the edge was added, false otherwise.
     */
    public abstract boolean addEdge(int a, int b, EdgeData ed);
+
+   /**
+    * Sets the data associated with the edge between nodes a and b, and returns the old data.
+    * @throws IllegalArgumentException If the given edge does not exist in this graph.
+    */
+   public abstract EdgeData replaceEdge(int a, int b, EdgeData ed) throws IllegalArgumentException;
 
    /**
     * Removes the edge between nodes a and b.
@@ -138,7 +170,7 @@ public abstract class AbstractGraph<Node extends AbstractGraphNode<Node, NodeDat
          for(int j = 0; j < nodeCount; j++) {
             System.out.print(printEdge(i, j) + " ");
          }
-         System.out.println("] :d " + getNode(i).degree());
+         System.out.println("] :d " + node(i).outDegree());
       }
    }
 

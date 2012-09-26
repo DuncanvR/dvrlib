@@ -30,14 +30,26 @@ public class ListGraph<NodeData, EdgeData> extends AbstractGraph<ListGraphNode<N
    }
 
    /**
-    * Calculates the maximum degree.
+    * Calculates the maximum in-degree.
     * O(n).
     */
    @Override
-   protected void calcMaxDegree() {
-      maxDegree = 0;
+   protected void calcMaxInDegree() {
+      maxInDegree = 0;
       for(int i = 0; i < nodes.length; i++) {
-         maxDegree = Math.max(maxDegree, nodes[i].degree());
+         maxInDegree = Math.max(maxInDegree, nodes[i].inDegree());
+      }
+   }
+
+   /**
+    * Calculates the maximum out-degree.
+    * O(n).
+    */
+   @Override
+   protected void calcMaxOutDegree() {
+      maxOutDegree = 0;
+      for(int i = 0; i < nodes.length; i++) {
+         maxOutDegree = Math.max(maxOutDegree, nodes[i].outDegree());
       }
    }
 
@@ -46,7 +58,7 @@ public class ListGraph<NodeData, EdgeData> extends AbstractGraph<ListGraphNode<N
     * O(1).
     */
    @Override
-   public ListGraphNode<NodeData, EdgeData> getNode(int index) {
+   public ListGraphNode<NodeData, EdgeData> node(int index) {
       if(checkIndex(index))
          return nodes[index];
       else
@@ -59,24 +71,24 @@ public class ListGraph<NodeData, EdgeData> extends AbstractGraph<ListGraphNode<N
     */
    @Override
    public boolean hasEdge(int a, int b) {
-      ListGraphNode n = getNode(a);
+      ListGraphNode n = node(a);
       if(n == null)
          return false;
       else
-         return n.hasEdge(getNode(b));
+         return n.hasEdge(node(b));
    }
 
    /**
     * Returns the data associated with the edge between nodes a and b.
     * @throws IllegalArgumentException If the given edge does not exist in this graph.
-    * @see AbstractGraph#getEdge(int, int)
+    * @see AbstractGraph#edge(int, int)
     */
    @Override
-   public EdgeData getEdge(int a, int b) {
-      ListGraphNode<NodeData, EdgeData> na = getNode(a), nb = getNode(b);
+   public EdgeData edge(int a, int b) {
+      ListGraphNode<NodeData, EdgeData> na = node(a), nb = node(b);
       if(na == null || nb == null || !na.hasEdge(nb))
          throw new IllegalArgumentException("Edge " + a + "," + b + " does not exist");
-      return na.getEdge(nb);
+      return na.edge(nb);
    }
 
    /**
@@ -88,12 +100,15 @@ public class ListGraph<NodeData, EdgeData> extends AbstractGraph<ListGraphNode<N
    public boolean addEdge(int a, int b, EdgeData ed) {
       if(a == b)
          return false;
-      ListGraphNode na = getNode(a), nb = getNode(b);
+      ListGraphNode na = node(a), nb = node(b);
       if(na != null && nb != null && !na.hasEdge(nb)) {
-         na.neighbours.put(nb, ed);
+         na.outEdges.put(nb, ed);
+         nb.inEdges.put(na, ed);
          edgeCount++;
-         if(na.degree() > maxDegree())
-            maxDegree = na.degree();
+         if(na.outDegree() > maxOutDegree())
+            maxOutDegree = na.outDegree();
+         if(nb.inDegree() > maxInDegree())
+            maxInDegree = nb.inDegree();
          return true;
       }
       return false;
@@ -105,11 +120,14 @@ public class ListGraph<NodeData, EdgeData> extends AbstractGraph<ListGraphNode<N
     * @throws IllegalArgumentException If the given edge does not exist in this graph.
     */
    @Override
-   public EdgeData setEdgeData(int a, int b, EdgeData ed) throws IllegalArgumentException {
-      ListGraphNode<NodeData, EdgeData> na = getNode(a), nb = getNode(b);
+   public EdgeData replaceEdge(int a, int b, EdgeData ed) throws IllegalArgumentException {
+      ListGraphNode<NodeData, EdgeData> na = node(a), nb = node(b);
       if(na == null || nb == null || !na.hasEdge(nb))
          throw new IllegalArgumentException("Edge " + a + "," + b + " does not exist");
-      return na.setEdgeData(nb, ed);
+      EdgeData edA = na.replaceEdge(nb, ed),
+               edB = nb.replaceEdge(na, ed);
+      assert(edA == edB);
+      return edA;
    }
 
    /**
@@ -121,13 +139,18 @@ public class ListGraph<NodeData, EdgeData> extends AbstractGraph<ListGraphNode<N
     */
    @Override
    public EdgeData removeEdge(int a, int b) throws IllegalArgumentException {
-      ListGraphNode<NodeData, EdgeData> na = getNode(a), nb = getNode(b);
+      ListGraphNode<NodeData, EdgeData> na = node(a), nb = node(b);
       if(na == null || nb == null || !na.hasEdge(nb))
          throw new IllegalArgumentException("Edge " + a + "," + b + " does not exist");
       edgeCount--;
-      if(maxDegree <= na.degree())
-         maxDegree = -1;
-      return na.neighbours.remove(nb);
+      if(maxInDegree <= nb.inDegree())
+         maxInDegree = -1;
+      if(maxOutDegree <= na.outDegree())
+         maxOutDegree = -1;
+      EdgeData edA = na.outEdges.remove(nb),
+               edB = nb.inEdges.remove(na);
+      assert(edA == edB);
+      return edA;
    }
 
    /**
@@ -192,6 +215,6 @@ public class ListGraph<NodeData, EdgeData> extends AbstractGraph<ListGraphNode<N
     */
    @Override
    public Iterable<dvrlib.generic.Tuple<EdgeData, ListGraphNode<NodeData, EdgeData>>> edgeIterable(int index) {
-      return getNode(index).edgeIterable();
+      return node(index).edgeIterable();
    }
 }

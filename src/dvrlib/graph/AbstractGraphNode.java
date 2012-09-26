@@ -30,17 +30,22 @@ public abstract class AbstractGraphNode<Node extends AbstractGraphNode, NodeData
    /**
     * Returns the data associated with the edge from this node to the given node.
     */
-   public abstract EdgeData getEdge(Node that);
+   public abstract EdgeData edge(Node that);
 
    /**
     * Sets the data associated with the edge from this node to the given node and returns the old data.
     */
-   public abstract EdgeData setEdgeData(Node that, EdgeData data);
+   public abstract EdgeData replaceEdge(Node that, EdgeData data);
 
    /**
-    * Returns the degree of this node.
+    * Returns the number of edges coming into this node.
     */
-   public abstract int degree();
+   public abstract int inDegree();
+
+   /**
+    * Returns the number of edges going out of this node.
+    */
+   public abstract int outDegree();
 
    /**
     * Returns an iterable to the edges of this node.

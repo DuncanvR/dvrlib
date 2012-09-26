@@ -14,8 +14,8 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class ListGraphNode<NodeData, EdgeData> extends AbstractGraphNode<ListGraphNode<NodeData, EdgeData>, NodeData, EdgeData> {
-   protected final ListGraph                    graph;
-   protected final Map<ListGraphNode, EdgeData> neighbours;
+   protected final ListGraph                                        graph;
+   protected final Map<ListGraphNode<NodeData, EdgeData>, EdgeData> inEdges, outEdges;
 
    /**
     * ListGraphNode constructor.
@@ -25,7 +25,8 @@ public class ListGraphNode<NodeData, EdgeData> extends AbstractGraphNode<ListGra
    public ListGraphNode(ListGraph graph, int index, NodeData data) {
       super(index, data);
       this.graph = graph;
-      neighbours = new HashMap();
+      inEdges  = new HashMap<ListGraphNode<NodeData, EdgeData>, EdgeData>();
+      outEdges = new HashMap<ListGraphNode<NodeData, EdgeData>, EdgeData>();
    }
 
    /**
@@ -33,10 +34,10 @@ public class ListGraphNode<NodeData, EdgeData> extends AbstractGraphNode<ListGra
     * O(e).
     */
    @Override
-   public boolean hasEdge(ListGraphNode that) {
+   public boolean hasEdge(ListGraphNode<NodeData, EdgeData> that) {
       if(that == null)
          return false;
-      return neighbours.containsKey(that);
+      return outEdges.containsKey(that);
    }
 
    /**
@@ -44,28 +45,38 @@ public class ListGraphNode<NodeData, EdgeData> extends AbstractGraphNode<ListGra
     * @throws IllegalArgumentException If the given edge does not exist in this graph.
     */
    @Override
-   public EdgeData getEdge(ListGraphNode that) {
-      return neighbours.get(that);
+   public EdgeData edge(ListGraphNode<NodeData, EdgeData> that) {
+      return outEdges.get(that);
    }
 
    /**
     * Sets the data associated with the edge from this node to the given node and returns the old data.
     */
-   public EdgeData setEdgeData(ListGraphNode<NodeData, EdgeData> that, EdgeData data) {
-      return neighbours.put(that, data);
+   @Override
+   public EdgeData replaceEdge(ListGraphNode<NodeData, EdgeData> that, EdgeData data) {
+      return outEdges.put(that, data);
    }
 
    /**
-    * Returns the degree of this node.
+    * Returns the number of edges coming into this node.
     * O(1).
     */
    @Override
-   public int degree() {
-      return neighbours.size();
+   public int inDegree() {
+      return inEdges.size();
    }
 
    /**
-    * Returns an iterable to the edges of this node.
+    * Returns the number of edges going out of this node.
+    * O(1).
+    */
+   @Override
+   public int outDegree() {
+      return outEdges.size();
+   }
+
+   /**
+    * Returns an iterable to the edges going out of this node.
     * O(1).
     */
    @Override
@@ -74,7 +85,7 @@ public class ListGraphNode<NodeData, EdgeData> extends AbstractGraphNode<ListGra
          @Override
          public Iterator<Tuple<EdgeData, ListGraphNode<NodeData, EdgeData>>> iterator() {
             return new Iterator<Tuple<EdgeData, ListGraphNode<NodeData, EdgeData>>>() {
-               protected Iterator<Map.Entry<ListGraphNode, EdgeData>> it = neighbours.entrySet().iterator();
+               protected Iterator<Map.Entry<ListGraphNode<NodeData, EdgeData>, EdgeData>> it = outEdges.entrySet().iterator();
 
                @Override
                public boolean hasNext() {
@@ -82,7 +93,7 @@ public class ListGraphNode<NodeData, EdgeData> extends AbstractGraphNode<ListGra
                }
                @Override
                public Tuple<EdgeData, ListGraphNode<NodeData, EdgeData>> next() {
-                  Map.Entry<ListGraphNode, EdgeData> entry = it.next();
+                  Map.Entry<ListGraphNode<NodeData, EdgeData>, EdgeData> entry = it.next();
                   return new Tuple<EdgeData, ListGraphNode<NodeData, EdgeData>>(entry.getValue(), entry.getKey());
                }
                @Override

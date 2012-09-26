@@ -33,7 +33,7 @@ public class UndirectedListGraph<NodeData, EdgeData> extends ListGraph<NodeData,
             return true;
          }
          else
-            throw new IllegalStateException();
+            throw new IllegalStateException("Unable to add both edges " + a + "," + b + " and " + b + "," + a);
       }
       return false;
    }
@@ -44,11 +44,11 @@ public class UndirectedListGraph<NodeData, EdgeData> extends ListGraph<NodeData,
     * @see ListGraph#setEdgeData(int, int, java.lang.Object)
     */
    @Override
-   public EdgeData setEdgeData(int a, int b, EdgeData ed) {
-      EdgeData r = super.setEdgeData(a, b, ed);
-      if(r != super.setEdgeData(b, a, ed))
-         throw new IllegalStateException("Data in removed edges was not equal");
-      return r;
+   public EdgeData replaceEdge(int a, int b, EdgeData ed) {
+      EdgeData edA = super.replaceEdge(a, b, ed),
+               edB = super.replaceEdge(b, a, ed);
+      assert(edA == edB);
+      return edA;
    }
 
    /**
@@ -58,11 +58,11 @@ public class UndirectedListGraph<NodeData, EdgeData> extends ListGraph<NodeData,
     */
    @Override
    public EdgeData removeEdge(int a, int b) {
-      EdgeData r = super.removeEdge(a, b);
+      EdgeData edA = super.removeEdge(a, b);
       edgeCount++;
-      if(r != super.removeEdge(b, a))
-         throw new IllegalStateException("Data in removed edges was not equal");
-      return r;
+      EdgeData edB = super.removeEdge(b, a);
+      assert(edA == edB);
+      return edA;
    }
 
    @Override
