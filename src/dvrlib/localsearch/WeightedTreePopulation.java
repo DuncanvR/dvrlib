@@ -11,7 +11,7 @@ import dvrlib.container.WeightedTree;
 import java.util.Iterator;
 
 public class WeightedTreePopulation<S extends Solution> implements Population<S> {
-   protected final WeightedTree<S> tree    = new WeightedTree();
+   protected final WeightedTree<S> tree    = new WeightedTree<S>();
    protected final Problem<S, ?>   problem;
 
    public WeightedTreePopulation(Problem<S, ?> problem) {
@@ -20,7 +20,7 @@ public class WeightedTreePopulation<S extends Solution> implements Population<S>
 
    @Override
    public void add(S solution) {
-      tree.add(problem.getWeight(solution), solution);
+      tree.add(problem.weight(solution), solution);
    }
 
    @Override

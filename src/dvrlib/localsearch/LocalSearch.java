@@ -10,12 +10,12 @@ public abstract class LocalSearch<S extends Solution, E extends Comparable<E>> {
    /**
     * Searches for an optimal solution for the given problem, starting from a random solution.
     */
-   public          S  search(Problem<S, E> problem) {
+   public          S search(Problem<S, E> problem) {
       return search(problem, problem.randomSolution());
    }
 
    /**
     * Searches for an optimal solution for the given problem, starting from the given solution.
     */
-   public abstract S  search(Problem<S, E> problem, S solution);
+   public abstract S search(Problem<S, E> problem, S solution);
 }

@@ -10,7 +10,7 @@ import java.util.LinkedList;
 
 public class SimulatedAnnealingLS<S extends Solution, E extends Number & Comparable<E>> extends LocalSearch<S, E> {
    protected class SASearchState extends SingularSearchState<Problem<S, E>, S> {
-      protected LinkedList<Object> changes     = new LinkedList();
+      protected LinkedList<Object> changes     = new LinkedList<Object>();
       protected double             temperature;
 
       public SASearchState(Problem<S, E> problem, S solution) {
@@ -96,7 +96,7 @@ public class SimulatedAnnealingLS<S extends Solution, E extends Number & Compara
                state.changes.clear();
             }
          }
-         else if(Math.random() < Math.exp(problem.diffEval(newEval, curEval).doubleValue() * problem.getDirection() / state.temperature)) {
+         else if(Math.random() < Math.exp(problem.diffEval(newEval, curEval).doubleValue() * problem.direction() / state.temperature)) {
             // Accept the change, even thought it's not an improvement
             curEval = newEval;
          }

@@ -29,7 +29,7 @@ public abstract class AbstractProblem<S extends Solution, E extends Number & Com
     */
    @Override
    public boolean better(E e1, E e2) {
-      return (Math.signum(diffEval(e1, e2).doubleValue()) == getDirection());
+      return (Math.signum(diffEval(e1, e2).doubleValue()) == direction());
    }
    /**
     * Returns true if the first of the given solutions is better than the second, i.e. <tt>better(evaluate(s1), evaluate(s2))</tt>.
@@ -58,7 +58,7 @@ public abstract class AbstractProblem<S extends Solution, E extends Number & Com
    @Override
    public boolean betterEq(E e1, E e2) {
       double sgn = Math.signum(diffEval(e1, e2).doubleValue());
-      return sgn == 0 || sgn == getDirection();
+      return sgn == 0 || sgn == direction();
    }
    /**
     * Returns true if the first of the given solutions is better than or equal to the second, i.e. <tt>betterEq(evaluate(s1), evaluate(s2))</tt>.
@@ -89,8 +89,8 @@ public abstract class AbstractProblem<S extends Solution, E extends Number & Com
     * @see Problem#evaluate(dvrlib.localsearch.Solution)
     */
    @Override
-   public double getWeight(S s) {
-      return getWeight(evaluate(s));
+   public double weight(S s) {
+      return weight(evaluate(s));
    }
    /**
     * Returns the weight of the given solution at the given iteration.
@@ -100,8 +100,8 @@ public abstract class AbstractProblem<S extends Solution, E extends Number & Com
     * @see AbstractProblem#evaluate(dvrlib.localsearch.Solution, long)
     */
    @Override
-   public double getWeight(S s, long iterationNumber) {
-      return getWeight(evaluate(s, iterationNumber));
+   public double weight(S s, long iterationNumber) {
+      return weight(evaluate(s, iterationNumber));
    }
    /**
     * Returns the weight of the current solution of the given search state.
@@ -109,7 +109,7 @@ public abstract class AbstractProblem<S extends Solution, E extends Number & Com
     * @see AbstractProblem#getWeight(dvrlib.localsearch.Solution, long)
     */
    @Override
-   public double getWeight(SearchState<Problem<S, E>, S> ss) {
-      return getWeight(ss.getSolution(), ss.getIterationCount());
+   public double weight(SearchState<Problem<S, E>, S> ss) {
+      return weight(ss.getSolution(), ss.getIterationCount());
    }
 }

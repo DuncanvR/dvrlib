@@ -10,7 +10,7 @@ import java.util.LinkedList;
 
 public abstract class GreatDelugeLS<S extends Solution, E extends Comparable<E>> extends StatefulLocalSearch<S, E, GreatDelugeLS.GDSearchState<S, E>> {
    public static class GDSearchState<S extends Solution, E extends Comparable<E>> extends SingularSearchState<Problem<S, E>, S> {
-      protected LinkedList<Object> changes   = new LinkedList();
+      protected LinkedList<Object> changes   = new LinkedList<Object>();
       protected E                  tolerance;
 
       protected GDSearchState(Problem<S, E> problem, S solution, E tolerance) {
@@ -92,6 +92,6 @@ public abstract class GreatDelugeLS<S extends Solution, E extends Comparable<E>>
    @Override
    public GDSearchState<S, E> newState(Problem<S, E> problem, S solution) {
       changer.reinitialize(problem);
-      return new GDSearchState(problem, solution, initTolerance);
+      return new GDSearchState<S, E>(problem, solution, initTolerance);
    }
 }

@@ -61,6 +61,6 @@ public class HillClimbingLS<S extends Solution, E extends Comparable<E>> extends
    @Override
    public SingularSearchState<Problem<S, E>, S> newState(Problem<S, E> problem, S solution) {
       changer.reinitialize(problem);
-      return new SingularSearchState(problem, solution);
+      return new SingularSearchState<Problem<S, E>, S>(problem, solution);
    }
 }

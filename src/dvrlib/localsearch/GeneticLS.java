@@ -106,6 +106,6 @@ public class GeneticLS<S extends Solution, E extends Number & Comparable<E>> ext
 
    @Override
    public GLSSearchState<S, E> newState(Problem<S, E> problem, S solution) {
-      return new GLSSearchState(problem, combiner.createPopulation(problem, solution, popSize));
+      return new GLSSearchState<S, E>(problem, combiner.createPopulation(problem, solution, popSize));
    }
 }

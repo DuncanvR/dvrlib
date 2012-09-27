@@ -12,7 +12,7 @@ public abstract class AbstractMaxProblem<S extends Solution, E extends Number & 
     * @see Math#signum(double)
     */
   @Override
-   public double getDirection() {
+   public double direction() {
       return 1d;
    }
 
@@ -21,7 +21,7 @@ public abstract class AbstractMaxProblem<S extends Solution, E extends Number & 
     * Optional operation used by GeneticLS to insert solutions into the population.
     */
    @Override
-   public double getWeight(E e) {
+   public double weight(E e) {
       return e.doubleValue();
    }
 }

@@ -16,7 +16,7 @@ public interface Problem<S extends Solution, E extends Comparable<E>> {
     * Returns the direction of the search, e.g. 1 for a maximizing and -1 for a minimizing problem.
     * @see Math#signum(double)
     */
-   public double getDirection();
+   public double direction();
 
    /**
     * Returns the evaluation of the given solution.
@@ -78,30 +78,30 @@ public interface Problem<S extends Solution, E extends Comparable<E>> {
    /**
     * Returns the best solution currently known.
     */
-   public S getBestSolution();
+   public S bestSolution();
 
    /**
     * Returns the weight of the given evaluation.
     * Optional operation used by GeneticLS to insert solutions into the population.
     */
-   public double getWeight(E e);
+   public double weight(E e);
    /**
     * Returns the weight of the given solution.
     * Optional operation used by GeneticLS to insert solutions into the population.
     * @see Problem#getWeight(java.lang.Comparable)
     */
-   public double getWeight(S s);
+   public double weight(S s);
    /**
     * Returns the weight of the given solution at the given iteration.
     * Optional operation used by GeneticLS to insert solutions into the population.
     * @param iterationNumber Indicates the iteration number in the current search.
     * @see Problem#getWeight(java.lang.Comparable)
     */
-   public double getWeight(S s, long iterationNumber);
+   public double weight(S s, long iterationNumber);
    /**
     * Returns the weight of the current solution of the given search state.
     * Optional operation used by GeneticLS to insert solutions into the population.
     * @see Problem#getWeight(dvrlib.localsearch.Solution, long)
     */
-   public double getWeight(SearchState<Problem<S, E>, S> ss);
+   public double weight(SearchState<Problem<S, E>, S> ss);
 }
