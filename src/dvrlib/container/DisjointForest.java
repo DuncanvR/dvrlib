@@ -153,7 +153,7 @@ public class DisjointForest<E> implements java.util.Set<E> {
     */
    @Override
    public java.util.Iterator<E> iterator() {
-      return new dvrlib.generic.ReadOnlyIterator(forest.keySet().iterator());
+      return new dvrlib.generic.ReadOnlyIterator<E>(forest.keySet().iterator());
    }
 
    /**

@@ -21,11 +21,12 @@ public class ListGraph<NodeData, EdgeData> extends AbstractGraph<ListGraphNode<N
     * ListGraph constructor.
     * @param nodeCount The number of nodes in this graph.
     */
+   @SuppressWarnings("unchecked")
    public ListGraph(int nodeCount) {
       super(nodeCount);
       nodes = new ListGraphNode[nodeCount];
       for(int i = 0; i < nodeCount; i++) {
-         nodes[i] = new ListGraphNode(this, i, null);
+         nodes[i] = new ListGraphNode<NodeData, EdgeData>(this, i, null);
       }
    }
 
@@ -71,7 +72,7 @@ public class ListGraph<NodeData, EdgeData> extends AbstractGraph<ListGraphNode<N
     */
    @Override
    public boolean hasEdge(int a, int b) {
-      ListGraphNode n = node(a);
+      ListGraphNode<NodeData, EdgeData> n = node(a);
       if(n == null)
          return false;
       else
@@ -100,7 +101,7 @@ public class ListGraph<NodeData, EdgeData> extends AbstractGraph<ListGraphNode<N
    public boolean addEdge(int a, int b, EdgeData ed) {
       if(a == b)
          return false;
-      ListGraphNode na = node(a), nb = node(b);
+      ListGraphNode<NodeData, EdgeData> na = node(a), nb = node(b);
       if(na != null && nb != null && !na.hasEdge(nb)) {
          na.outEdges.put(nb, ed);
          nb.inEdges.put(na, ed);
@@ -161,7 +162,7 @@ public class ListGraph<NodeData, EdgeData> extends AbstractGraph<ListGraphNode<N
       return new Iterable<ListGraphNode<NodeData, EdgeData>>() {
          @Override
          public Iterator<ListGraphNode<NodeData, EdgeData>> iterator() {
-            return new Iterator() {
+            return new Iterator<ListGraphNode<NodeData, EdgeData>>() {
                protected int node = 0;
 
                @Override
@@ -169,7 +170,7 @@ public class ListGraph<NodeData, EdgeData> extends AbstractGraph<ListGraphNode<N
                   return (node < nodeCount);
                }
                @Override
-               public ListGraphNode next() {
+               public ListGraphNode<NodeData, EdgeData> next() {
                   return nodes[node++];
                }
                @Override
@@ -190,7 +191,7 @@ public class ListGraph<NodeData, EdgeData> extends AbstractGraph<ListGraphNode<N
       return new Iterable<NodeData>() {
          @Override
          public Iterator<NodeData> iterator() {
-            return new Iterator() {
+            return new Iterator<NodeData>() {
                protected int node = 0;
 
                @Override

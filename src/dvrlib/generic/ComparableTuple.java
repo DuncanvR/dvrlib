@@ -16,6 +16,12 @@ public class ComparableTuple<A extends Comparable, B extends Comparable> extends
       super(a, b);
    }
 
+   /**
+    * Compares this tuple to the given one.
+    * @see java.lang.Comparable#compareTo(Object)
+    */
+   @Override
+   @SuppressWarnings("unchecked")
    public int compareTo(ComparableTuple<A, B> that) {
       int cA = a.compareTo(that.a);
       return (cA == 0 ? b.compareTo(that.b) : cA);

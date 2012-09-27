@@ -26,6 +26,7 @@ public class FlatMatrix<E> extends AbstractMatrix<E> {
     * @return The requested element.
     * @see AbstractMatrix#get(int,int)
     */
+   @SuppressWarnings("unchecked")
    public E get(int i, int j) {
       return (E) elements[i][j];
    }

@@ -17,6 +17,7 @@ public class BucketArray<I extends AbstractBucketItem> {
     * @param max The maximum index that will be used.
     * O(1).
     */
+   @SuppressWarnings("unchecked")
    public BucketArray(int min, int max) {
       this.min = min;
       this.max = max;

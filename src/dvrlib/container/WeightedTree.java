@@ -198,7 +198,7 @@ public class WeightedTree<E> implements Iterable<E> {
     * @see WeightedTreeNode#updateSize()
     * O(node.depth).
     */
-   protected void updateSizeUp(WeightedTreeNode node) {
+   protected void updateSizeUp(WeightedTreeNode<E> node) {
       for(; node.parent != null; node = node.parent) {
          node.updateSize();
       }
@@ -210,7 +210,7 @@ public class WeightedTree<E> implements Iterable<E> {
     * @see WeightedTree#rebalance(dvrlib.localsearch.WeightedTreeNode)
     * O(node.depth).
     */
-   protected void             rebalanceUp(WeightedTreeNode node) {
+   protected void                rebalanceUp(WeightedTreeNode<E> node) {
       for(; node != null; node = node.parent) {
          node = rebalance(node);
       }
@@ -220,7 +220,7 @@ public class WeightedTree<E> implements Iterable<E> {
     * @return The node at the original position of the given node after the rebalancing.
     * O(1).
     */
-   protected WeightedTreeNode rebalance  (WeightedTreeNode node) {
+   protected WeightedTreeNode<E> rebalance  (WeightedTreeNode<E> node) {
       if(node != null) {
          int balance = node.getLeftHeight() - node.getRightHeight();
          if(balance > 1) {
@@ -254,7 +254,7 @@ public class WeightedTree<E> implements Iterable<E> {
     * @return        The new top node: y
     * O(1).
     */
-   protected WeightedTreeNode singleRotation(WeightedTreeNode z, WeightedTreeNode y, WeightedTreeNode x, boolean ZLeft) {
+   protected WeightedTreeNode<E> singleRotation(WeightedTreeNode<E> z, WeightedTreeNode<E> y, WeightedTreeNode<E> x, boolean ZLeft) {
       /*if(z == null || y == null)
          throw new IllegalArgumentException("Cannot rotate on null nodes");
       if(z != null && z.parent == null && z != root)
@@ -299,7 +299,7 @@ public class WeightedTree<E> implements Iterable<E> {
     * @return        The new top node: x
     * O(1).
     */
-   protected WeightedTreeNode doubleRotation(WeightedTreeNode z, WeightedTreeNode y, WeightedTreeNode x, boolean ZLeft) {
+   protected WeightedTreeNode<E> doubleRotation(WeightedTreeNode<E> z, WeightedTreeNode<E> y, WeightedTreeNode<E> x, boolean ZLeft) {
       assert (z != null && y != null) : "Cannot rotate on null nodes";
       assert (z == root || z.parent != null) : "Node without parent other than the root encountered";
 
