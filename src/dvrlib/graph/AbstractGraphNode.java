@@ -6,7 +6,9 @@
 
 package dvrlib.graph;
 
-import java.util.Iterator;
+import dvrlib.generic.Tuple;
+
+import java.lang.Iterable;
 
 public abstract class AbstractGraphNode<Node extends AbstractGraphNode, NodeData, EdgeData> {
    public final int      index;
@@ -48,7 +50,12 @@ public abstract class AbstractGraphNode<Node extends AbstractGraphNode, NodeData
    public abstract int outDegree();
 
    /**
-    * Returns an iterable to the edges of this node.
+    * Returns an iterable to the outgoing edges of this node.
     */
-   public abstract java.lang.Iterable<dvrlib.generic.Tuple<EdgeData, Node>> edgeIterable();
+   public abstract Iterable<Tuple<EdgeData, Node>> outEdgesIterable();
+
+   /**
+    * Returns an iterable to the incoming edges of this node.
+    */
+   public abstract Iterable<Tuple<EdgeData, Node>> inEdgesIterable();
 }

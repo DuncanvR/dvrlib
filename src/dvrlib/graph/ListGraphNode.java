@@ -14,6 +14,28 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class ListGraphNode<NodeData, EdgeData> extends AbstractGraphNode<ListGraphNode<NodeData, EdgeData>, NodeData, EdgeData> {
+   protected class EdgeIterator implements Iterator<Tuple<EdgeData, ListGraphNode<NodeData, EdgeData>>> {
+      protected Iterator<Map.Entry<ListGraphNode<NodeData, EdgeData>, EdgeData>> it;
+
+      public EdgeIterator(Iterator<Map.Entry<ListGraphNode<NodeData, EdgeData>, EdgeData>> it) {
+         this.it = it;
+      }
+
+      @Override
+      public boolean hasNext() {
+         return it.hasNext();
+      }
+      @Override
+      public Tuple<EdgeData, ListGraphNode<NodeData, EdgeData>> next() {
+         Map.Entry<ListGraphNode<NodeData, EdgeData>, EdgeData> entry = it.next();
+         return new Tuple<EdgeData, ListGraphNode<NodeData, EdgeData>>(entry.getValue(), entry.getKey());
+      }
+      @Override
+      public void remove() {
+         throw new UnsupportedOperationException(this.getClass().getName() + ".remove() is not supported");
+      }
+   }
+
    protected final ListGraph                                        graph;
    protected final Map<ListGraphNode<NodeData, EdgeData>, EdgeData> inEdges, outEdges;
 
@@ -76,31 +98,29 @@ public class ListGraphNode<NodeData, EdgeData> extends AbstractGraphNode<ListGra
    }
 
    /**
-    * Returns an iterable to the edges going out of this node.
+    * Returns an iterable to the outgoing edges of this node.
     * O(1).
     */
    @Override
-   public Iterable<Tuple<EdgeData, ListGraphNode<NodeData, EdgeData>>> edgeIterable() {
+   public Iterable<Tuple<EdgeData, ListGraphNode<NodeData, EdgeData>>> outEdgesIterable() {
       return new Iterable<Tuple<EdgeData, ListGraphNode<NodeData, EdgeData>>>() {
          @Override
          public Iterator<Tuple<EdgeData, ListGraphNode<NodeData, EdgeData>>> iterator() {
-            return new Iterator<Tuple<EdgeData, ListGraphNode<NodeData, EdgeData>>>() {
-               protected Iterator<Map.Entry<ListGraphNode<NodeData, EdgeData>, EdgeData>> it = outEdges.entrySet().iterator();
+            return new EdgeIterator(outEdges.entrySet().iterator());
+         }
+      };
+   }
 
-               @Override
-               public boolean hasNext() {
-                  return it.hasNext();
-               }
-               @Override
-               public Tuple<EdgeData, ListGraphNode<NodeData, EdgeData>> next() {
-                  Map.Entry<ListGraphNode<NodeData, EdgeData>, EdgeData> entry = it.next();
-                  return new Tuple<EdgeData, ListGraphNode<NodeData, EdgeData>>(entry.getValue(), entry.getKey());
-               }
-               @Override
-               public void remove() {
-                  throw new UnsupportedOperationException(this.getClass().getName() + ".remove() is not supported");
-               }
-            };
+   /**
+    * Returns an iterable to the incoming edges of this node.
+    * O(1).
+    */
+   @Override
+   public Iterable<Tuple<EdgeData, ListGraphNode<NodeData, EdgeData>>> inEdgesIterable() {
+      return new Iterable<Tuple<EdgeData, ListGraphNode<NodeData, EdgeData>>>() {
+         @Override
+         public Iterator<Tuple<EdgeData, ListGraphNode<NodeData, EdgeData>>> iterator() {
+            return new EdgeIterator(inEdges.entrySet().iterator());
          }
       };
    }
