@@ -14,7 +14,7 @@ public abstract class AbstractSolution implements Solution {
     * O(1).
     */
    @Override
-   public long getIterationCount() {
+   public long iterationCount() {
       return iterationCount;
    }
 

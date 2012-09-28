@@ -10,12 +10,12 @@ public interface SearchState<P extends Problem<S, ? extends Comparable<?>>, S ex
    /**
     * Returns the problem of this search.
     */
-   public P    getProblem();
+   public P    problem();
 
    /**
     * Returns the current solution.
     */
-   public S    getSolution();
+   public S    solution();
 
    /**
     * Saves the current solution to the problem.
@@ -25,7 +25,7 @@ public interface SearchState<P extends Problem<S, ? extends Comparable<?>>, S ex
    /**
     * Returns the number of iterations this search has done.
     */
-   public long getIterationCount();
+   public long iterationCount();
 
    /**
     * Increases the number of iterations by <tt>n</tt>.

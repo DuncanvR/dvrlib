@@ -9,14 +9,14 @@ package dvrlib.localsearch;
 public interface Problem<S extends Solution, E extends Comparable<E>> {
    /**
     * Returns the difference between the two given evaluations, e.g. <tt>e1 - e2</tt>.
+    * Optional operation used by SimulatedAnnealingLS to determine how bad a worsening of a solution is.
     */
    public E diffEval(E e1, E e2);
 
    /**
     * Returns the direction of the search, e.g. 1 for a maximizing and -1 for a minimizing problem.
-    * @see Math#signum(double)
     */
-   public double direction();
+   public int direction();
 
    /**
     * Returns the evaluation of the given solution.
@@ -44,7 +44,7 @@ public interface Problem<S extends Solution, E extends Comparable<E>> {
     */
    public boolean better(SearchState<Problem<S, E>, S> ss, E e);
    /**
-    * Returns true if the current solution of the given search state is better than the given solution, i.e. <tt>better(evaluate(ss), evaluate(s, ss.getIterationNumber()))</tt>.
+    * Returns true if the current solution of the given search state is better than the given solution, i.e. <tt>better(evaluate(ss), evaluate(s, ss.iterationNumber()))</tt>.
     */
    public boolean better(SearchState<Problem<S, E>, S> ss, S s);
 
@@ -61,7 +61,7 @@ public interface Problem<S extends Solution, E extends Comparable<E>> {
     */
    public boolean betterEq(SearchState<Problem<S, E>, S> ss, E e);
    /**
-    * Returns true if the current solution of the given search state is better than or equal to the given solution, i.e. <tt>betterEq(evaluate(ss), evaluate(s, ss.getIterationNumber()))</tt>.
+    * Returns true if the current solution of the given search state is better than or equal to the given solution, i.e. <tt>betterEq(evaluate(ss), evaluate(s, ss.iterationNumber()))</tt>.
     */
    public boolean betterEq(SearchState<Problem<S, E>, S> ss, S s);
 
@@ -88,20 +88,20 @@ public interface Problem<S extends Solution, E extends Comparable<E>> {
    /**
     * Returns the weight of the given solution.
     * Optional operation used by GeneticLS to insert solutions into the population.
-    * @see Problem#getWeight(java.lang.Comparable)
+    * @see Problem#weight(java.lang.Comparable)
     */
    public double weight(S s);
    /**
     * Returns the weight of the given solution at the given iteration.
     * Optional operation used by GeneticLS to insert solutions into the population.
     * @param iterationNumber Indicates the iteration number in the current search.
-    * @see Problem#getWeight(java.lang.Comparable)
+    * @see Problem#weight(java.lang.Comparable)
     */
    public double weight(S s, long iterationNumber);
    /**
     * Returns the weight of the current solution of the given search state.
     * Optional operation used by GeneticLS to insert solutions into the population.
-    * @see Problem#getWeight(dvrlib.localsearch.Solution, long)
+    * @see Problem#weight(dvrlib.localsearch.Solution, long)
     */
    public double weight(SearchState<Problem<S, E>, S> ss);
 }

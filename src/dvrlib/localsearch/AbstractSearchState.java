@@ -15,17 +15,17 @@ public abstract class AbstractSearchState<P extends Problem<S, ? extends Compara
    }
 
    @Override
-   public P    getProblem()                   {
+   public P    problem()                      {
       return problem;
    }
 
    @Override
    public void saveSolution()                 {
-      problem.saveSolution(getSolution());
+      problem.saveSolution(solution());
    }
 
    @Override
-   public long getIterationCount()            {
+   public long iterationCount()               {
       return iteration;
    }
 

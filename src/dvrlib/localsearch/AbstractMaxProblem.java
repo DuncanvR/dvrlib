@@ -6,22 +6,13 @@
 
 package dvrlib.localsearch;
 
-public abstract class AbstractMaxProblem<S extends Solution, E extends Number & Comparable<E>> extends AbstractProblem<S, E> {
+public abstract class AbstractMaxProblem<S extends Solution, E extends Comparable<E>> extends AbstractProblem<S, E> {
    /**
     * Returns the direction of the search, e.g. <tt>1d</tt>.
-    * @see Math#signum(double)
-    */
-  @Override
-   public double direction() {
-      return 1d;
-   }
-
-   /**
-    * Returns the weight of the given evaluation.
-    * Optional operation used by GeneticLS to insert solutions into the population.
+    * @see dvrlib.localsearch.Problem#direction()
     */
    @Override
-   public double weight(E e) {
-      return e.doubleValue();
+   public int direction() {
+      return 1;
    }
 }

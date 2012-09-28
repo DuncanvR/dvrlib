@@ -46,8 +46,8 @@ public abstract class GreatDelugeLS<S extends Solution, E extends Comparable<E>>
    public S search(Problem<S, E> problem, S solution) {
       GDSearchState<S, E> state = newState(problem, solution);
       iterate(state, -1).saveSolution(); // TODO: Determine a good stopping criterium for this LS method.
-      state.solution.setIterationCount(state.getIterationCount());
-      return state.getSolution();
+      state.solution.setIterationCount(state.iterationCount());
+      return state.solution();
    }
 
    /**

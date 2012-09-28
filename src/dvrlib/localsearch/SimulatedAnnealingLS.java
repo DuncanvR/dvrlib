@@ -19,7 +19,7 @@ public class SimulatedAnnealingLS<S extends Solution, E extends Number & Compara
          iteration   = 1; // Start at 1, otherwise the temperature would be decreased at the first iteration
       }
 
-      public S getBestSolution() {
+      public S bestSolution() {
          // Undo the changes since the last improvement, reverting to the best known solution
          increaseIterationCount(-changes.size());
          while(!changes.isEmpty())
@@ -108,7 +108,7 @@ public class SimulatedAnnealingLS<S extends Solution, E extends Number & Compara
             state.temperature *= tempMod;
       }
 
-      return state.getBestSolution();
+      return state.bestSolution();
    }
 
    protected SASearchState newState(Problem<S, E> problem, S solution) {

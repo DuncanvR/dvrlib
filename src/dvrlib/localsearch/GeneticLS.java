@@ -19,11 +19,11 @@ public class GeneticLS<S extends Solution, E extends Number & Comparable<E>> ext
       }
 
       @Override
-      public S getSolution() {
+      public S solution() {
          return (solution == null ? population.peekBest() : solution);
       }
 
-      public WeightedTreePopulation<S> getPopulation() {
+      public WeightedTreePopulation<S> population() {
          return population;
       }
    }
@@ -54,7 +54,7 @@ public class GeneticLS<S extends Solution, E extends Number & Comparable<E>> ext
     */
    @Override
    public S search(Problem<S, E> problem, S solution) {
-      return search(newState(problem, solution)).getSolution();
+      return search(newState(problem, solution)).solution();
    }
 
    /**
@@ -70,7 +70,7 @@ public class GeneticLS<S extends Solution, E extends Number & Comparable<E>> ext
          iterate(state, n);
       }
       while(n > 0);
-      state.getSolution().setIterationCount(state.getIterationCount());
+      state.solution().setIterationCount(state.iterationCount());
       state.saveSolution();
       return state;
    }
@@ -83,7 +83,7 @@ public class GeneticLS<S extends Solution, E extends Number & Comparable<E>> ext
       while(state.population.size() > popSize)
          state.population.popWorst();
 
-      for(long i = state.getIterationCount(), iMax = state.getIterationCount() + n; i < iMax; i++) {
+      for(long i = state.iterationCount(), iMax = state.iterationCount() + n; i < iMax; i++) {
          // Generate new solution from two random solutions in the population
          state.solution = combiner.combine(state, state.population.peekRandom(), state.population.peekRandom());
 

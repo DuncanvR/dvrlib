@@ -27,8 +27,8 @@ public class HillClimbingLS<S extends Solution, E extends Comparable<E>> extends
    public S search(Problem<S, E> problem, S solution) {
       SingularSearchState<Problem<S, E>, S> state = newState(problem, solution);
       iterate(state, -1).saveSolution();
-      state.solution.setIterationCount(state.getIterationCount());
-      return state.getSolution();
+      state.solution.setIterationCount(state.iterationCount());
+      return state.solution();
    }
 
    /**

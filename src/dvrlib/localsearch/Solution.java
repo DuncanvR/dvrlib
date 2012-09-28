@@ -10,7 +10,7 @@ public interface Solution {
    /**
     * Returns the number of iterations it took to reach this solution.
     */
-   public long getIterationCount();
+   public long iterationCount();
 
    /**
     * Sets the number of iterations it took to reach this solution.

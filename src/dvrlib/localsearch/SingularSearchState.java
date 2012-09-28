@@ -15,7 +15,7 @@ public class SingularSearchState<P extends Problem<S, ? extends Comparable<?>>, 
    }
 
    @Override
-   public S getSolution() {
+   public S solution() {
       solution.setIterationCount(iteration);
       return solution;
    }
