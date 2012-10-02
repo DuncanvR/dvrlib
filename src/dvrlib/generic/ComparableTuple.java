@@ -7,7 +7,6 @@
 package dvrlib.generic;
 
 public class ComparableTuple<A extends Comparable, B extends Comparable> extends Tuple<A, B> implements Comparable<ComparableTuple<A, B>> {
-
    /**
     * ComparableTuple constructor.
     * @see Tuple#Tuple(java.lang.Object, java.lang.Object)

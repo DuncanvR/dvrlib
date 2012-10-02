@@ -44,6 +44,6 @@ public class Tuple<A, B> {
 
    @Override
    public String toString() {
-      return "dvrlib.generic.Tuple(" + a + ", " + b + ")";
+      return this.getClass().getName() + "(" + a + ", " + b + ")";
    }
 }
