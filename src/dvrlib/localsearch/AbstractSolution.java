@@ -26,13 +26,4 @@ public abstract class AbstractSolution implements Solution {
    public void setIterationCount(long n) {
       iterationCount = n;
    }
-
-   /**
-    * Default implementation of this method throws an exception.
-    * @see dvrlib.localsearch.Solution#ensureMostCommon(dvrlib.localsearch.Solution)
-    */
-   @Override
-   public void ensureMostCommon(Solution that) {
-      throw new RuntimeException("dvrlib.localsearch.AbstractSolution#ensureMostCommon(dvrlib.localsearch.Solution) has not been implemented");
-   }
 }

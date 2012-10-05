@@ -1,36 +1,12 @@
 /*
  * DvRLib - Local search
- * Duncan van Roermund, 2010-2011
+ * Duncan van Roermund, 2010-2012
  * Problem.java
  */
 
 package dvrlib.localsearch;
 
 public interface Problem<S extends Solution, E extends Comparable<E>> {
-   /**
-    * Returns the difference between the two given evaluations, e.g. <tt>e1 - e2</tt>.
-    * Optional operation used by SimulatedAnnealingLS to determine how bad a worsening of a solution is.
-    */
-   public E diffEval(E e1, E e2);
-
-   /**
-    * Returns the direction of the search, e.g. 1 for a maximizing and -1 for a minimizing problem.
-    */
-   public int direction();
-
-   /**
-    * Returns the evaluation of the given solution.
-    */
-   public E evaluate(S s);
-   /**
-    * Returns the evaluation of the given solution at the indicated iteration.
-    */
-   public E evaluate(S s, long iterationNumber);
-   /**
-    * Returns the evaluation of the current solution of the given search state.
-    */
-   public E evaluate(SearchState<Problem<S, E>, S> ss);
-
    /**
     * Returns true if the first of the given evaluations is better than the second.
     */
@@ -66,19 +42,48 @@ public interface Problem<S extends Solution, E extends Comparable<E>> {
    public boolean betterEq(SearchState<Problem<S, E>, S> ss, S s);
 
    /**
+    * Returns the best solution currently known.
+    */
+   public S bestSolution();
+   /**
     * Generates a random solution to this problem.
     */
    public S randomSolution();
-
    /**
     * Compares the given solution to the current best, and saves it if it is good enough.
     * Note that the solution should be copied in order to be saved, as it can (and probably will) be altered.
     */
    public void saveSolution(S s);
+
    /**
-    * Returns the best solution currently known.
+    * Returns the difference between the two given evaluations, e.g. <tt>e1 - e2</tt>.
+    * Optional operation used by SimulatedAnnealingLS to determine how bad a worsening of a solution is.
     */
-   public S bestSolution();
+   public E diffEval(E e1, E e2);
+
+   /**
+    * Returns the direction of the search, e.g. 1 for a maximizing and -1 for a minimizing problem.
+    */
+   public int direction();
+
+   /**
+    * Returns the evaluation of the given solution.
+    */
+   public E evaluate(S s);
+   /**
+    * Returns the evaluation of the given solution at the indicated iteration.
+    */
+   public E evaluate(S s, long iterationNumber);
+   /**
+    * Returns the evaluation of the current solution of the given search state.
+    */
+   public E evaluate(SearchState<Problem<S, E>, S> ss);
+
+   /**
+    * Makes the first solution look most like the second one.
+    * Optional operation used by GeneticLS for ambiguous solutions.
+    */
+   public void ensureMostCommon(S s1, S s2);
 
    /**
     * Returns the weight of the given evaluation.

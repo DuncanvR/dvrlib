@@ -1,12 +1,12 @@
 /*
  * DvRLib - Local search
- * Duncan van Roermund, 2010-2011
+ * Duncan van Roermund, 2010-2012
  * Combiner.java
  */
 
 package dvrlib.localsearch;
 
-public interface Combiner<P extends Problem<S, ? extends Comparable<?>>, S extends Solution> {
+public interface Combiner<P extends Problem<S, ?>, S extends Solution> {
    /**
     * Reinitializes this combiner, used when a new search is started.
     * @see LocalSearch#search(dvrlib.localsearch.Problem, dvrlib.localsearch.Solution)

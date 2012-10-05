@@ -1,39 +1,12 @@
 /*
  * DvRLib - Local search
- * Duncan van Roermund, 2011
+ * Duncan van Roermund, 2011-2012
  * AbstractProblem.java
  */
 
 package dvrlib.localsearch;
 
 public abstract class AbstractProblem<S extends Solution, E extends Comparable<E>> implements Problem<S, E> {
-   /**
-    * Returns the difference between the two given evaluations, e.g. <tt>e1 - e2</tt>.
-    * Optional operation used by SimulatedAnnealingLS to determine how bad a worsening of a solution is.
-    * Default implementation throws an UnsupportedOperationException.
-    * @see Problem#diffEval(Comparable, Comparable)
-    */
-   public E diffEval(E e1, E e2) {
-      throw new UnsupportedOperationException(this.getClass().getName() + ".diffEval(E,E) should be overridden by a subclass");
-   }
-
-   /**
-    * Returns the evaluation of the given solution, ignoring <tt>iterationNumber</tt>.
-    * Override this method to implement an evaluation function which takes the iteration number into account.
-    */
-   @Override
-   public E evaluate(S s, long iterationNumber) {
-      return evaluate(s);
-   }
-   /**
-    * Returns the evaluation of the current solution of the given search state.
-    * @see Problem#evaluate(dvrlib.localsearch.Solution, long)
-    */
-   @Override
-   public E evaluate(SearchState<Problem<S, E>, S> ss) {
-      return evaluate(ss.solution(), ss.iterationCount());
-   }
-
    /**
     * Returns true if the first of the given evaluations is better than the second.
     */
@@ -92,6 +65,45 @@ public abstract class AbstractProblem<S extends Solution, E extends Comparable<E
    }
 
    /**
+    * Returns the difference between the two given evaluations, e.g. <tt>e1 - e2</tt>.
+    * Optional operation used by SimulatedAnnealingLS to determine how bad a worsening of a solution is.
+    * Default implementation throws an UnsupportedOperationException.
+    * @see dvrlib.localsearch.Problem#diffEval(Comparable, Comparable)
+    */
+   @Override
+   public E diffEval(E e1, E e2) {
+      throw new UnsupportedOperationException(this.getClass().getName() + ".diffEval(E,E) should be overridden by a subclass");
+   }
+
+   /**
+    * Returns the evaluation of the given solution, ignoring <tt>iterationNumber</tt>.
+    * Override this method to implement an evaluation function which takes the iteration number into account.
+    */
+   @Override
+   public E evaluate(S s, long iterationNumber) {
+      return evaluate(s);
+   }
+   /**
+    * Returns the evaluation of the current solution of the given search state.
+    * @see Problem#evaluate(dvrlib.localsearch.Solution, long)
+    */
+   @Override
+   public E evaluate(SearchState<Problem<S, E>, S> ss) {
+      return evaluate(ss.solution(), ss.iterationCount());
+   }
+
+   /**
+    * Makes the first solution look most like the second one.
+    * Optional operation used by GeneticLS for ambiguous solutions.
+    * Default implementation of this method throws an UnsupportedOperationException.
+    * @see dvrlib.localsearch.Problem#ensureMostCommon(dvrlib.localsearch.Solution)
+    */
+   @Override
+   public void ensureMostCommon(S s1, S s2) {
+      throw new UnsupportedOperationException(this.getClass().getName() + ".ensureMostCommon(dvrlib.localsearch.Solution) has not been implemented");
+   }
+
+   /**
     * Returns the weight of the given evaluation.
     * Optional operation used by GeneticLS to insert solutions into the population.
     * Default implementation throws an UnsupportedOperationException.
@@ -99,7 +111,7 @@ public abstract class AbstractProblem<S extends Solution, E extends Comparable<E
     */
    @Override
    public double weight(E e) {
-      throw new UnsupportedOperationException(this.getClass().getName() + ".weight(E) should be overridden by a subclass");
+      throw new UnsupportedOperationException(this.getClass().getName() + ".weight(E) should be implemented when using dvrlib.localsearch.GeneticLS");
    }
    /**
     * Returns the weight of the given solution.

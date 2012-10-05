@@ -1,6 +1,6 @@
 /*
  * DvRLib - Local search
- * Duncan van Roermund, 2010-2011
+ * Duncan van Roermund, 2010-2012
  * Solution.java
  */
 
@@ -16,10 +16,4 @@ public interface Solution {
     * Sets the number of iterations it took to reach this solution.
     */
    public void setIterationCount(long n);
-
-   /**
-    * Makes this solution look most like the given one.
-    * Optional operation used by GeneticLS for ambiguous solutions.
-    */
-   public void ensureMostCommon(Solution s);
 }
