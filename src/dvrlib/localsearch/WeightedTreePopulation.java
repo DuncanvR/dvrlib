@@ -1,6 +1,6 @@
 /*
  * DvRLib - Local search
- * Duncan van Roermund, 2010-2011
+ * Duncan van Roermund, 2010-2012
  * WeightedTreePopulation.java
  */
 
@@ -26,6 +26,15 @@ public class WeightedTreePopulation<S extends Solution> implements Population<S>
    @Override
    public void clear() {
       tree.clear();
+   }
+
+   public boolean contains(S solution) {
+      return tree.contains(problem.weight(solution), solution);
+   }
+
+   @Override
+   public Iterator<S> iterator() {
+      return tree.iterator();
    }
 
    @Override
@@ -61,10 +70,5 @@ public class WeightedTreePopulation<S extends Solution> implements Population<S>
    @Override
    public int size() {
       return tree.size();
-   }
-
-   @Override
-   public Iterator<S> iterator() {
-      return tree.iterator();
    }
 }

@@ -1,6 +1,6 @@
 /*
  * DvRLib - Container
- * Duncan van Roermund, 2010-2011
+ * Duncan van Roermund, 2010-2012
  * WeightedTree.java
  */
 
@@ -40,17 +40,24 @@ public class WeightedTree<E> implements Iterable<E> {
     * Adds a node with the given key and value to this tree.
     * @return true, indicating the operation succeeded.
     * @throws IllegalArgumentException When the given key is <tt>null</tt>.
-    * @see WeightedTree#rebalanceUp(dvrlib.localsearch.WeightedTreeNode)
+    * @see WeightedTree#rebalanceUp(WeightedTreeNode)
     * O(height)
     */
-   public boolean add(Double key, E value) {
-      if(key == null)
-         throw new NullPointerException("No null keys permitted in this Collection");
+   public boolean add(double key, E value) {
       if(root == null)
          root = new WeightedTreeNode<E>(key, value);
       else
          rebalanceUp(root.add(key, value));
       return true;
+   }
+
+   /**
+    * Returns whether this tree contains a node with the given key and value.
+    * @return true if this tree contains the given key/value combination, false otherwise.
+    * O(height)
+    */
+   public boolean contains(double key, E value) {
+      return (root == null ? false : root.contains(key, value));
    }
 
    /**
@@ -104,7 +111,7 @@ public class WeightedTree<E> implements Iterable<E> {
    /**
     * Removes an element from the given node and returns its key along with its data.
     * If the node contains only one element, it is removed from the tree.
-    * @see WeightedTree#remove(dvrlib.localsearch.WeightedTreeNode)
+    * @see WeightedTree#remove(WeightedTreeNode)
     * O(node.depth).
     */
    protected Tuple<Double, E> pop   (WeightedTreeNode<E> node) {
@@ -118,7 +125,7 @@ public class WeightedTree<E> implements Iterable<E> {
    /**
     * Removes an element from the node with the smallest key and returns its key and its data.
     * @see WeightedTree#getMin()
-    * @see WeightedTree#pop(dvrlib.localsearch.WeightedTreeNode)
+    * @see WeightedTree#pop(WeightedTreeNode)
     */
    public    Tuple<Double, E> popMin()                         {
       return pop(getMin());
@@ -126,7 +133,7 @@ public class WeightedTree<E> implements Iterable<E> {
    /**
     * Removes an element from the node with the largest key and returns its key along with its data.
     * @see WeightedTree#getMax()
-    * @see WeightedTree#pop(dvrlib.localsearch.WeightedTreeNode)
+    * @see WeightedTree#pop(WeightedTreeNode)
     */
    public    Tuple<Double, E> popMax()                         {
       return pop(getMax());
@@ -174,7 +181,7 @@ public class WeightedTree<E> implements Iterable<E> {
     * Removes the given external node from this tree.
     * Do not call this method directly but use <tt>remove(WeightedTreeNode)</tt>.
     * @param node The node that is to be removed. This has to be an external node, i.e. it may not have both a left and a right subtree.
-    * @see WeightedTree#remove(dvrlib.localsearch.WeightedTreeNode)
+    * @see WeightedTree#remove(WeightedTreeNode)
     * O(node.depth).
     */
    protected void removeExternal(WeightedTreeNode<E> node) {
@@ -207,7 +214,7 @@ public class WeightedTree<E> implements Iterable<E> {
 
    /**
     * Ensures the given node and all its ancestors are balanced.
-    * @see WeightedTree#rebalance(dvrlib.localsearch.WeightedTreeNode)
+    * @see WeightedTree#rebalance(WeightedTreeNode)
     * O(node.depth).
     */
    protected void                rebalanceUp(WeightedTreeNode<E> node) {
@@ -371,7 +378,7 @@ public class WeightedTree<E> implements Iterable<E> {
     * O(n).
     */
    public void print() {
-      System.out.println("dvrlib.localsearch.WeightedTree(" + size() + ")");
+      System.out.println("dvrlib.container.WeightedTree(" + size() + ")");
       if(root != null)
          root.print("");
    }

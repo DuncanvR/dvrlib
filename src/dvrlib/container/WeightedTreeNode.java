@@ -1,6 +1,6 @@
 /*
  * DvRLib - Container
- * Duncan van Roermund, 2010-2011
+ * Duncan van Roermund, 2010-2012
  * WeightedTreeNode.java
  */
 
@@ -22,6 +22,15 @@ public class WeightedTreeNode<E> {
       values.add(value);
       this.key = key;
       weight = key;
+   }
+
+   public boolean contains(double key, E value) {
+      if(key < this.key)
+         return (left == null ? false : left.contains(key, value));
+      else if(key > this.key)
+         return (right == null ? false : right.contains(key, value));
+      else // key == this.key
+         return values.contains(value);
    }
 
    public int getHeight() {
