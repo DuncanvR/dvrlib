@@ -9,7 +9,7 @@ package dvrlib.localsearch;
 public interface Combiner<P extends Problem<S, ?>, S extends Solution> {
    /**
     * Reinitializes this combiner, used when a new search is started.
-    * @see LocalSearch#search(dvrlib.localsearch.Problem, dvrlib.localsearch.Solution)
+    * @see LocalSearch#search(Problem, Solution)
     */
    public void reinitialize();
 
@@ -23,5 +23,5 @@ public interface Combiner<P extends Problem<S, ?>, S extends Solution> {
     * Creates a new population with at least the given solution and at most <tt>popSize</tt> solutions.
     * A simple implementation would include the given solution, and some random solutions.
     */
-   public WeightedTreePopulation<S> createPopulation(P problem, S solution, int popSize);
+   public Population<S> createPopulation(P problem, S solution, int popSize);
 }

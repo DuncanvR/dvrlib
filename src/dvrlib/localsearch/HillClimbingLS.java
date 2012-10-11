@@ -21,7 +21,7 @@ public class HillClimbingLS<S extends Solution, E extends Comparable<E>> extends
    /**
     * Searches for an optimal solution for the given problem, starting from the given solution, which is saved and returned.
     * This algorithm keeps generating changes for the solution until they no longer improve it.
-    * @see HillClimbingLS#iterate(dvrlib.localsearch.SingularSearchState, int)
+    * @see HillClimbingLS#iterate(SingularSearchState, int)
     */
    @Override
    public S search(Problem<S, E> problem, S solution) {
@@ -34,7 +34,7 @@ public class HillClimbingLS<S extends Solution, E extends Comparable<E>> extends
    /**
     * Searches for an optimal solution using the given search state, with a maximum of <tt>n</tt> iterations, after which the state is returned.
     * A negative value of <tt>n</tt> indicates there is no limit to the number of iterations.
-    * @see HillClimbingLS#iterate(dvrlib.localsearch.Solution)
+    * @see HillClimbingLS#iterate(Solution)
     */
    @Override
    public SingularSearchState<Problem<S, E>, S> iterate(SingularSearchState<Problem<S, E>, S> state, long n) {

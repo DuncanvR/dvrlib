@@ -9,11 +9,11 @@ package dvrlib.localsearch;
 public class GeneticLS<S extends Solution, E extends Number & Comparable<E>> extends StatefulLocalSearch<S, E, GeneticLS.GLSSearchState<S, E>> {
    public static class GLSSearchState<S extends Solution, E extends Comparable<E>> extends AbstractSearchState<Problem<S, E>, S> {
       // static inner class: workaround of bug 6557954 in jdk6 -- Bug is fixed jdk7, but without the static it still doesn't work
-      protected WeightedTreePopulation<S> population;
-      protected S                         solution        = null;
-      protected long                      lastImprovement;
+      protected Population<S> population;
+      protected S             solution        = null;
+      protected long          lastImprovement;
 
-      protected GLSSearchState(Problem<S, E> problem, WeightedTreePopulation<S> population) {
+      protected GLSSearchState(Problem<S, E> problem, Population<S> population) {
          super(problem);
          this.population = population;
       }
@@ -21,10 +21,6 @@ public class GeneticLS<S extends Solution, E extends Number & Comparable<E>> ext
       @Override
       public S solution() {
          return (solution == null ? population.peekBest() : solution);
-      }
-
-      public WeightedTreePopulation<S> population() {
-         return population;
       }
    }
    protected final Combiner<Problem<S, E>, S> combiner ;
@@ -50,7 +46,7 @@ public class GeneticLS<S extends Solution, E extends Number & Comparable<E>> ext
 
    /**
     * Searches for an optimal solution for the given problem, which is saved and returned.
-    * @see GeneticLS#search(dvrlib.localsearch.GeneticLS.GLSSearchState)
+    * @see GeneticLS#search(GeneticLS.GLSSearchState)
     */
    @Override
    public S search(Problem<S, E> problem, S solution) {
@@ -60,7 +56,7 @@ public class GeneticLS<S extends Solution, E extends Number & Comparable<E>> ext
    /**
     * Searches for an optimal solution using the given search state, after which the best found solution is saved and the state is returned.
     * This algorithm keeps replacing the worst solution in the population by the new combined solution if it is better, until a predefined number of iterations give no improvement.
-    * @see GeneticLS#iterate(dvrlib.localsearch.GeneticLS.GLSSearchState, int)
+    * @see GeneticLS#iterate(GeneticLS.GLSSearchState, int)
     */
    public GLSSearchState<S, E> search(GLSSearchState<S, E> state) {
       combiner.reinitialize();
@@ -102,10 +98,12 @@ public class GeneticLS<S extends Solution, E extends Number & Comparable<E>> ext
 
       state.increaseIterationCount(n);
       return state;
-  }
+   }
 
    @Override
    public GLSSearchState<S, E> newState(Problem<S, E> problem, S solution) {
-      return new GLSSearchState<S, E>(problem, combiner.createPopulation(problem, solution, popSize));
+      Population<S> population = combiner.createPopulation(problem, solution, popSize);
+      problem.saveSolution(population.peekBest());
+      return new GLSSearchState<S, E>(problem, population);
    }
 }

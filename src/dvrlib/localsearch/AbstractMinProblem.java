@@ -9,7 +9,7 @@ package dvrlib.localsearch;
 public abstract class AbstractMinProblem<S extends Solution, E extends Comparable<E>> extends AbstractProblem<S, E> {
    /**
     * Returns the direction of the search, e.g. <tt>-1d</tt>.
-    * @see dvrlib.localsearch.Problem#direction()
+    * @see Problem#direction()
     */
    @Override
    public int direction() {

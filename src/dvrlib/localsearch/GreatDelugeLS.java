@@ -40,7 +40,7 @@ public abstract class GreatDelugeLS<S extends Solution, E extends Comparable<E>>
    /**
     * Searches for an optimal solution for the given problem, starting from the given solution, which is saved and returned.
     * This algorithm keeps generating changes for the solution while it can be improved over the tolerance.
-    * @see GreatDelugeLS#iterate(dvrlib.localsearch.SingularSearchState, int)
+    * @see GreatDelugeLS#iterate(GreatDelugeLS.GDSearchState, int)
     */
    @Override
    public S search(Problem<S, E> problem, S solution) {
@@ -52,7 +52,7 @@ public abstract class GreatDelugeLS<S extends Solution, E extends Comparable<E>>
 
    /**
     * Searches for an optimal solution using the given search state, with a maximum of <tt>n</tt> iterations, after which the state is returned.
-    * @see GreatDelugeLS#iterate(dvrlib.localsearch.Solution)
+    * @see GreatDelugeLS#iterate(Solution)
     */
    @Override
    public GDSearchState<S, E> iterate(GDSearchState<S, E> state, long n) {

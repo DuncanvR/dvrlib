@@ -45,7 +45,7 @@ public class SimulatedAnnealingLS<S extends Solution, E extends Number & Compara
     * SimulatedAnnealingLS constructor, using the default values for initTemp and tempMod.
     * @param stopCount  The algorithm will stop this number of iterations after the best known solution was found.
     * @param coolCount  The number of iterations after which the temperature will decrease.
-    * @see SimulatedAnnealingLS#SimulatedAnnealingLS(dvrlib.localsearch.Changer, int, int, double, double)
+    * @see SimulatedAnnealingLS#SimulatedAnnealingLS(Changer, int, int, double, double)
     * O(1).
     */
    public SimulatedAnnealingLS(Changer<Problem<S, E>, S, Object> changer, int stopCount, int coolCount) {
@@ -73,7 +73,7 @@ public class SimulatedAnnealingLS<S extends Solution, E extends Number & Compara
     * This algorithm repeatedly generates changes for the current solution and applies them if they improve it.
     * If a change does not improve the solution, it is applied with a certain chance based on the current temperature, which decreases as time passes by.
     * After a predefined number of iterations in which no improvements were found, the best known solution is returned.
-    * @see SimulatedAnnealingLS#iterate(dvrlib.localsearch.Problem, dvrlib.localsearch.Solution, int)
+    * @see SimulatedAnnealingLS#iterate(Problem, Solution, int)
     */
    @Override
    public S search(Problem<S, E> problem, S solution) {

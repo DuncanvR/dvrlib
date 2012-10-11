@@ -19,7 +19,7 @@ public abstract class AbstractProblem<S extends Solution, E extends Comparable<E
     */
    @Override
    public boolean better(S s1, S s2) {
-      return (s1 == null ? false : (s2 == null ? true : better(evaluate(s1), evaluate(s2))));
+      return (s1 == null ? false : (s2 == null ? true : (s1.equals(s2) ? false : better(evaluate(s1), evaluate(s2)))));
    }
    /**
     * Returns true if the current solution of the given search state is better than the given evaluation, i.e. <tt>better(evaluate(ss), e)</tt>.
@@ -47,7 +47,7 @@ public abstract class AbstractProblem<S extends Solution, E extends Comparable<E
     */
    @Override
    public boolean betterEq(S s1, S s2) {
-      return (s1 == null ? false : (s2 == null ? true : betterEq(evaluate(s1), evaluate(s2))));
+      return (s1 == null ? false : (s2 == null ? true : (s1.equals(s2) ? true : betterEq(evaluate(s1), evaluate(s2)))));
    }
    /**
     * Returns true if the current solution of the given search state is better than or equal to the given evaluation, i.e. <tt>betterEq(evaluate(ss), e)</tt>.
@@ -68,7 +68,7 @@ public abstract class AbstractProblem<S extends Solution, E extends Comparable<E
     * Returns the difference between the two given evaluations, e.g. <tt>e1 - e2</tt>.
     * Optional operation used by SimulatedAnnealingLS to determine how bad a worsening of a solution is.
     * Default implementation throws an UnsupportedOperationException.
-    * @see dvrlib.localsearch.Problem#diffEval(Comparable, Comparable)
+    * @see Problem#diffEval(Comparable, Comparable)
     */
    @Override
    public E diffEval(E e1, E e2) {
@@ -85,7 +85,7 @@ public abstract class AbstractProblem<S extends Solution, E extends Comparable<E
    }
    /**
     * Returns the evaluation of the current solution of the given search state.
-    * @see Problem#evaluate(dvrlib.localsearch.Solution, long)
+    * @see Problem#evaluate(Solution, long)
     */
    @Override
    public E evaluate(SearchState<Problem<S, E>, S> ss) {
@@ -96,7 +96,7 @@ public abstract class AbstractProblem<S extends Solution, E extends Comparable<E
     * Makes the first solution look most like the second one.
     * Optional operation used by GeneticLS for ambiguous solutions.
     * Default implementation of this method throws an UnsupportedOperationException.
-    * @see dvrlib.localsearch.Problem#ensureMostCommon(dvrlib.localsearch.Solution)
+    * @see Problem#ensureMostCommon(Solution)
     */
    @Override
    public void ensureMostCommon(S s1, S s2) {
@@ -116,8 +116,8 @@ public abstract class AbstractProblem<S extends Solution, E extends Comparable<E
    /**
     * Returns the weight of the given solution.
     * Optional operation used by GeneticLS to insert solutions into the population.
-    * @see Problem#weight(dvrlib.localsearch.Solution)
-    * @see Problem#evaluate(dvrlib.localsearch.Solution)
+    * @see Problem#weight(Solution)
+    * @see Problem#evaluate(Solution)
     */
    @Override
    public double weight(S s) {
@@ -128,7 +128,7 @@ public abstract class AbstractProblem<S extends Solution, E extends Comparable<E
     * Optional operation used by GeneticLS to insert solutions into the population.
     * @param iterationNumber Indicates the iteration number in the current search.
     * @see Problem#weight(java.lang.Comparable)
-    * @see AbstractProblem#evaluate(dvrlib.localsearch.Solution, long)
+    * @see AbstractProblem#evaluate(Solution, long)
     */
    @Override
    public double weight(S s, long iterationNumber) {
@@ -137,7 +137,7 @@ public abstract class AbstractProblem<S extends Solution, E extends Comparable<E
    /**
     * Returns the weight of the current solution of the given search state.
     * Optional operation used by GeneticLS to insert solutions into the population.
-    * @see AbstractProblem#weight(dvrlib.localsearch.Solution, long)
+    * @see AbstractProblem#weight(Solution, long)
     */
    @Override
    public double weight(SearchState<Problem<S, E>, S> ss) {

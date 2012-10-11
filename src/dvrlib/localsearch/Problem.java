@@ -106,7 +106,7 @@ public interface Problem<S extends Solution, E extends Comparable<E>> {
    /**
     * Returns the weight of the current solution of the given search state.
     * Optional operation used by GeneticLS to insert solutions into the population.
-    * @see Problem#weight(dvrlib.localsearch.Solution, long)
+    * @see Problem#weight(Solution, long)
     */
    public double weight(SearchState<Problem<S, E>, S> ss);
 }

@@ -7,8 +7,8 @@
 package dvrlib.localsearch;
 
 public abstract class AbstractSearchState<P extends Problem<S, ? extends Comparable<?>>, S extends Solution> implements SearchState<P, S> {
-   protected final P    problem  ;
-   protected       long iteration;
+   protected final P    problem;
+   protected       long iteration = 0;
 
    public      AbstractSearchState(P problem) {
       this.problem = problem;
@@ -33,5 +33,4 @@ public abstract class AbstractSearchState<P extends Problem<S, ? extends Compara
    public void increaseIterationCount(long n) {
       iteration += n;
    }
-
 }

@@ -9,7 +9,7 @@ package dvrlib.localsearch;
 public interface Changer<P extends Problem<S, ? extends Comparable<?>>, S extends Solution, C> {
    /**
     * Reinitializes this changer, used when a new search is started.
-    * @see LocalSearch#search(dvrlib.localsearch.Problem, dvrlib.localsearch.Solution)
+    * @see LocalSearch#search(Problem, Solution)
     */
    public void   reinitialize(P problem);
 
