@@ -8,7 +8,7 @@ package dvrlib.localsearch;
 
 import java.util.LinkedList;
 
-public abstract class GreatDelugeLS<S extends Solution, E extends Comparable<E>> extends StatefulLocalSearch<S, E, GreatDelugeLS.GDSearchState<S, E>> {
+public abstract class GreatDelugeLS<S extends Solution, E extends Comparable<E>> extends StatefulLocalSearch<Problem<S, E>, S, E, GreatDelugeLS.GDSearchState<S, E>> {
    public static class GDSearchState<S extends Solution, E extends Comparable<E>> extends SingularSearchState<Problem<S, E>, S> {
       protected LinkedList<Object> changes   = new LinkedList<Object>();
       protected E                  tolerance;

@@ -6,14 +6,14 @@
 
 package dvrlib.localsearch;
 
-public class GeneticLS<S extends Solution, E extends Number & Comparable<E>> extends StatefulLocalSearch<S, E, GeneticLS.GLSSearchState<S, E>> {
-   public static class GLSSearchState<S extends Solution, E extends Comparable<E>> extends AbstractSearchState<Problem<S, E>, S> {
+public class GeneticLS<S extends Solution, E extends Number & Comparable<E>> extends StatefulLocalSearch<GeneticProblem<S, E>, S, E, GeneticLS.GLSSearchState<S, E>> {
+   public static class GLSSearchState<S extends Solution, E extends Comparable<E>> extends AbstractSearchState<GeneticProblem<S, E>, S> {
       // static inner class: workaround of bug 6557954 in jdk6 -- Bug is fixed jdk7, but without the static it still doesn't work
       protected Population<S> population;
       protected S             solution        = null;
       protected long          lastImprovement;
 
-      protected GLSSearchState(Problem<S, E> problem, Population<S> population) {
+      protected GLSSearchState(GeneticProblem<S, E> problem, Population<S> population) {
          super(problem);
          this.population = population;
       }
@@ -23,9 +23,9 @@ public class GeneticLS<S extends Solution, E extends Number & Comparable<E>> ext
          return (solution == null ? population.peekBest() : solution);
       }
    }
-   protected final Combiner<Problem<S, E>, S> combiner ;
-   protected final int                        popSize  ,
-                                              stopCount;
+   protected final Combiner<GeneticProblem<S, E>, S> combiner;
+   protected final int                               popSize,
+                                                     stopCount;
 
    /**
     * GeneticLS constructor.
@@ -33,7 +33,7 @@ public class GeneticLS<S extends Solution, E extends Number & Comparable<E>> ext
     * @param populationSize The default number of solutions kept in a population.
     * @param stopCount      The number of iterations in which no better solution was found after which the algorithm will stop.
     */
-   public GeneticLS(Combiner<Problem<S, E>, S> combiner, int populationSize, int stopCount) {
+   public GeneticLS(Combiner<GeneticProblem<S, E>, S> combiner, int populationSize, int stopCount) {
       if(populationSize < 1)
          throw new IllegalArgumentException("populationSize should be > 0");
       if(stopCount < 1)
@@ -49,7 +49,7 @@ public class GeneticLS<S extends Solution, E extends Number & Comparable<E>> ext
     * @see GeneticLS#search(GeneticLS.GLSSearchState)
     */
    @Override
-   public S search(Problem<S, E> problem, S solution) {
+   public S search(GeneticProblem<S, E> problem, S solution) {
       return search(newState(problem, solution)).solution();
    }
 
@@ -101,7 +101,7 @@ public class GeneticLS<S extends Solution, E extends Number & Comparable<E>> ext
    }
 
    @Override
-   public GLSSearchState<S, E> newState(Problem<S, E> problem, S solution) {
+   public GLSSearchState<S, E> newState(GeneticProblem<S, E> problem, S solution) {
       Population<S> population = combiner.createPopulation(problem, solution, popSize);
       problem.saveSolution(population.peekBest());
       return new GLSSearchState<S, E>(problem, population);

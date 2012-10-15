@@ -12,11 +12,11 @@ import java.util.Iterator;
 import java.util.HashSet;
 
 public class WeightedTreePopulation<S extends Solution> implements Population<S> {
-   protected final HashSet<S>      keys    = new HashSet<S>();
-   protected final Problem<S, ?>   problem;
-   protected final WeightedTree<S> tree    = new WeightedTree<S>();
+   protected final HashSet<S>           keys    = new HashSet<S>();
+   protected final GeneticProblem<S, ?> problem;
+   protected final WeightedTree<S>      tree    = new WeightedTree<S>();
 
-   public WeightedTreePopulation(Problem<S, ?> problem) {
+   public WeightedTreePopulation(GeneticProblem<S, ?> problem) {
       this.problem = problem;
    }
 

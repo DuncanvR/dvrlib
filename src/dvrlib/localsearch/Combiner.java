@@ -6,7 +6,7 @@
 
 package dvrlib.localsearch;
 
-public interface Combiner<P extends Problem<S, ?>, S extends Solution> {
+public interface Combiner<P extends GeneticProblem<S, ?>, S extends Solution> {
    /**
     * Reinitializes this combiner, used when a new search is started.
     * @see LocalSearch#search(Problem, Solution)

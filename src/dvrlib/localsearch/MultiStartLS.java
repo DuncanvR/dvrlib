@@ -1,13 +1,13 @@
 /*
  * DvRLib - Local search
- * Duncan van Roermund, 2010-2011
+ * Duncan van Roermund, 2010-2012
  * MultiStartLS.java
  */
 
 package dvrlib.localsearch;
 
-public class MultiStartLS<S extends Solution, E extends Comparable<E>> extends LocalSearch<S, E> {
-   protected LocalSearch<S, E> ls;
+public class MultiStartLS<S extends Solution, E extends Comparable<E>> extends LocalSearch<Problem<S, E>, S, E> {
+   protected LocalSearch<Problem<S, E>, S, E> ls;
    protected int count;
 
    /**
@@ -15,7 +15,7 @@ public class MultiStartLS<S extends Solution, E extends Comparable<E>> extends L
     * @param ls    The search algorithm that will be used repeatedly to search for a solution.
     * @param count The number of times to search for a solution.
     */
-   public MultiStartLS(LocalSearch<S, E> ls, int count) {
+   public MultiStartLS(LocalSearch<Problem<S, E>, S, E> ls, int count) {
       this.ls    = ls;
       this.count = count;
    }

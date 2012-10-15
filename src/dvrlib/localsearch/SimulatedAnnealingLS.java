@@ -8,12 +8,12 @@ package dvrlib.localsearch;
 
 import java.util.LinkedList;
 
-public class SimulatedAnnealingLS<S extends Solution, E extends Number & Comparable<E>> extends LocalSearch<S, E> {
-   protected class SASearchState extends SingularSearchState<Problem<S, E>, S> {
+public class SimulatedAnnealingLS<S extends Solution, E extends Number & Comparable<E>> extends LocalSearch<NumericProblem<S, E>, S, E> {
+   protected class SASearchState extends SingularSearchState<NumericProblem<S, E>, S> {
       protected LinkedList<Object> changes     = new LinkedList<Object>();
       protected double             temperature;
 
-      public SASearchState(Problem<S, E> problem, S solution) {
+      public SASearchState(NumericProblem<S, E> problem, S solution) {
          super(problem, solution);
          temperature = initTemp;
          iteration   = 1; // Start at 1, otherwise the temperature would be decreased at the first iteration
@@ -35,11 +35,11 @@ public class SimulatedAnnealingLS<S extends Solution, E extends Number & Compara
    /** The default temperature modifier is 0.98, leading to a 2% decrease in temperature every <tt>coolCount</tt> iterations. */
    public final static double defTempMod = 0.98;
 
-   protected final Changer<Problem<S, E>, S, Object> changer;
-   protected final int                               stopCount,
-                                                     coolCount;
-   protected final double                            initTemp,
-                                                     tempMod;
+   protected final Changer<NumericProblem<S, E>, S, Object> changer;
+   protected final int                                      stopCount,
+                                                            coolCount;
+   protected final double                                   initTemp,
+                                                            tempMod;
 
    /**
     * SimulatedAnnealingLS constructor, using the default values for initTemp and tempMod.
@@ -48,7 +48,7 @@ public class SimulatedAnnealingLS<S extends Solution, E extends Number & Compara
     * @see SimulatedAnnealingLS#SimulatedAnnealingLS(Changer, int, int, double, double)
     * O(1).
     */
-   public SimulatedAnnealingLS(Changer<Problem<S, E>, S, Object> changer, int stopCount, int coolCount) {
+   public SimulatedAnnealingLS(Changer<NumericProblem<S, E>, S, Object> changer, int stopCount, int coolCount) {
       this(changer, stopCount, coolCount, defTemp, defTempMod);
    }
 
@@ -60,7 +60,7 @@ public class SimulatedAnnealingLS<S extends Solution, E extends Number & Compara
     * @param tempMod    The modifier for the temperature. Every <tt>coolCount</tt> iterations the temperature is multiplied with this value.
     * O(1).
     */
-   public SimulatedAnnealingLS(Changer<Problem<S, E>, S, Object> changer, int stopCount, int coolCount, double initTemp, double tempMod) {
+   public SimulatedAnnealingLS(Changer<NumericProblem<S, E>, S, Object> changer, int stopCount, int coolCount, double initTemp, double tempMod) {
       this.changer   = changer;
       this.stopCount = stopCount;
       this.coolCount = coolCount;
@@ -72,11 +72,10 @@ public class SimulatedAnnealingLS<S extends Solution, E extends Number & Compara
     * Searches for a solution for the given problem, starting from the given solution.
     * This algorithm repeatedly generates changes for the current solution and applies them if they improve it.
     * If a change does not improve the solution, it is applied with a certain chance based on the current temperature, which decreases as time passes by.
-    * After a predefined number of iterations in which no improvements were found, the best known solution is returned.
-    * @see SimulatedAnnealingLS#iterate(Problem, Solution, int)
+    * After <tt>stopCount</tt> iterations in which no improvements were found, the best known solution is returned.
     */
    @Override
-   public S search(Problem<S, E> problem, S solution) {
+   public S search(NumericProblem<S, E> problem, S solution) {
       SASearchState state = newState(problem, solution);
       E curEval = problem.evaluate(state), bestEval = curEval;
 
@@ -96,8 +95,8 @@ public class SimulatedAnnealingLS<S extends Solution, E extends Number & Compara
                state.changes.clear();
             }
          }
-         else if(Math.random() < Math.exp(problem.diffEval(newEval, curEval).doubleValue() * problem.direction() / state.temperature)) {
-            // Accept the change, even thought it's not an improvement
+         else if(Math.random() < Math.exp(problem.diffEval(newEval, curEval) * problem.direction() / state.temperature)) {
+            // Accept the change, even though it's not an improvement
             curEval = newEval;
          }
          else
@@ -111,7 +110,7 @@ public class SimulatedAnnealingLS<S extends Solution, E extends Number & Compara
       return state.bestSolution();
    }
 
-   protected SASearchState newState(Problem<S, E> problem, S solution) {
+   protected SASearchState newState(NumericProblem<S, E> problem, S solution) {
       changer.reinitialize(problem);
       return new SASearchState(problem, solution);
    }

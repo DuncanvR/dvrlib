@@ -18,11 +18,11 @@ public interface Problem<S extends Solution, E extends Comparable<E>> {
    /**
     * Returns true if the current solution of the given search state is better than the given evaluation, i.e. <tt>better(evaluate(ss), e)</tt>.
     */
-   public boolean better(SearchState<Problem<S, E>, S> ss, E e);
+   public boolean better(SearchState<? extends Problem<S, E>, S> ss, E e);
    /**
     * Returns true if the current solution of the given search state is better than the given solution, i.e. <tt>better(evaluate(ss), evaluate(s, ss.iterationNumber()))</tt>.
     */
-   public boolean better(SearchState<Problem<S, E>, S> ss, S s);
+   public boolean better(SearchState<? extends Problem<S, E>, S> ss, S s);
 
    /**
     * Returns true if the first of the given evaluations is better than or equal to the second.
@@ -35,11 +35,11 @@ public interface Problem<S extends Solution, E extends Comparable<E>> {
    /**
     * Returns true if the current solution of the given search state is better than or equal to the given evaluation, i.e. <tt>betterEq(evaluate(ss), e)</tt>.
     */
-   public boolean betterEq(SearchState<Problem<S, E>, S> ss, E e);
+   public boolean betterEq(SearchState<? extends Problem<S, E>, S> ss, E e);
    /**
     * Returns true if the current solution of the given search state is better than or equal to the given solution, i.e. <tt>betterEq(evaluate(ss), evaluate(s, ss.iterationNumber()))</tt>.
     */
-   public boolean betterEq(SearchState<Problem<S, E>, S> ss, S s);
+   public boolean betterEq(SearchState<? extends Problem<S, E>, S> ss, S s);
 
    /**
     * Returns the best solution currently known.
@@ -54,12 +54,6 @@ public interface Problem<S extends Solution, E extends Comparable<E>> {
     * Note that the solution should be copied in order to be saved, as it can (and probably will) be altered.
     */
    public void saveSolution(S s);
-
-   /**
-    * Returns the difference between the two given evaluations, e.g. <tt>e1 - e2</tt>.
-    * Optional operation used by SimulatedAnnealingLS to determine how bad a worsening of a solution is.
-    */
-   public E diffEval(E e1, E e2);
 
    /**
     * Returns the direction of the search, e.g. 1 for a maximizing and -1 for a minimizing problem.
@@ -77,36 +71,5 @@ public interface Problem<S extends Solution, E extends Comparable<E>> {
    /**
     * Returns the evaluation of the current solution of the given search state.
     */
-   public E evaluate(SearchState<Problem<S, E>, S> ss);
-
-   /**
-    * Makes the first solution look most like the second one.
-    * Optional operation used by GeneticLS for ambiguous solutions.
-    */
-   public void ensureMostCommon(S s1, S s2);
-
-   /**
-    * Returns the weight of the given evaluation.
-    * Optional operation used by GeneticLS to insert solutions into the population.
-    */
-   public double weight(E e);
-   /**
-    * Returns the weight of the given solution.
-    * Optional operation used by GeneticLS to insert solutions into the population.
-    * @see Problem#weight(java.lang.Comparable)
-    */
-   public double weight(S s);
-   /**
-    * Returns the weight of the given solution at the given iteration.
-    * Optional operation used by GeneticLS to insert solutions into the population.
-    * @param iterationNumber Indicates the iteration number in the current search.
-    * @see Problem#weight(java.lang.Comparable)
-    */
-   public double weight(S s, long iterationNumber);
-   /**
-    * Returns the weight of the current solution of the given search state.
-    * Optional operation used by GeneticLS to insert solutions into the population.
-    * @see Problem#weight(Solution, long)
-    */
-   public double weight(SearchState<Problem<S, E>, S> ss);
+   public E evaluate(SearchState<? extends Problem<S, E>, S> ss);
 }

@@ -6,7 +6,7 @@
 
 package dvrlib.localsearch;
 
-public class HillClimbingLS<S extends Solution, E extends Comparable<E>> extends StatefulLocalSearch<S, E, SingularSearchState<Problem<S, E>, S>> {
+public class HillClimbingLS<S extends Solution, E extends Comparable<E>> extends StatefulLocalSearch<Problem<S, E>, S, E, SingularSearchState<Problem<S, E>, S>> {
    protected final Changer<Problem<S, E>, S, Object> changer;
 
    /**
