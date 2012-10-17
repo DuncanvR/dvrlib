@@ -6,15 +6,15 @@
 
 package dvrlib.localsearch;
 
-public class HillClimbingLS<S extends Solution, E extends Comparable<E>> extends StatefulLocalSearch<Problem<S, E>, S, E, SingularSearchState<Problem<S, E>, S>> {
-   protected final Changer<Problem<S, E>, S, Object> changer;
+public class HillClimbingLS<P extends Problem<S, E>, S extends Solution, E extends Comparable<E>> extends StatefulLocalSearch<P, S, E, SingularSearchState<P, S>> {
+   protected final Changer<P, S, ? extends Change<P, S>> changer;
 
    /**
     * HillClimbingLS constructor.
     * @param changer The changer used when searching for a solution.
     * O(1).
     */
-   public HillClimbingLS(Changer<Problem<S, E>, S, Object> changer) {
+   public HillClimbingLS(Changer<P, S, ? extends Change<P, S>> changer) {
       this.changer = changer;
    }
 
@@ -24,8 +24,8 @@ public class HillClimbingLS<S extends Solution, E extends Comparable<E>> extends
     * @see HillClimbingLS#iterate(SingularSearchState, int)
     */
    @Override
-   public S search(Problem<S, E> problem, S solution) {
-      SingularSearchState<Problem<S, E>, S> state = newState(problem, solution);
+   public S search(P problem, S solution) {
+      SingularSearchState<P, S> state = newState(problem, solution);
       iterate(state, -1).saveSolution();
       state.solution.setIterationCount(state.iterationCount());
       return state.solution();
@@ -37,30 +37,29 @@ public class HillClimbingLS<S extends Solution, E extends Comparable<E>> extends
     * @see HillClimbingLS#iterate(Solution)
     */
    @Override
-   public SingularSearchState<Problem<S, E>, S> iterate(SingularSearchState<Problem<S, E>, S> state, long n) {
-      Object change;
+   public SingularSearchState<P, S> iterate(SingularSearchState<P, S> state, long n) {
+      Change<P, S> change;
       E e1, e2 = state.problem.evaluate(state);
       int iterations = 1;
 
       // Keep mutating as long as it improves the solution and the maximum number of iterations has not been reached
       do {
          e1 = e2;
-         change = changer.generateChange(state);
-         changer.doChange(state, change);
+         change = changer.makeChange(state);
          e2 = state.problem.evaluate(state);
          state.iteration++;
       }
       while(state.problem.better(e2, e1) && (n < 0 || iterations++ < n));
 
       if(state.problem.better(e1, e2)) // Undo last change
-         changer.undoChange(state, change);
+         change.undo(state);
 
       return state;
    }
 
    @Override
-   public SingularSearchState<Problem<S, E>, S> newState(Problem<S, E> problem, S solution) {
+   public SingularSearchState<P, S> newState(P problem, S solution) {
       changer.reinitialize(problem);
-      return new SingularSearchState<Problem<S, E>, S>(problem, solution);
+      return new SingularSearchState<P, S>(problem, solution);
    }
 }

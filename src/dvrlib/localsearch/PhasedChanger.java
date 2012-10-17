@@ -8,7 +8,23 @@ package dvrlib.localsearch;
 
 import dvrlib.generic.Tuple;
 
-public class PhasedChanger<P extends Problem<S, ? extends Comparable<?>>, S extends Solution, C> implements Changer<P, S, Tuple<C, Integer>> {
+public class PhasedChanger<P extends Problem<S, ? extends Comparable<?>>, S extends Solution, C extends Change<P, S>> implements Changer<P, S, PhasedChanger<P, S, C>.Change> {
+   protected class Change extends dvrlib.localsearch.Change<P, S> {
+      protected C   change;
+      protected int phase;
+
+      public Change(C change, int phase) {
+         this.change = change;
+         this.phase  = phase;
+      }
+
+      @Override
+      protected final void undo(SingularSearchState<P, S> ss) {
+         change.undo(ss);
+         PhasedChanger.this.phase = phase;
+      }
+   }
+
    protected Changer<P, S, C>[] changers;
    protected int                phase;
 
@@ -21,22 +37,13 @@ public class PhasedChanger<P extends Problem<S, ? extends Comparable<?>>, S exte
    }
 
    /**
-    * Executes the given change and advances the phase.
-    * @see Changer#doChange(SearchState, Object)
+    * Generates, executes and returns a new change.
+    * The change should be small, such that it transforms the solution into one that closely resembles it.
+    * @see Changer#undoChange(SingularSearchState, PhasedChanger.Change)
     */
    @Override
-   public void doChange(SearchState<P, S> ss, Tuple<C, Integer> change) {
-      changers[change.b].doChange(ss, change.a);
-      phase = (change.b + 1) % changers.length;
-   }
-
-   /**
-    * Returns a change from the current phase.
-    * @see Changer#generateChange(SearchState)
-    */
-   @Override
-   public Tuple<C, Integer> generateChange(SearchState<P, S> ss) {
-      return new Tuple<C, Integer>(changers[phase].generateChange(ss), phase);
+   public Change makeChange(SingularSearchState<P, S> ss) {
+      return new Change(changers[phase].makeChange(ss), phase++);
    }
 
    /**
@@ -49,15 +56,5 @@ public class PhasedChanger<P extends Problem<S, ? extends Comparable<?>>, S exte
          c.reinitialize(problem);
       }
       phase = 0;
-   }
-
-   /**
-    * Regresses the phase and undoes the given change.
-    * @see Changer#undoChange(SearchState, Object)
-    */
-   @Override
-   public void undoChange(SearchState<P, S> ss, Tuple<C, Integer> change) {
-      changers[change.b].undoChange(ss, change.a);
-      phase = (change.b - 1) % changers.length;
    }
 }

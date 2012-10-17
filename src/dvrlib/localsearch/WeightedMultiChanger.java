@@ -8,11 +8,13 @@ package dvrlib.localsearch;
 
 import dvrlib.container.WeightedTree;
 
-public class WeightedMultiChanger<P extends Problem<S, ? extends Comparable<?>>, S extends Solution, C> extends MultiChanger<P, S, C> {
+public class WeightedMultiChanger<P extends Problem<S, ? extends Comparable<?>>, S extends Solution, C extends Change<P, S>> extends MultiChanger<P, S, C> {
    protected final WeightedTree<Changer<P, S, C>> changers;
 
    /**
     * WeightedMultiChanger constructor.
+    * Creates an empty set of changers.
+    * @see WeightedMultiChanger#WeightedMultiChanger(WeightedTree)
     * @see WeightedMultiChanger#add(Changer, double)
     */
    public WeightedMultiChanger() {
@@ -35,8 +37,11 @@ public class WeightedMultiChanger<P extends Problem<S, ? extends Comparable<?>>,
       changers.add(weight, changer);
    }
 
+   /**
+    * Returns a changer that will be used to make the next change.
+    */
    @Override
-   public Changer<P, S, C> get() {
+   public Changer<P, S, C> get(SearchState<P, S> ss) {
       return changers.getWeighted(Math.random()).b;
    }
 
