@@ -7,14 +7,15 @@
 package dvrlib.localsearch;
 
 public class ChangeList<P extends Problem<S, ? extends Comparable<?>>, S extends Solution> {
-   protected Change<P, S> first, last;
+   protected Changer<P, S, ?>.Change first, last;
    protected int size = 0;
 
-   public void add(Change<P, S> change) {
+   @SuppressWarnings("unchecked")
+   public void add(Changer<P, S, ?>.Change change) {
       if(size++ > 0) {
-         change.prev = last;
-         last.next   = change;
-         last        = change;
+         change.prev = (Changer.Change) last;
+         last.next   = (Changer.Change) change;
+         last        = (Changer.Change) change;
       }
       else
          first = last = change;

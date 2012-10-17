@@ -8,8 +8,8 @@ package dvrlib.localsearch;
 
 import dvrlib.generic.Tuple;
 
-public class PhasedChanger<P extends Problem<S, ? extends Comparable<?>>, S extends Solution, C extends Change<P, S>> implements Changer<P, S, PhasedChanger<P, S, C>.Change> {
-   protected class Change extends dvrlib.localsearch.Change<P, S> {
+public class PhasedChanger<P extends Problem<S, ? extends Comparable<?>>, S extends Solution, C extends Changer<P, S, ?>.Change> extends Changer<P, S, PhasedChanger<P, S, C>.Change> {
+   protected class Change extends Changer<P, S, ?>.Change {
       protected C   change;
       protected int phase;
 

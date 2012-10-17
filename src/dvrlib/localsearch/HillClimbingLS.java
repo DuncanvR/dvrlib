@@ -7,14 +7,14 @@
 package dvrlib.localsearch;
 
 public class HillClimbingLS<P extends Problem<S, E>, S extends Solution, E extends Comparable<E>> extends StatefulLocalSearch<P, S, E, SingularSearchState<P, S>> {
-   protected final Changer<P, S, ? extends Change<P, S>> changer;
+   protected final Changer<P, S, ? extends Changer<P, S, ?>.Change> changer;
 
    /**
     * HillClimbingLS constructor.
     * @param changer The changer used when searching for a solution.
     * O(1).
     */
-   public HillClimbingLS(Changer<P, S, ? extends Change<P, S>> changer) {
+   public HillClimbingLS(Changer<P, S, ? extends Changer<P, S, ?>.Change> changer) {
       this.changer = changer;
    }
 
@@ -38,7 +38,7 @@ public class HillClimbingLS<P extends Problem<S, E>, S extends Solution, E exten
     */
    @Override
    public SingularSearchState<P, S> iterate(SingularSearchState<P, S> state, long n) {
-      Change<P, S> change;
+      Changer<P, S, ?>.Change change;
       E e1, e2 = state.problem.evaluate(state);
       int iterations = 1;
 

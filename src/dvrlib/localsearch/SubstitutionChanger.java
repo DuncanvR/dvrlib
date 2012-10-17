@@ -6,8 +6,8 @@
 
 package dvrlib.localsearch;
 
-public abstract class SubstitutionChanger<P extends Problem<S, ? extends Comparable<?>>, S extends Solution> implements Changer<P, S, SubstitutionChanger<P, S>.Change> {
-   public class Change extends dvrlib.localsearch.Change<P, S> {
+public abstract class SubstitutionChanger<P extends Problem<S, ? extends Comparable<?>>, S extends Solution> extends Changer<P, S, SubstitutionChanger<P, S>.Change> {
+   public class Change extends Changer<P, S, ?>.Change {
       protected final S old;
 
       public Change(S old) {

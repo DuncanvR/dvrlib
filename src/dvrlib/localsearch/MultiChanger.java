@@ -8,7 +8,7 @@ package dvrlib.localsearch;
 
 import dvrlib.generic.Tuple;
 
-public abstract class MultiChanger<P extends Problem<S, ? extends Comparable<?>>, S extends Solution, C extends Change<P, S>> implements Changer<P, S, C> {
+public abstract class MultiChanger<P extends Problem<S, ? extends Comparable<?>>, S extends Solution, C extends Changer<P, S, ?>.Change> extends Changer<P, S, C> {
    /**
     * Returns a changer that will be used to make the next change.
     */

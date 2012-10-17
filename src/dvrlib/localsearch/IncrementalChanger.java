@@ -6,8 +6,8 @@
 
 package dvrlib.localsearch;
 
-public abstract class IncrementalChanger<P extends Problem<S, ? extends Comparable<?>>, S extends Solution> implements Changer<P, S, IncrementalChanger<P, S>.Change> {
-   public class Change extends dvrlib.localsearch.Change<P, S> {
+public abstract class IncrementalChanger<P extends Problem<S, ? extends Comparable<?>>, S extends Solution> extends Changer<P, S, IncrementalChanger<P, S>.Change> {
+   public class Change extends Changer<P, S, ?>.Change {
       /**
        * Undoes this change by restoring the solution to its original state.
        * @see IncrementalChanger#undoChange(SingularSearchState, IncrementalChanger.Change)

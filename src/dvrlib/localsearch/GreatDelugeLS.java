@@ -18,15 +18,15 @@ public abstract class GreatDelugeLS<P extends Problem<S, E>, S extends Solution,
       }
    }
 
-   protected final Changer<P, S, ? extends Change<P, S>> changer;
-   protected final E                                     initTolerance;
+   protected final Changer<P, S, ? extends Changer<P, S, ?>.Change> changer;
+   protected final E                                                initTolerance;
 
    /**
     * GreatDelugeLS constructor.
     * @param changer The changer used when searching for a solution.
     * O(1).
     */
-   public GreatDelugeLS(Changer<P, S, ? extends Change<P, S>> changer, E initTolerance) {
+   public GreatDelugeLS(Changer<P, S, ? extends Changer<P, S, ?>.Change> changer, E initTolerance) {
       this.changer       = changer;
       this.initTolerance = initTolerance;
    }

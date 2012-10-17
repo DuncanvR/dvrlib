@@ -8,7 +8,7 @@ package dvrlib.localsearch;
 
 import dvrlib.container.WeightedTree;
 
-public class WeightedMultiChanger<P extends Problem<S, ? extends Comparable<?>>, S extends Solution, C extends Change<P, S>> extends MultiChanger<P, S, C> {
+public class WeightedMultiChanger<P extends Problem<S, ? extends Comparable<?>>, S extends Solution, C extends Changer<P, S, ?>.Change> extends MultiChanger<P, S, C> {
    protected final WeightedTree<Changer<P, S, C>> changers;
 
    /**

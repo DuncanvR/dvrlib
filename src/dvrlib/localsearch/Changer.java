@@ -6,17 +6,27 @@
 
 package dvrlib.localsearch;
 
-public interface Changer<P extends Problem<S, ? extends Comparable<?>>, S extends Solution, C extends Change<P, S>> {
+public abstract class Changer<P extends Problem<S, ? extends Comparable<?>>, S extends Solution, C extends Changer<P, S, ?>.Change> {
+   protected abstract class Change {
+      protected Change prev, next;
+
+      /**
+       * Undoes this change by executing the appropriate recursive calls.
+       * This method should propagate as much of its functionality as possible to the enclosing Changer.
+       */
+      protected abstract void undo(SingularSearchState<P, S> ss);
+   }
+
    /**
     * Reinitializes this changer, used when a new search is started.
     * @see LocalSearch#search(Problem, Solution)
     */
-   public void reinitialize(P problem);
+   public abstract void reinitialize(P problem);
 
    /**
     * Generates, executes and returns a new change.
     * The change should be small, such that it transforms the solution into one that closely resembles it.
     * @see Changer#undoChange(SingularSearchState, Change)
     */
-   public C makeChange(SingularSearchState<P, S> ss);
+   public abstract C makeChange(SingularSearchState<P, S> ss);
 }

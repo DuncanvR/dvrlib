@@ -23,11 +23,11 @@ public class SimulatedAnnealingLS<P extends NumericProblem<S, E>, S extends Solu
    /** The default temperature modifier is 0.98, leading to a 2% decrease in temperature every <tt>coolCount</tt> iterations. */
    public final static double defTempMod = 0.98;
 
-   protected final Changer<P, S, ? extends Change<P, S>> changer;
-   protected final int                                   stopCount,
-                                                         coolCount;
-   protected final double                                initTemp,
-                                                         tempMod;
+   protected final Changer<P, S, ? extends Changer<P, S, ?>.Change> changer;
+   protected final int                                              stopCount,
+                                                                    coolCount;
+   protected final double                                           initTemp,
+                                                                    tempMod;
 
    /**
     * SimulatedAnnealingLS constructor, using the default values for initTemp and tempMod.
@@ -36,7 +36,7 @@ public class SimulatedAnnealingLS<P extends NumericProblem<S, E>, S extends Solu
     * @see SimulatedAnnealingLS#SimulatedAnnealingLS(Changer, int, int, double, double)
     * O(1).
     */
-   public SimulatedAnnealingLS(Changer<P, S, ? extends Change<P, S>> changer, int stopCount, int coolCount) {
+   public SimulatedAnnealingLS(Changer<P, S, ? extends Changer<P, S, ?>.Change> changer, int stopCount, int coolCount) {
       this(changer, stopCount, coolCount, defTemp, defTempMod);
    }
 
@@ -48,7 +48,7 @@ public class SimulatedAnnealingLS<P extends NumericProblem<S, E>, S extends Solu
     * @param tempMod    The modifier for the temperature. Every <tt>coolCount</tt> iterations the temperature is multiplied with this value.
     * O(1).
     */
-   public SimulatedAnnealingLS(Changer<P, S, ? extends Change<P, S>> changer, int stopCount, int coolCount, double initTemp, double tempMod) {
+   public SimulatedAnnealingLS(Changer<P, S, ? extends Changer<P, S, ?>.Change> changer, int stopCount, int coolCount, double initTemp, double tempMod) {
       this.changer   = changer;
       this.stopCount = stopCount;
       this.coolCount = coolCount;
