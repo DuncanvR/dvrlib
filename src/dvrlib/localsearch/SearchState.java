@@ -26,9 +26,4 @@ public interface SearchState<P extends Problem<S, ? extends Comparable<?>>, S ex
     * Returns the number of iterations this search has done.
     */
    public long iterationCount();
-
-   /**
-    * Increases the number of iterations by <tt>n</tt>.
-    */
-   public void increaseIterationCount(long n);
 }

@@ -48,7 +48,7 @@ public class HillClimbingLS<S extends Solution, E extends Comparable<E>> extends
          change = changer.generateChange(state);
          changer.doChange(state, change);
          e2 = state.problem.evaluate(state);
-         state.increaseIterationCount(1);
+         state.iteration++;
       }
       while(state.problem.better(e2, e1) && (n < 0 || iterations++ < n));
 

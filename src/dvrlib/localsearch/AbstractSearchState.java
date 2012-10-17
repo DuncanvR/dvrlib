@@ -28,9 +28,4 @@ public abstract class AbstractSearchState<P extends Problem<S, ? extends Compara
    public long iterationCount()               {
       return iteration;
    }
-
-   @Override
-   public void increaseIterationCount(long n) {
-      iteration += n;
-   }
 }

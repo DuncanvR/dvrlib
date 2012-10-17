@@ -21,7 +21,7 @@ public class SimulatedAnnealingLS<S extends Solution, E extends Number & Compara
 
       public S bestSolution() {
          // Undo the changes since the last improvement, reverting to the best known solution
-         increaseIterationCount(-changes.size());
+         iteration -= -changes.size();
          while(!changes.isEmpty())
             changer.undoChange(this, changes.pollLast());
 
@@ -80,7 +80,7 @@ public class SimulatedAnnealingLS<S extends Solution, E extends Number & Compara
       E curEval = problem.evaluate(state), bestEval = curEval;
 
       // Main loop: j holds the number of iterations since the last improvement
-      for(int sc = 0; sc < stopCount; sc++, state.increaseIterationCount(1)) {
+      for(int sc = 0; sc < stopCount; sc++, state.iteration++) {
          // Mutate the solution
          state.changes.add(changer.generateChange(state));
          changer.doChange(state, state.changes.peekLast());
@@ -102,7 +102,7 @@ public class SimulatedAnnealingLS<S extends Solution, E extends Number & Compara
          else
             changer.undoChange(state, state.changes.pollLast());
 
-         // Decrease the temperature regularly
+         // Decrease the temperature according to the schedule
          if(state.iteration % coolCount == 0)
             state.temperature *= tempMod;
       }

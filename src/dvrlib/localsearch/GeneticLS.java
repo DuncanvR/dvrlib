@@ -96,7 +96,7 @@ public class GeneticLS<S extends Solution, E extends Number & Comparable<E>> ext
          state.solution = null;
       }
 
-      state.increaseIterationCount(n);
+      state.iteration += n;
       return state;
    }
 
