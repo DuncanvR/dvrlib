@@ -60,22 +60,25 @@ public abstract class GreatDelugeLS<P extends Problem<S, E>, S extends Solution,
 
       E best = state.problem.evaluate(state), current;
 
-      // Keep mutating as long as the maximum number of iterations has not been reached
-      // TODO: Add another stopping criterium, in order to support n < 0
-      for(int i = 0; i < n; i++, state.iteration++) {
-         state.changes.add(changer.makeChange(state));
-         current = state.problem.evaluate(state);
+      try {
+         // Keep mutating as long as the maximum number of iterations has not been reached
+         // TODO: Add another stopping criterium, in order to support n < 0
+         for(int i = 0; i < n; i++, state.iteration++) {
+            state.changes.add(changer.makeChange(state));
+            current = state.problem.evaluate(state);
 
-         if(state.problem.better(current, state.tolerance)) { // Keep the change
-            if(state.problem.better(current, best)) {
-               best = current;
-               state.changes.clear();
+            if(state.problem.better(current, state.tolerance)) { // Keep the change
+               if(state.problem.better(current, best)) {
+                  best = current;
+                  state.changes.clear();
+               }
+               decay(state);
             }
-            decay(state);
+            else // Revert the change
+               state.changes.undoLast(state);
          }
-         else // Revert the change
-            state.changes.undoLast(state);
       }
+      catch(CannotChangeException _) { }
 
       // Undo the changes since the last improvement, reverting to the best known solution
       state.iteration -= state.changes.size();

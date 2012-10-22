@@ -8,6 +8,8 @@ package dvrlib.localsearch;
 
 import dvrlib.container.WeightedTree;
 
+import java.util.Collection;
+
 public class WeightedMultiChanger<P extends Problem<S, ? extends Comparable<?>>, S extends Solution, C extends Changer<P, S, ?>.Change> extends MultiChanger<P, S, C> {
    protected final WeightedTree<Changer<P, S, C>> changers;
 
@@ -39,10 +41,19 @@ public class WeightedMultiChanger<P extends Problem<S, ? extends Comparable<?>>,
 
    /**
     * Returns a changer that will be used to make the next change.
+    * @param ignored A collection of changers that should be ignored while picking a changer.
+    * @throws CannotChangeException If there is no available changer.
     */
    @Override
-   public Changer<P, S, C> get(SearchState<P, S> ss) {
-      return changers.getWeighted(Math.random()).b;
+   public Changer<P, S, C> get(SearchState<P, S> ss, Collection<Changer<P, S, C>> ignored) throws CannotChangeException {
+      if(ignored.size() >= changers.size())
+         throw new CannotChangeException(this, "No eligible changers to choose from");
+      Changer<P, S, C> changer;
+      do { // TODO: Implement this properly, such that we can guarantee termination
+         changer = changers.getWeighted(Math.random()).b;
+      }
+      while(ignored.contains(changer));
+      return changer;
    }
 
    /**

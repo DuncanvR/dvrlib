@@ -36,13 +36,15 @@ public class PhasedChanger<P extends Problem<S, ? extends Comparable<?>>, S exte
       this.changers = changers;
    }
 
+   // dvrlib.localsearch.Changer methods
    /**
     * Generates, executes and returns a new change.
     * The change should be small, such that it transforms the solution into one that closely resembles it.
-    * @see Changer#undoChange(SingularSearchState, PhasedChanger.Change)
+    * @see Changer#undoChange(SingularSearchState, Change)
+    * @throws CannotChangeException To indicate this changer was unable to change the given search state.
     */
    @Override
-   public Change makeChange(SingularSearchState<P, S> ss) {
+   public Change makeChange(SingularSearchState<P, S> ss) throws CannotChangeException {
       return new Change(changers[phase].makeChange(ss), phase++);
    }
 

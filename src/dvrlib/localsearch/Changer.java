@@ -18,15 +18,16 @@ public abstract class Changer<P extends Problem<S, ? extends Comparable<?>>, S e
    }
 
    /**
+    * Generates, executes and returns a new change.
+    * The change should be small, such that it transforms the solution into one that closely resembles it.
+    * @see Changer#undoChange(SingularSearchState, Change)
+    * @throws CannotChangeException To indicate this changer was unable to change the given search state.
+    */
+   public abstract C makeChange(SingularSearchState<P, S> ss) throws CannotChangeException;
+
+   /**
     * Reinitializes this changer, used when a new search is started.
     * @see LocalSearch#search(Problem, Solution)
     */
    public abstract void reinitialize(P problem);
-
-   /**
-    * Generates, executes and returns a new change.
-    * The change should be small, such that it transforms the solution into one that closely resembles it.
-    * @see Changer#undoChange(SingularSearchState, Change)
-    */
-   public abstract C makeChange(SingularSearchState<P, S> ss);
 }

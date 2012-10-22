@@ -8,13 +8,12 @@ package dvrlib.localsearch;
 
 public class SimulatedAnnealingLS<P extends NumericProblem<S, E>, S extends Solution, E extends Number & Comparable<E>> extends LocalSearch<P, S, E> {
    protected class SASearchState extends SingularSearchState<P, S> {
-      protected ChangeList<P, S> changes;
-      protected double           temperature;
+      protected ChangeList<P, S> changes     = new ChangeList<P, S>();
+      protected double           temperature = initTemp;
 
       public SASearchState(P problem, S solution) {
          super(problem, solution);
-         temperature = initTemp;
-         iteration   = 1; // Start at 1, otherwise the temperature would be decreased at the first iteration
+         iteration = 1; // Start at 1, otherwise the temperature would be decreased at the first iteration
       }
    }
 
@@ -67,32 +66,35 @@ public class SimulatedAnnealingLS<P extends NumericProblem<S, E>, S extends Solu
       SASearchState state = newState(problem, solution);
       E curEval = problem.evaluate(state), bestEval = curEval;
 
-      // Main loop: j holds the number of iterations since the last improvement
-      for(int sc = 0; sc < stopCount; sc++, state.iteration++) {
-         // Mutate the solution
-         state.changes.add(changer.makeChange(state));
-         E newEval = problem.evaluate(state);
+      try {
+         // Main loop: j holds the number of iterations since the last improvement
+         for(int sc = 0; sc < stopCount; sc++, state.iteration++) {
+            // Mutate the solution
+            state.changes.add(changer.makeChange(state));
+            E newEval = problem.evaluate(state);
 
-         if(problem.better(newEval, curEval)) {
-            sc = 0;
-            curEval = newEval;
-            if(problem.betterEq(newEval, bestEval)) {
-               // If the new solution is better than the best solution found, clear the list of changes
-               bestEval = newEval;
-               state.changes.clear();
+            if(problem.better(newEval, curEval)) {
+               sc = 0;
+               curEval = newEval;
+               if(problem.betterEq(newEval, bestEval)) {
+                  // If the new solution is better than the best solution found, clear the list of changes
+                  bestEval = newEval;
+                  state.changes.clear();
+               }
             }
-         }
-         else if(Math.random() < Math.exp(problem.diffEval(newEval, curEval) * problem.direction() / state.temperature)) {
-            // Accept the change, even though it's not an improvement
-            curEval = newEval;
-         }
-         else
-            state.changes.undoLast(state);
+            else if(Math.random() < Math.exp(problem.diffEval(newEval, curEval) * problem.direction() / state.temperature)) {
+               // Accept the change, even though it's not an improvement
+               curEval = newEval;
+            }
+            else
+               state.changes.undoLast(state);
 
-         // Decrease the temperature according to the schedule
-         if(state.iteration % coolCount == 0)
-            state.temperature *= tempMod;
+            // Decrease the temperature according to the schedule
+            if(state.iteration % coolCount == 0)
+               state.temperature *= tempMod;
+         }
       }
+      catch(CannotChangeException _) { }
 
       // Undo the changes since the last improvement, reverting to the best known solution
       state.iteration -= state.changes.size();

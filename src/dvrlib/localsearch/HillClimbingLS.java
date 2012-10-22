@@ -38,18 +38,21 @@ public class HillClimbingLS<P extends Problem<S, E>, S extends Solution, E exten
     */
    @Override
    public SingularSearchState<P, S> iterate(SingularSearchState<P, S> state, long n) {
-      Changer<P, S, ?>.Change change;
-      E e1, e2 = state.problem.evaluate(state);
+      Changer<P, S, ?>.Change change = null;
+      E e1 = null, e2 = state.problem.evaluate(state);
       int iterations = 1;
 
-      // Keep mutating as long as it improves the solution and the maximum number of iterations has not been reached
-      do {
-         e1 = e2;
-         change = changer.makeChange(state);
-         e2 = state.problem.evaluate(state);
-         state.iteration++;
+      try {
+         // Keep mutating as long as it improves the solution and the maximum number of iterations has not been reached
+         do {
+            e1 = e2;
+            change = changer.makeChange(state);
+            e2 = state.problem.evaluate(state);
+            state.iteration++;
+         }
+         while(state.problem.better(e2, e1) && (n < 0 || iterations++ < n));
       }
-      while(state.problem.better(e2, e1) && (n < 0 || iterations++ < n));
+      catch(CannotChangeException _) { }
 
       if(state.problem.better(e1, e2)) // Undo last change
          change.undo(state);
