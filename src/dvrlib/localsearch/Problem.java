@@ -45,15 +45,11 @@ public interface Problem<S extends Solution, E extends Comparable<E>> {
     * Returns the best solution currently known.
     */
    public S bestSolution();
+
    /**
-    * Generates a random solution to this problem.
+    * Returns a copy of the given solution.
     */
-   public S randomSolution();
-   /**
-    * Compares the given solution to the current best, and saves it if it is good enough.
-    * Note that the solution should be copied in order to be saved, as it can (and probably will) be altered.
-    */
-   public void saveSolution(S s);
+   public S copySolution(S s);
 
    /**
     * Returns the direction of the search, e.g. 1 for a maximizing and -1 for a minimizing problem.
@@ -72,4 +68,16 @@ public interface Problem<S extends Solution, E extends Comparable<E>> {
     * Returns the evaluation of the current solution of the given search state.
     */
    public E evaluate(SearchState<? extends Problem<S, E>, S> ss);
+
+   /**
+    * Generates a random solution to this problem.
+    */
+   public S randomSolution();
+
+   /**
+    * Compares the given solution to the current best, and saves it if it is good enough.
+    * Note that the solution should be copied in order to be saved, as the given one can (and probably will) be altered.
+    * @see Problem#copySolution(Solution)
+    */
+   public boolean saveSolution(S s);
 }

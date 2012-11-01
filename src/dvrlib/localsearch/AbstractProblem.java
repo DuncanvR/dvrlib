@@ -7,6 +7,32 @@
 package dvrlib.localsearch;
 
 public abstract class AbstractProblem<S extends Solution, E extends Comparable<E>> implements Problem<S, E> {
+   protected final int           solutionPoolSize;
+   protected final Population<S> solutionPool     = new TreePopulation<S, E>(this);
+
+   /**
+    * AbstractProblem constructor.
+    * @param solutionPoolSize The maximum number of best solutions that will be kept track of.
+    */
+   public AbstractProblem(int solutionPoolSize) {
+      this.solutionPoolSize = solutionPoolSize;
+   }
+
+   /**
+    * Returns the solution pool.
+    */
+   public final Population<S> solutions() {
+      return solutionPool;
+   }
+
+   /**
+    * Returns the best solution currently known.
+    */
+   @Override
+   public final S bestSolution() {
+      return solutionPool.peekBest();
+   }
+
    /**
     * Returns true if the first of the given evaluations is better than the second.
     */
@@ -79,5 +105,19 @@ public abstract class AbstractProblem<S extends Solution, E extends Comparable<E
    @Override
    public E evaluate(SearchState<? extends Problem<S, E>, S> ss) {
       return evaluate(ss.solution(), ss.iterationCount());
+   }
+
+   /**
+    * Compares the given solution to the current best, and saves it if it is good enough.
+    * @return A boolean indicating whether the given solution was actually saved.
+    * @see Problem#copySolution(Solution)
+    */
+   @Override
+   public final boolean saveSolution(S s) {
+      if(solutionPool.size() < solutionPoolSize)
+         return solutionPool.add(copySolution(s));
+      else if(better(s, solutionPool.peekWorst()))
+         return (solutionPool.replaceWorst(copySolution(s)) != null);
+      return false;
    }
 }

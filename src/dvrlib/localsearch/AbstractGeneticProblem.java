@@ -8,6 +8,15 @@ package dvrlib.localsearch;
 
 public abstract class AbstractGeneticProblem<S extends Solution, E extends Comparable<E>> extends AbstractProblem<S, E> implements GeneticProblem<S, E> {
    /**
+    * AbstractGeneticProblem constructor.
+    * @param solutionPoolSize The maximum number of best solutions that will be kept track of.
+    * @see AbstractProblem#AbstractProblem(int)
+    */
+   public AbstractGeneticProblem(int solutionPoolSize) {
+      super(solutionPoolSize);
+   }
+
+   /**
     * Makes the first solution look most like the second one.
     * Default implementation of this method throws an UnsupportedOperationException.
     * @see GeneticProblem#ensureMostCommon(Solution)
