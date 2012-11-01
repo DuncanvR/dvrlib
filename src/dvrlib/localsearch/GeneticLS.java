@@ -6,9 +6,8 @@
 
 package dvrlib.localsearch;
 
-public class GeneticLS<S extends Solution, E extends Number & Comparable<E>> extends StatefulLocalSearch<GeneticProblem<S, E>, S, E, GeneticLS.GLSSearchState<S, E>> {
-   public static class GLSSearchState<S extends Solution, E extends Comparable<E>> extends AbstractSearchState<GeneticProblem<S, E>, S> {
-      // static inner class: workaround of bug 6557954 in jdk6 -- Bug is fixed jdk7, but without the static it still doesn't work
+public class GeneticLS<S extends Solution, E extends Number & Comparable<E>> extends StatefulLocalSearch<GeneticProblem<S, E>, S, E, GeneticLS<S, E>.GLSSearchState> {
+   protected class GLSSearchState extends AbstractSearchState<GeneticProblem<S, E>, S> {
       protected Population<S> population;
       protected S             solution        = null;
       protected long          lastImprovement;
@@ -58,7 +57,7 @@ public class GeneticLS<S extends Solution, E extends Number & Comparable<E>> ext
     * This algorithm keeps replacing the worst solution in the population by the new combined solution if it is better, until a predefined number of iterations give no improvement.
     * @see GeneticLS#iterate(GeneticLS.GLSSearchState, int)
     */
-   public GLSSearchState<S, E> search(GLSSearchState<S, E> state) {
+   public GLSSearchState search(GLSSearchState state) {
       combiner.reinitialize();
       long n;
       do {
@@ -75,7 +74,7 @@ public class GeneticLS<S extends Solution, E extends Number & Comparable<E>> ext
     * Does <tt>n</tt> iterations using the given search state, after which it is returned.
     */
    @Override
-   public GLSSearchState<S, E> iterate(GLSSearchState<S, E> state, long n) {
+   public GLSSearchState iterate(GLSSearchState state, long n) {
       while(state.population.size() > popSize)
          state.population.popWorst();
 
@@ -114,9 +113,9 @@ public class GeneticLS<S extends Solution, E extends Number & Comparable<E>> ext
    }
 
    @Override
-   public GLSSearchState<S, E> newState(GeneticProblem<S, E> problem, S solution) {
+   public GLSSearchState newState(GeneticProblem<S, E> problem, S solution) {
       Population<S> population = combiner.createPopulation(problem, solution, popSize);
       problem.saveSolution(population.peekBest());
-      return new GLSSearchState<S, E>(problem, population);
+      return new GLSSearchState(problem, population);
    }
 }
