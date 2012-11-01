@@ -21,6 +21,15 @@ public class MultiStartLS<S extends Solution, E extends Comparable<E>> extends L
    }
 
    /**
+    * Sets the criterion for deciding when to save a solution back to the problem.
+    * @see LocalSearch.setSavingCriterion(LocalSearch.SavingCriterion)
+    */
+   @Override
+   public void setSavingCriterion(SavingCriterion savingCriterion) {
+      ls.setSavingCriterion(savingCriterion);
+   }
+
+   /**
     * Searches for a solution for the given problem by applying the predefined search algorithm to multiple random solution.
     */
    @Override

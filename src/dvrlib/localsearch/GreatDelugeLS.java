@@ -67,11 +67,21 @@ public abstract class GreatDelugeLS<P extends Problem<S, E>, S extends Solution,
             state.changes.add(changer.makeChange(state));
             current = state.problem.evaluate(state);
 
+            if(savingCriterion == LocalSearch.SavingCriterion.EveryIteration)
+               state.saveSolution();
+
             if(state.problem.better(current, state.tolerance)) { // Keep the change
+               if(savingCriterion == LocalSearch.SavingCriterion.EveryImprovement)
+                  state.saveSolution();
+
                if(state.problem.better(current, best)) {
                   best = current;
                   state.changes.clear();
+
+                  if(savingCriterion == LocalSearch.SavingCriterion.NewBest)
+                     state.saveSolution();
                }
+
                decay(state);
             }
             else // Revert the change

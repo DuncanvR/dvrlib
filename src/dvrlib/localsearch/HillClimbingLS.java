@@ -40,17 +40,24 @@ public class HillClimbingLS<P extends Problem<S, E>, S extends Solution, E exten
    public SingularSearchState<P, S> iterate(SingularSearchState<P, S> state, long n) {
       Changer<P, S, ?>.Change change = null;
       E e1 = null, e2 = state.problem.evaluate(state);
-      int iterations = 1;
 
       try {
          // Keep mutating as long as it improves the solution and the maximum number of iterations has not been reached
-         do {
+         for(int i = 1; n < 0 || i < n; i++) {
             e1 = e2;
             change = changer.makeChange(state);
             e2 = state.problem.evaluate(state);
             state.iteration++;
+
+            if(savingCriterion == LocalSearch.SavingCriterion.EveryIteration)
+               state.saveSolution();
+
+            if(!state.problem.better(e2, e1))
+               break;
+
+            if(savingCriterion == LocalSearch.SavingCriterion.EveryImprovement || savingCriterion == LocalSearch.SavingCriterion.NewBest)
+               state.saveSolution();
          }
-         while(state.problem.better(e2, e1) && (n < 0 || iterations++ < n));
       }
       catch(CannotChangeException _) { }
 

@@ -30,8 +30,9 @@ public class SimulatedAnnealingLS<P extends NumericProblem<S, E>, S extends Solu
 
    /**
     * SimulatedAnnealingLS constructor, using the default values for initTemp and tempMod.
-    * @param stopCount  The algorithm will stop this number of iterations after the best known solution was found.
-    * @param coolCount  The number of iterations after which the temperature will decrease.
+    * @param changer   The changer that is used to make changes to the solution during the search.
+    * @param stopCount The algorithm will stop this number of iterations after the best known solution was found.
+    * @param coolCount The number of iterations after which the temperature will decrease.
     * @see SimulatedAnnealingLS#SimulatedAnnealingLS(Changer, int, int, double, double)
     * O(1).
     */
@@ -41,10 +42,11 @@ public class SimulatedAnnealingLS<P extends NumericProblem<S, E>, S extends Solu
 
    /**
     * SimulatedAnnealingLS constructor.
-    * @param stopCount  The number of iterations after which the algorithm will stop after the best known solution was found.
-    * @param coolCount  The number of iterations after which the temperature will decrease.
-    * @param initTemp   The initial temperature.
-    * @param tempMod    The modifier for the temperature. Every <tt>coolCount</tt> iterations the temperature is multiplied with this value.
+    * @param changer   The changer that is used to make changes to the solution during the search.
+    * @param stopCount The number of iterations after which the algorithm will stop after the best known solution was found.
+    * @param coolCount The number of iterations after which the temperature will decrease.
+    * @param initTemp  The initial temperature.
+    * @param tempMod   The modifier for the temperature. Every <tt>coolCount</tt> iterations the temperature is multiplied by this value, so its value should be in the range [0,1].
     * O(1).
     */
    public SimulatedAnnealingLS(Changer<P, S, ? extends Changer<P, S, ?>.Change> changer, int stopCount, int coolCount, double initTemp, double tempMod) {
@@ -73,6 +75,9 @@ public class SimulatedAnnealingLS<P extends NumericProblem<S, E>, S extends Solu
             state.changes.add(changer.makeChange(state));
             E newEval = problem.evaluate(state);
 
+            if(savingCriterion == LocalSearch.SavingCriterion.EveryIteration)
+               state.saveSolution();
+
             if(problem.better(newEval, curEval)) {
                sc = 0;
                curEval = newEval;
@@ -80,6 +85,9 @@ public class SimulatedAnnealingLS<P extends NumericProblem<S, E>, S extends Solu
                   // If the new solution is better than the best solution found, clear the list of changes
                   bestEval = newEval;
                   state.changes.clear();
+
+                  if(savingCriterion == LocalSearch.SavingCriterion.NewBest)
+                     state.saveSolution();
                }
             }
             else if(Math.random() < Math.exp(problem.diffEval(newEval, curEval) * problem.direction() / state.temperature)) {
@@ -100,6 +108,7 @@ public class SimulatedAnnealingLS<P extends NumericProblem<S, E>, S extends Solu
       state.iteration -= state.changes.size();
       state.changes.undoAll(state);
 
+      state.saveSolution();
       return state.solution();
    }
 
