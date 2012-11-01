@@ -38,7 +38,7 @@ public class WeightedTree<E> implements Iterable<E> {
 
    /**
     * Adds a node with the given key and value to this tree.
-    * @return true, indicating the operation succeeded.
+    * @return A boolean indicating whether the operation succeeded.
     * @throws IllegalArgumentException When the given key is <tt>null</tt>.
     * @see WeightedTree#rebalanceUp(WeightedTreeNode)
     * O(height)
@@ -46,8 +46,12 @@ public class WeightedTree<E> implements Iterable<E> {
    public boolean add(double key, E value) {
       if(root == null)
          root = new WeightedTreeNode<E>(key, value);
-      else
-         rebalanceUp(root.add(key, value));
+      else {
+         WeightedTreeNode<E> node = root.add(key, value);
+         if(node == null)
+            return false;
+         rebalanceUp(node);
+      }
       return true;
    }
 

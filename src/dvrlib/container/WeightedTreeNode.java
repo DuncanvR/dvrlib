@@ -127,6 +127,8 @@ public class WeightedTreeNode<E> {
             node = right.add(key, value);
       }
       else { // key == this.key
+         if(values.contains(value))
+            return null;
          values.add(value);
          node = this;
       }
