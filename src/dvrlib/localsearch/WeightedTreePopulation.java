@@ -15,21 +15,32 @@ public class WeightedTreePopulation<S extends Solution> implements Population<S>
    protected final HashSet<S>           keys    = new HashSet<S>();
    protected final GeneticProblem<S, ?> problem;
    protected final WeightedTree<S>      tree    = new WeightedTree<S>();
+   protected final int                  size;
 
-   public WeightedTreePopulation(GeneticProblem<S, ?> problem) {
+   public WeightedTreePopulation(GeneticProblem<S, ?> problem, int size) {
       this.problem = problem;
+      this.size    = size;
    }
 
    /**
     * Adds the given solution to this population if it is not already present.
+    * If this population is full and the given solution is better than the the current worst, the worst solution is removed.
     * @return A boolean indicating whether the solution was actually added.
     * @see Population#add(Solution)
     */
    @Override
    public boolean add(S solution) {
       if(!contains(solution)) {
+         if(size() >= size) {
+            if(problem.better(solution, peekWorst()))
+               popWorst();
+            else
+               return false;
+         }
+
          keys.add(solution);
          tree.add(problem.weight(solution), solution);
+
          return true;
       }
       return false;
@@ -99,23 +110,6 @@ public class WeightedTreePopulation<S extends Solution> implements Population<S>
       S worst = tree.popMin().b;
       keys.remove(worst);
       return worst;
-   }
-
-   /**
-    * If the given solution is better than the worst solution in this population,
-    *    replaces the worst solution with the given one and returns the removed worst.
-    * Otherwise, nothing is changed and <tt>null</tt> is returned.
-    * @return The replaced solution or <tt>null</tt> if no solution was replaced.
-    * @see Population#replaceWorst(Solution)
-    */
-   @Override
-   public S replaceWorst(S solution) {
-      if(!contains(solution) && problem.better(solution, peekWorst())) {
-         add(solution);
-         return popWorst();
-      }
-      else
-         return null;
    }
 
    /**

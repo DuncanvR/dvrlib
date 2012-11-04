@@ -75,9 +75,6 @@ public class GeneticLS<S extends Solution, E extends Number & Comparable<E>> ext
     */
    @Override
    public GLSSearchState iterate(GLSSearchState state, long n) {
-      while(state.population.size() > popSize)
-         state.population.popWorst();
-
       for(long i = state.iterationCount(), iMax = state.iterationCount() + n; i < iMax; i++) {
          // Generate new solution from two random solutions in the population
          state.solution = combiner.combine(state, state.population.peekRandom(), state.population.peekRandom());
@@ -92,7 +89,7 @@ public class GeneticLS<S extends Solution, E extends Number & Comparable<E>> ext
                      (savingCriterion == LocalSearch.SavingCriterion.NewBest && state.problem.better(state.solution, state.population.peekBest())))
                   state.saveSolution();
 
-               state.population.replaceWorst(state.solution);
+               state.population.add(state.solution);
                state.lastImprovement = i;
             }
          }

@@ -7,15 +7,14 @@
 package dvrlib.localsearch;
 
 public abstract class AbstractProblem<S extends Solution, E extends Comparable<E>> implements Problem<S, E> {
-   protected final int           solutionPoolSize;
-   protected final Population<S> solutionPool     = new TreePopulation<S, E>(this);
+   protected final Population<S> solutionPool;
 
    /**
     * AbstractProblem constructor.
     * @param solutionPoolSize The maximum number of best solutions that will be kept track of.
     */
    public AbstractProblem(int solutionPoolSize) {
-      this.solutionPoolSize = solutionPoolSize;
+      solutionPool = new TreePopulation<S, E>(this, solutionPoolSize);
    }
 
    /**
@@ -114,10 +113,6 @@ public abstract class AbstractProblem<S extends Solution, E extends Comparable<E
     */
    @Override
    public final boolean saveSolution(S s) {
-      if(solutionPool.size() < solutionPoolSize)
-         return solutionPool.add(copySolution(s));
-      else if(better(s, solutionPool.peekWorst()))
-         return (solutionPool.replaceWorst(copySolution(s)) != null);
-      return false;
+      return solutionPool.add(copySolution(s));
    }
 }

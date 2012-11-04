@@ -15,10 +15,11 @@ public class TreePopulation<S extends Solution, E extends Comparable<E>> impleme
    protected final HashSet<S>               keys      = new HashSet<S>();
    protected final TreeMap<E, ArrayList<S>> tree      = new TreeMap<E, ArrayList<S>>();
    protected final Problem<S, E>            problem;
-   protected final int                      direction;
+   protected final int                      direction, size;
 
-   public TreePopulation(Problem<S, E> problem) {
+   public TreePopulation(Problem<S, E> problem, int size) {
       this.problem = problem;
+      this.size    = size;
       direction    = problem.direction();
    }
 
@@ -47,17 +48,26 @@ public class TreePopulation<S extends Solution, E extends Comparable<E>> impleme
 
    /**
     * Adds the given solution to this population if it is not already present.
+    * If this population is full and the given solution is better than the the current worst, the worst solution is removed.
     * @return A boolean indicating whether the solution was actually added.
     * @see Population#add(Solution)
     */
    @Override
    public boolean add(S solution) {
       if(!contains(solution)) {
+         if(size() >= size) {
+            if(problem.better(solution, peekWorst()))
+               popWorst();
+            else
+               return false;
+         }
+
          keys.add(solution);
          E e = value(solution);
          if(tree.get(e) == null)
             tree.put(e, new ArrayList<S>());
          tree.get(e).add(solution);
+
          return true;
       }
       return false;
@@ -161,22 +171,6 @@ public class TreePopulation<S extends Solution, E extends Comparable<E>> impleme
             tree.pollLastEntry();
       }
       return worst;
-   }
-
-   /**
-    * Replaces the worst solution with the given one and returns the removed worst,
-    *  but only if the given solution is not yet present in this population.
-    * @return The replaced solution or <tt>null</tt> if the given solution was already present.
-    * @see Population#replaceWorst(Solution)
-    */
-   @Override
-   public S replaceWorst(S solution) {
-      if(!contains(solution)) {
-         add(solution);
-         return popWorst();
-      }
-      else
-         return null;
    }
 
    /**

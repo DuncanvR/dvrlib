@@ -9,6 +9,7 @@ package dvrlib.localsearch;
 public interface Population<S extends Solution> extends Iterable<S> {
    /**
     * Adds the given solution to this population if it is not already present.
+    * If this population is full and the given solution is better than the the current worst, the worst solution is removed.
     * @return A boolean indicating whether the solution was actually added.
     */
    public boolean add(S solution);
@@ -42,14 +43,6 @@ public interface Population<S extends Solution> extends Iterable<S> {
     * Removes and returns the worst solution in this population.
     */
    public S popWorst();
-
-   /**
-    * If the given solution is better than the worst solution in this population,
-    *    replaces the worst solution with the given one and returns the removed worst.
-    * Otherwise, nothing is changed and <tt>null</tt> is returned.
-    * @return The replaced solution or <tt>null</tt> if no solution was replaced.
-    */
-   public S replaceWorst(S solution);
 
    /**
     * Returns the number of solutions in this population.
