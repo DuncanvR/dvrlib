@@ -41,6 +41,19 @@ public class SimulatedAnnealingLS<P extends NumericProblem<S, E>, S extends Solu
    }
 
    /**
+    * SimulatedAnnealingLS constructor, using the default value for tempMod.
+    * @param changer   The changer that is used to make changes to the solution during the search.
+    * @param stopCount The number of iterations after which the algorithm will stop after the best known solution was found.
+    * @param coolCount The number of iterations after which the temperature will decrease.
+    * @param initTemp  The initial temperature.
+    * @see SimulatedAnnealingLS#SimulatedAnnealingLS(Changer, int, int, double, double)
+    * O(1).
+    */
+   public SimulatedAnnealingLS(Changer<P, S, ? extends Changer<P, S, ?>.Change> changer, int stopCount, int coolCount, double initTemp) {
+      this(changer, stopCount, coolCount, initTemp, defTempMod);
+   }
+
+   /**
     * SimulatedAnnealingLS constructor.
     * @param changer   The changer that is used to make changes to the solution during the search.
     * @param stopCount The number of iterations after which the algorithm will stop after the best known solution was found.

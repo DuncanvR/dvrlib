@@ -118,7 +118,7 @@ public abstract class AbstractGraph<Node extends AbstractGraphNode<Node, NodeDat
 
    /**
     * Returns an iterable to the data of the nodes of this graph.
-    * @see dvrlib.graph.AbstractGraph#nodesIterable()
+    * @see AbstractGraph#nodesIterable()
     */
    public abstract Iterable<NodeData> nodeDataIterable();
 

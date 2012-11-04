@@ -186,7 +186,7 @@ public class ListGraph<NodeData, EdgeData> extends AbstractGraph<ListGraphNode<N
 
    /**
     * Returns an iterable to the data of the nodes of this graph.
-    * @see dvrlib.graph.ListGraph#nodeIterable()
+    * @see ListGraph#nodeIterable()
     */
    @Override
    public Iterable<NodeData> nodeDataIterable() {
