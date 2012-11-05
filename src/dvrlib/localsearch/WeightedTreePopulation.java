@@ -9,10 +9,10 @@ package dvrlib.localsearch;
 import dvrlib.container.WeightedTree;
 
 import java.util.Iterator;
-import java.util.HashSet;
+import java.util.Hashtable;
 
 public class WeightedTreePopulation<S extends Solution> implements Population<S> {
-   protected final HashSet<S>           keys    = new HashSet<S>();
+   protected final Hashtable<S, Double> keys    = new Hashtable<S, Double>();
    protected final GeneticProblem<S, ?> problem;
    protected final WeightedTree<S>      tree    = new WeightedTree<S>();
    protected final int                  size;
@@ -23,24 +23,32 @@ public class WeightedTreePopulation<S extends Solution> implements Population<S>
    }
 
    /**
-    * Adds the given solution to this population if it is not already present.
+    * Adds the given solution to this population.
+    * If the given solution is already present, it's weight is updated accordingly.
     * If this population is full and the given solution is better than the the current worst, the worst solution is removed.
-    * @return A boolean indicating whether the solution was actually added.
+    * @return A boolean indicating whether this population was modified in any way.
     * @see Population#add(Solution)
     */
    @Override
    public boolean add(S solution) {
-      if(!contains(solution)) {
+      if(contains(solution)) {
+         double newKey = problem.weight(solution),
+                oldKey = keys.get(solution);
+         if(newKey != oldKey && tree.remove(oldKey, solution)) {
+            tree.add(newKey, solution);
+            return true;
+         }
+      }
+      else {
          if(size() >= size) {
             if(problem.better(solution, peekWorst()))
                popWorst();
             else
                return false;
          }
-
-         keys.add(solution);
-         tree.add(problem.weight(solution), solution);
-
+         double key = problem.weight(solution);
+         keys.put(solution, key);
+         tree.add(key, solution);
          return true;
       }
       return false;
@@ -62,7 +70,7 @@ public class WeightedTreePopulation<S extends Solution> implements Population<S>
     */
    @Override
    public boolean contains(S solution) {
-      return keys.contains(solution);
+      return keys.containsKey(solution);
    }
 
    /**
@@ -71,7 +79,7 @@ public class WeightedTreePopulation<S extends Solution> implements Population<S>
     */
    @Override
    public Iterator<S> iterator() {
-      return keys.iterator();
+      return keys.keySet().iterator();
    }
 
    /**
