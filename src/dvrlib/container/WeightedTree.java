@@ -144,6 +144,14 @@ public class WeightedTree<E> implements Iterable<E> {
    }
 
    /**
+    * Removes the given key and value from this tree.
+    * @return A boolean indicating whether the value was actually removed.
+    */
+   public boolean remove(double key, E value) {
+      return (root == null ? null : root.remove(key, value));
+   }
+
+   /**
     * Removes the given node from this tree.
     * O(node.height + node.depth).
     */

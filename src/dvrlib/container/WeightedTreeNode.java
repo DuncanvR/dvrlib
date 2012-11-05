@@ -33,6 +33,15 @@ public class WeightedTreeNode<E> {
          return values.contains(value);
    }
 
+   public boolean remove(double key, E value) {
+      if(key < this.key)
+         return (left == null ? false : left.remove(key, value));
+      else if(key > this.key)
+         return (right == null ? false : right.remove(key, value));
+      else // key == this.key
+         return values.remove(value);
+   }
+
    public int getHeight() {
       return height;
    }
