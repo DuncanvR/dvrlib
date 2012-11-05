@@ -79,27 +79,27 @@ public class GeneticLS<S extends Solution, E extends Number & Comparable<E>> ext
          // Generate new solution from two random solutions in the population
          state.solution = combiner.combine(state, state.population.peekRandom(), state.population.peekRandom());
 
+         if(state.population.contains(state.solution))
+            continue;
+
          if(savingCriterion == LocalSearch.SavingCriterion.EveryIteration)
             state.saveSolution();
 
          if(state.population.size() >= popSize) {
             // Replace the worst solution in the population with the new solution if its better
-            if(state.problem.better(state.solution, state.population.peekWorst())) {
+            if(state.population.add(state.solution)) {
+               state.lastImprovement = i;
                if(savingCriterion == LocalSearch.SavingCriterion.EveryImprovement ||
                      (savingCriterion == LocalSearch.SavingCriterion.NewBest && state.problem.better(state.solution, state.population.peekBest())))
                   state.saveSolution();
-
-               state.population.add(state.solution);
-               state.lastImprovement = i;
             }
          }
          else {
+            state.population.add(state.solution);
+            state.lastImprovement = i;
             if(savingCriterion == LocalSearch.SavingCriterion.EveryImprovement ||
                   (savingCriterion == LocalSearch.SavingCriterion.NewBest && state.problem.better(state.solution, state.population.peekBest())))
                state.saveSolution();
-
-            state.population.add(state.solution);
-            state.lastImprovement = i;
          }
 
          state.solution = null;
