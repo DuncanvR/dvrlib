@@ -75,36 +75,25 @@ public class GeneticLS<S extends Solution, E extends Number & Comparable<E>> ext
     */
    @Override
    public GLSSearchState iterate(GLSSearchState state, long n) {
-      for(long i = state.iterationCount(), iMax = state.iterationCount() + n; i < iMax; i++) {
-         // Generate new solution from two random solutions in the population
+      for(long i = state.iterationCount(), iMax = i + n; i < iMax; i++) {
+         // Generate new solution by combining two random solutions from the population
          state.solution = combiner.combine(state, state.population.peekRandom(), state.population.peekRandom());
 
          if(state.population.contains(state.solution))
             continue;
 
-         if(savingCriterion == LocalSearch.SavingCriterion.EveryIteration)
+         if(savingCriterion == LocalSearch.SavingCriterion.EveryIteration ||
+               (savingCriterion == LocalSearch.SavingCriterion.NewBest && state.problem.better(state.solution, state.population.peekBest())))
             state.saveSolution();
 
-         if(state.population.size() >= popSize) {
-            // Replace the worst solution in the population with the new solution if its better
-            if(state.population.add(state.solution)) {
-               state.lastImprovement = i;
-               if(savingCriterion == LocalSearch.SavingCriterion.EveryImprovement ||
-                     (savingCriterion == LocalSearch.SavingCriterion.NewBest && state.problem.better(state.solution, state.population.peekBest())))
-                  state.saveSolution();
-            }
-         }
-         else {
-            state.population.add(state.solution);
+         if(state.population.add(state.solution)) {
             state.lastImprovement = i;
-            if(savingCriterion == LocalSearch.SavingCriterion.EveryImprovement ||
-                  (savingCriterion == LocalSearch.SavingCriterion.NewBest && state.problem.better(state.solution, state.population.peekBest())))
+            if(savingCriterion == LocalSearch.SavingCriterion.EveryImprovement)
                state.saveSolution();
          }
-
-         state.solution = null;
       }
 
+      state.solution = null;
       state.iteration += n;
       return state;
    }
