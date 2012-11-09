@@ -6,13 +6,13 @@
 
 package dvrlib.localsearch;
 
-public class GeneticLS<S extends Solution, E extends Number & Comparable<E>> extends StatefulLocalSearch<GeneticProblem<S, E>, S, E, GeneticLS<S, E>.GLSSearchState> {
-   protected class GLSSearchState extends AbstractSearchState<GeneticProblem<S, E>, S> {
-      protected Population<S> population;
-      protected S             solution        = null;
-      protected long          lastImprovement;
+public class GeneticLS<S extends Solution, E extends Comparable<E>> extends StatefulLocalSearch<GeneticProblem<S, E>, S, E, GeneticLS<S, E>.SearchState> {
+   public class SearchState extends AbstractSearchState<GeneticProblem<S, E>, S> {
+      protected GeneticPopulation<S> population;
+      protected S                    solution        = null;
+      protected long                 lastImprovement;
 
-      protected GLSSearchState(GeneticProblem<S, E> problem, Population<S> population) {
+      protected SearchState(GeneticProblem<S, E> problem, GeneticPopulation<S> population) {
          super(problem);
          this.population = population;
       }
@@ -57,7 +57,7 @@ public class GeneticLS<S extends Solution, E extends Number & Comparable<E>> ext
     * This algorithm keeps replacing the worst solution in the population by the new combined solution if it is better, until a predefined number of iterations give no improvement.
     * @see GeneticLS#iterate(GeneticLS.GLSSearchState, int)
     */
-   public GLSSearchState search(GLSSearchState state) {
+   public SearchState search(SearchState state) {
       combiner.reinitialize();
       long n;
       do {
@@ -74,7 +74,7 @@ public class GeneticLS<S extends Solution, E extends Number & Comparable<E>> ext
     * Does <tt>n</tt> iterations using the given search state, after which it is returned.
     */
    @Override
-   public GLSSearchState iterate(GLSSearchState state, long n) {
+   public SearchState iterate(SearchState state, long n) {
       for(long i = state.iterationCount(), iMax = i + n; i < iMax; i++) {
          // Generate new solution by combining two random solutions from the population
          state.solution = combiner.combine(state, state.population.peekRandom(), state.population.peekRandom());
@@ -92,16 +92,15 @@ public class GeneticLS<S extends Solution, E extends Number & Comparable<E>> ext
                state.saveSolution();
          }
       }
-
       state.solution = null;
       state.iteration += n;
       return state;
    }
 
    @Override
-   public GLSSearchState newState(GeneticProblem<S, E> problem, S solution) {
-      Population<S> population = combiner.createPopulation(problem, solution, popSize);
+   public SearchState newState(GeneticProblem<S, E> problem, S solution) {
+      GeneticPopulation<S> population = combiner.createPopulation(problem, solution, popSize);
       problem.saveSolution(population.peekBest());
-      return new GLSSearchState(problem, population);
+      return new SearchState(problem, population);
    }
 }

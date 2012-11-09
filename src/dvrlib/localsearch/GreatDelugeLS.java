@@ -7,12 +7,12 @@
 package dvrlib.localsearch;
 
 // TODO: Fix implementation and remove abstract modifier
-public abstract class GreatDelugeLS<P extends Problem<S, E>, S extends Solution, E extends Comparable<E>> extends StatefulLocalSearch<P, S, E, GreatDelugeLS<P, S, E>.GDSearchState> {
-   public class GDSearchState extends SingularSearchState<P, S> {
+public abstract class GreatDelugeLS<P extends Problem<S, E>, S extends Solution, E extends Comparable<E>> extends StatefulLocalSearch<P, S, E, GreatDelugeLS<P, S, E>.SearchState> {
+   public class SearchState extends SingularSearchState<P, S> {
       protected ChangeList<P, S> changes;
       protected E                tolerance;
 
-      protected GDSearchState(P problem, S solution, E tolerance) {
+      protected SearchState(P problem, S solution, E tolerance) {
          super(problem, solution);
          this.tolerance = tolerance;
       }
@@ -34,7 +34,7 @@ public abstract class GreatDelugeLS<P extends Problem<S, E>, S extends Solution,
    /**
     * Decays the tolerance value in the given state.
     */
-   public abstract void decay(GDSearchState state);
+   public abstract void decay(SearchState state);
 
    /**
     * Searches for an optimal solution for the given problem, starting from the given solution, which is saved and returned.
@@ -43,7 +43,7 @@ public abstract class GreatDelugeLS<P extends Problem<S, E>, S extends Solution,
     */
    @Override
    public S search(P problem, S solution) {
-      GDSearchState state = newState(problem, solution);
+      SearchState state = newState(problem, solution);
       iterate(state, -1).saveSolution(); // TODO: Determine a good stopping criterium for this LS method.
       state.solution.setIterationCount(state.iterationCount());
       return state.solution();
@@ -54,7 +54,7 @@ public abstract class GreatDelugeLS<P extends Problem<S, E>, S extends Solution,
     * @see GreatDelugeLS#iterate(Solution)
     */
    @Override
-   public GDSearchState iterate(GDSearchState state, long n) {
+   public SearchState iterate(SearchState state, long n) {
       if(n < 0)
          throw new IllegalArgumentException("The number of requested operations should not be less than zero");
 
@@ -100,8 +100,8 @@ public abstract class GreatDelugeLS<P extends Problem<S, E>, S extends Solution,
    }
 
    @Override
-   public GDSearchState newState(P problem, S solution) {
+   public SearchState newState(P problem, S solution) {
       changer.reinitialize(problem);
-      return new GDSearchState(problem, solution, initTolerance);
+      return new SearchState(problem, solution, initTolerance);
    }
 }

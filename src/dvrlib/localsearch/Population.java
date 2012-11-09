@@ -30,11 +30,6 @@ public interface Population<S extends Solution> extends Iterable<S> {
    public S peekBest();
 
    /**
-    * Returns but does not remove a random solution from this population.
-    */
-   public S peekRandom();
-
-   /**
     * Returns but does not remove the worst solution in this population.
     */
    public S peekWorst();

@@ -11,7 +11,7 @@ import dvrlib.container.WeightedTree;
 import java.util.Iterator;
 import java.util.Hashtable;
 
-public class WeightedTreePopulation<S extends Solution> implements Population<S> {
+public class WeightedTreePopulation<S extends Solution> implements GeneticPopulation<S> {
    protected final Hashtable<S, Double> keys    = new Hashtable<S, Double>();
    protected final GeneticProblem<S, ?> problem;
    protected final WeightedTree<S>      tree    = new WeightedTree<S>();

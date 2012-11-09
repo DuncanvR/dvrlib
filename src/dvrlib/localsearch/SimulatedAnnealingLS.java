@@ -7,11 +7,11 @@
 package dvrlib.localsearch;
 
 public class SimulatedAnnealingLS<P extends NumericProblem<S, E>, S extends Solution, E extends Number & Comparable<E>> extends LocalSearch<P, S, E> {
-   protected class SASearchState extends SingularSearchState<P, S> {
+   public class SearchState extends SingularSearchState<P, S> {
       protected ChangeList<P, S> changes     = new ChangeList<P, S>();
       protected double           temperature = initTemp;
 
-      public SASearchState(P problem, S solution) {
+      public SearchState(P problem, S solution) {
          super(problem, solution);
          iteration = 1; // Start at 1, otherwise the temperature would be decreased at the first iteration
       }
@@ -78,7 +78,7 @@ public class SimulatedAnnealingLS<P extends NumericProblem<S, E>, S extends Solu
     */
    @Override
    public S search(P problem, S solution) {
-      SASearchState state = newState(problem, solution);
+      SearchState state = newState(problem, solution);
       E curEval = problem.evaluate(state), bestEval = curEval;
 
       try {
@@ -125,8 +125,8 @@ public class SimulatedAnnealingLS<P extends NumericProblem<S, E>, S extends Solu
       return state.solution();
    }
 
-   protected SASearchState newState(P problem, S solution) {
+   protected SearchState newState(P problem, S solution) {
       changer.reinitialize(problem);
-      return new SASearchState(problem, solution);
+      return new SearchState(problem, solution);
    }
 }

@@ -23,5 +23,5 @@ public interface Combiner<P extends GeneticProblem<S, ?>, S extends Solution> {
     * Creates a new population with at least the given solution and at most <tt>popSize</tt> solutions.
     * A simple implementation would include the given solution, and some random solutions.
     */
-   public Population<S> createPopulation(P problem, S solution, int popSize);
+   public GeneticPopulation<S> createPopulation(P problem, S solution, int popSize);
 }

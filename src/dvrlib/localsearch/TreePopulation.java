@@ -138,15 +138,6 @@ public class TreePopulation<S extends Solution, E extends Comparable<E>> impleme
    }
 
    /**
-    * Returns but does not remove a random solution from this population.
-    * @see Population#peekRandom()
-    */
-   @Override
-   public S peekRandom() {
-      throw new UnsupportedOperationException();
-   }
-
-   /**
     * Returns but does not remove the worst solution in this population.
     * @see Population#peekWorst()
     */
