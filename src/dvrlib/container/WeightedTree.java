@@ -39,7 +39,7 @@ public class WeightedTree<E> implements Iterable<E> {
    /**
     * Adds a node with the given key and value to this tree.
     * @return A boolean indicating whether the operation succeeded.
-    * @throws IllegalArgumentException When the given key is <tt>null</tt>.
+    * @throws IllegalArgumentException When the given key is <code>null</code>.
     * @see WeightedTree#rebalanceUp(WeightedTreeNode)
     * O(height)
     */
@@ -191,7 +191,7 @@ public class WeightedTree<E> implements Iterable<E> {
    }
    /**
     * Removes the given external node from this tree.
-    * Do not call this method directly but use <tt>remove(WeightedTreeNode)</tt>.
+    * Do not call this method directly but use <code>remove(WeightedTreeNode)</code>.
     * @param node The node that is to be removed. This has to be an external node, i.e. it may not have both a left and a right subtree.
     * @see WeightedTree#remove(WeightedTreeNode)
     * O(node.depth).

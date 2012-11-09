@@ -40,21 +40,21 @@ public abstract class AbstractProblem<S extends Solution, E extends Comparable<E
       return (e1 == null ? false : e1.compareTo(e2) == direction());
    }
    /**
-    * Returns true if the first of the given solutions is better than the second, i.e. <tt>better(evaluate(s1), evaluate(s2))</tt>.
+    * Returns true if the first of the given solutions is better than the second, i.e. <code>better(evaluate(s1), evaluate(s2))</code>.
     */
    @Override
    public final boolean better(S s1, S s2) {
       return (s1 == null ? false : (s2 == null ? true : (s1.equals(s2) ? false : better(evaluate(s1), evaluate(s2)))));
    }
    /**
-    * Returns true if the current solution of the given search state is better than the given evaluation, i.e. <tt>better(evaluate(ss), e)</tt>.
+    * Returns true if the current solution of the given search state is better than the given evaluation, i.e. <code>better(evaluate(ss), e)</code>.
     */
    @Override
    public final boolean better(SearchState<? extends Problem<S, E>, S> ss, E e) {
       return (ss == null ? false : better(evaluate(ss), e));
    }
    /**
-    * Returns true if the current solution of the given search state is better than the given solution, i.e. <tt>better(evaluate(ss), evaluate(s, ss.iterationCount()))</tt>.
+    * Returns true if the current solution of the given search state is better than the given solution, i.e. <code>better(evaluate(ss), evaluate(s, ss.iterationCount()))</code>.
     */
    @Override
    public final boolean better(SearchState<? extends Problem<S, E>, S> ss, S s) {
@@ -68,21 +68,21 @@ public abstract class AbstractProblem<S extends Solution, E extends Comparable<E
       return (e1 == null ? false : e1.compareTo(e2) != -direction());
    }
    /**
-    * Returns true if the first of the given solutions is better than or equal to the second, i.e. <tt>betterEq(evaluate(s1), evaluate(s2))</tt>.
+    * Returns true if the first of the given solutions is better than or equal to the second, i.e. <code>betterEq(evaluate(s1), evaluate(s2))</code>.
     */
    @Override
    public final boolean betterEq(S s1, S s2) {
       return (s1 == null ? false : (s2 == null ? true : (s1.equals(s2) ? true : betterEq(evaluate(s1), evaluate(s2)))));
    }
    /**
-    * Returns true if the current solution of the given search state is better than or equal to the given evaluation, i.e. <tt>betterEq(evaluate(ss), e)</tt>.
+    * Returns true if the current solution of the given search state is better than or equal to the given evaluation, i.e. <code>betterEq(evaluate(ss), e)</code>.
     */
    @Override
    public final boolean betterEq(SearchState<? extends Problem<S, E>, S> ss, E e) {
       return (ss == null ? false : betterEq(evaluate(ss), e));
    }
    /**
-    * Returns true if the current solution of the given search state is better than or equal to the given solution, i.e. <tt>betterEq(evaluate(ss), evaluate(s, ss.iterationCount()))</tt>.
+    * Returns true if the current solution of the given search state is better than or equal to the given solution, i.e. <code>betterEq(evaluate(ss), evaluate(s, ss.iterationCount()))</code>.
     */
    @Override
    public final boolean betterEq(SearchState<? extends Problem<S, E>, S> ss, S s) {
@@ -90,7 +90,7 @@ public abstract class AbstractProblem<S extends Solution, E extends Comparable<E
    }
 
    /**
-    * Returns the evaluation of the given solution, ignoring <tt>iterationNumber</tt>.
+    * Returns the evaluation of the given solution, ignoring <code>iterationNumber</code>.
     * Override this method to implement an evaluation function which takes the iteration number into account.
     */
    @Override

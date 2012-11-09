@@ -71,7 +71,7 @@ public class GeneticLS<S extends Solution, E extends Comparable<E>> extends Stat
    }
 
    /**
-    * Does <tt>n</tt> iterations using the given search state, after which it is returned.
+    * Does <code>n</code> iterations using the given search state, after which it is returned.
     */
    @Override
    public SearchState iterate(SearchState state, long n) {

@@ -20,7 +20,7 @@ public interface Combiner<P extends GeneticProblem<S, ?>, S extends Solution> {
    public S combine(SearchState<P, S> ss, S s1, S s2);
 
    /**
-    * Creates a new population with at least the given solution and at most <tt>popSize</tt> solutions.
+    * Creates a new population with at least the given solution and at most <code>popSize</code> solutions.
     * A simple implementation would include the given solution, and some random solutions.
     */
    public GeneticPopulation<S> createPopulation(P problem, S solution, int popSize);

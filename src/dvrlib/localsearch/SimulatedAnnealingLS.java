@@ -17,9 +17,9 @@ public class SimulatedAnnealingLS<P extends NumericProblem<S, E>, S extends Solu
       }
    }
 
-   /** The default initial temperature is 2.4663035, so <tt>dE = 1</tt> results in a 2/3 chance of acceptance. */
+   /** The default initial temperature is 2.4663035, so <code>dE = 1</code> results in a 2/3 chance of acceptance. */
    public final static double defTemp    = 2.4663035;
-   /** The default temperature modifier is 0.98, leading to a 2% decrease in temperature every <tt>coolCount</tt> iterations. */
+   /** The default temperature modifier is 0.98, leading to a 2% decrease in temperature every <code>coolCount</code> iterations. */
    public final static double defTempMod = 0.98;
 
    protected final Changer<P, S, ? extends Changer<P, S, ?>.Change> changer;
@@ -59,7 +59,7 @@ public class SimulatedAnnealingLS<P extends NumericProblem<S, E>, S extends Solu
     * @param stopCount The number of iterations after which the algorithm will stop after the best known solution was found.
     * @param coolCount The number of iterations after which the temperature will decrease.
     * @param initTemp  The initial temperature.
-    * @param tempMod   The modifier for the temperature. Every <tt>coolCount</tt> iterations the temperature is multiplied by this value, so its value should be in the range [0,1].
+    * @param tempMod   The modifier for the temperature. Every <code>coolCount</code> iterations the temperature is multiplied by this value, so its value should be in the range [0,1].
     * O(1).
     */
    public SimulatedAnnealingLS(Changer<P, S, ? extends Changer<P, S, ?>.Change> changer, int stopCount, int coolCount, double initTemp, double tempMod) {
@@ -74,7 +74,7 @@ public class SimulatedAnnealingLS<P extends NumericProblem<S, E>, S extends Solu
     * Searches for a solution for the given problem, starting from the given solution.
     * This algorithm repeatedly generates changes for the current solution and applies them if they improve it.
     * If a change does not improve the solution, it is applied with a certain chance based on the current temperature, which decreases as time passes by.
-    * After <tt>stopCount</tt> iterations in which no improvements were found, the best known solution is returned.
+    * After <code>stopCount</code> iterations in which no improvements were found, the best known solution is returned.
     */
    @Override
    public S search(P problem, S solution) {

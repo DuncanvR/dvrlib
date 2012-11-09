@@ -50,7 +50,7 @@ public abstract class GreatDelugeLS<P extends Problem<S, E>, S extends Solution,
    }
 
    /**
-    * Searches for an optimal solution using the given search state, with a maximum of <tt>n</tt> iterations, after which the state is returned.
+    * Searches for an optimal solution using the given search state, with a maximum of <code>n</code> iterations, after which the state is returned.
     * @see GreatDelugeLS#iterate(Solution)
     */
    @Override

@@ -32,8 +32,8 @@ public class HillClimbingLS<P extends Problem<S, E>, S extends Solution, E exten
    }
 
    /**
-    * Searches for an optimal solution using the given search state, with a maximum of <tt>n</tt> iterations, after which the state is returned.
-    * A negative value of <tt>n</tt> indicates there is no limit to the number of iterations.
+    * Searches for an optimal solution using the given search state, with a maximum of <code>n</code> iterations, after which the state is returned.
+    * A negative value of <code>n</code> indicates there is no limit to the number of iterations.
     * @see HillClimbingLS#iterate(Solution)
     */
    @Override

@@ -155,7 +155,7 @@ public class WeightedTreeNode<E> {
 
    /**
     * Replaces the old subtree by the new one.
-    * @param old The subtree that will be replaced, either <tt>old == left</tt> or <tt>old == right</tt> should hold.
+    * @param old The subtree that will be replaced, either <code>old == left</code> or <code>old == right</code> should hold.
     * O(1).
     */
    protected void replaceChild(WeightedTreeNode<E> old, WeightedTreeNode<E> that) {
