@@ -6,6 +6,8 @@
 
 package dvrlib.localsearch;
 
+import java.util.LinkedList;
+
 public class GeneticLS<S extends Solution, E extends Comparable<E>> extends StatefulLocalSearch<GeneticProblem<S, E>, S, E, GeneticLS<S, E>.SearchState> {
    public class SearchState extends AbstractSearchState<GeneticProblem<S, E>, S> {
       protected GeneticPopulation<S> population;
@@ -15,6 +17,10 @@ public class GeneticLS<S extends Solution, E extends Comparable<E>> extends Stat
       protected SearchState(GeneticProblem<S, E> problem, GeneticPopulation<S> population) {
          super(problem);
          this.population = population;
+      }
+
+      public GeneticPopulation<S> population() {
+         return population;
       }
 
       @Override
@@ -99,7 +105,13 @@ public class GeneticLS<S extends Solution, E extends Comparable<E>> extends Stat
 
    @Override
    public SearchState newState(GeneticProblem<S, E> problem, S solution) {
-      GeneticPopulation<S> population = combiner.createPopulation(problem, solution, popSize);
+      LinkedList<S> solutions = new LinkedList<S>();
+      solutions.add(solution);
+      return newState(problem, solutions);
+   }
+
+   public SearchState newState(GeneticProblem<S, E> problem, Iterable<S> solutions) {
+      GeneticPopulation<S> population = combiner.createPopulation(problem, solutions, popSize);
       problem.saveSolution(population.peekBest());
       return new SearchState(problem, population);
    }
