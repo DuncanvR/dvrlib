@@ -94,6 +94,10 @@ public class SimulatedAnnealingLS<P extends NumericProblem<S, E>, S extends Solu
             if(problem.better(newEval, curEval)) {
                sc = 0;
                curEval = newEval;
+
+               if(savingCriterion == LocalSearch.SavingCriterion.EveryImprovement)
+                  state.saveSolution();
+
                if(problem.betterEq(newEval, bestEval)) {
                   // If the new solution is better than the best solution found, clear the list of changes
                   bestEval = newEval;
