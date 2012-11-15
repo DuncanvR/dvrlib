@@ -107,7 +107,7 @@ public class SimulatedAnnealingLS<P extends NumericProblem<S, E>, S extends Solu
                      state.saveSolution();
                }
             }
-            else if(Math.random() < Math.exp(problem.diffEval(newEval, curEval) * problem.direction() / state.temperature)) {
+            else if(Math.random() < Math.exp(problem.diffEval(newEval, curEval) * LocalSearch.asNumber(problem.direction()) / state.temperature)) {
                // Accept the change, even though it's not an improvement
                curEval = newEval;
             }

@@ -52,9 +52,10 @@ public interface Problem<S extends Solution, E extends Comparable<E>> {
    public S copySolution(S s);
 
    /**
-    * Returns the direction of the search, e.g. 1 for a maximizing and -1 for a minimizing problem.
+    * Returns the direction of the search.
+    * @see LocalSearch.SearchDirection
     */
-   public int direction();
+   public LocalSearch.SearchDirection direction();
 
    /**
     * Returns the evaluation of the given solution.

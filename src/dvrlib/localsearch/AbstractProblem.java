@@ -37,7 +37,7 @@ public abstract class AbstractProblem<S extends Solution, E extends Comparable<E
     */
    @Override
    public final boolean better(E e1, E e2) {
-      return (e1 == null ? false : e1.compareTo(e2) == direction());
+      return (e1 == null ? false : e1.compareTo(e2) == LocalSearch.asNumber(direction()));
    }
    /**
     * Returns true if the first of the given solutions is better than the second, i.e. <code>better(evaluate(s1), evaluate(s2))</code>.
@@ -65,7 +65,7 @@ public abstract class AbstractProblem<S extends Solution, E extends Comparable<E
     */
    @Override
    public final boolean betterEq(E e1, E e2) {
-      return (e1 == null ? false : e1.compareTo(e2) != -direction());
+      return (e1 == null ? false : e1.compareTo(e2) != -LocalSearch.asNumber(direction()));
    }
    /**
     * Returns true if the first of the given solutions is better than or equal to the second, i.e. <code>betterEq(evaluate(s1), evaluate(s2))</code>.

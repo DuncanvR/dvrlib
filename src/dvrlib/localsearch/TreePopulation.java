@@ -20,7 +20,7 @@ public class TreePopulation<S extends Solution, E extends Comparable<E>> impleme
    public TreePopulation(Problem<S, E> problem, int size) {
       this.problem = problem;
       this.size    = size;
-      direction    = problem.direction();
+      direction    = LocalSearch.asNumber(problem.direction());
    }
 
    /**
