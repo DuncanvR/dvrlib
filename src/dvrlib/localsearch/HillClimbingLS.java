@@ -19,25 +19,28 @@ public class HillClimbingLS<P extends Problem<S, E>, S extends Solution, E exten
    }
 
    /**
-    * Searches for an optimal solution for the given problem, starting from the given solution, which is saved and returned.
+    * Searches for a solution for the given problem, starting from the given solution, which is saved and returned.
     * This algorithm keeps generating changes for the solution until they no longer improve it.
-    * @see HillClimbingLS#iterate(SingularSearchState, int)
+    * @see HillClimbingLS#iterate(SingularSearchState, Comparable, int)
+    * @see LocalSearch#search(Problem, Comparable, Solution)
     */
    @Override
-   public S search(P problem, S solution) {
+   protected S doSearch(P problem, E bound, S solution) {
       SingularSearchState<P, S> state = newState(problem, solution);
-      iterate(state, -1).saveSolution();
+      iterate(state, bound, -1).saveSolution();
       state.solution.setIterationCount(state.iterationCount());
       return state.solution();
    }
 
    /**
-    * Searches for an optimal solution using the given search state, with a maximum of <code>n</code> iterations, after which the state is returned.
+    * Searches for an optimal solution using the given search state, with a maximum of <code>n</code> iterations,
+    *    after which the state is returned.
     * A negative value of <code>n</code> indicates there is no limit to the number of iterations.
-    * @see HillClimbingLS#iterate(Solution)
+    * When a solution is found that is better or equal to the given bound, the search is stopped.
+    * @see StatefulLocalSearch#iterate(SearchState, Comparable, int)
     */
    @Override
-   public SingularSearchState<P, S> iterate(SingularSearchState<P, S> state, long n) {
+   public SingularSearchState<P, S> iterate(SingularSearchState<P, S> state, E bound, long n) {
       Changer<P, S, ?>.Change change = null;
       E e1 = null, e2 = state.problem.evaluate(state);
 
@@ -52,7 +55,7 @@ public class HillClimbingLS<P extends Problem<S, E>, S extends Solution, E exten
             if(savingCriterion == LocalSearch.SavingCriterion.EveryIteration)
                state.saveSolution();
 
-            if(!state.problem.better(e2, e1))
+            if(!state.problem.better(e2, e1) || state.problem.betterEq(e2, bound))
                break;
 
             if(savingCriterion == LocalSearch.SavingCriterion.EveryImprovement || savingCriterion == LocalSearch.SavingCriterion.NewBest)

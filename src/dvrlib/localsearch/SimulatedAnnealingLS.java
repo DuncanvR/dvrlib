@@ -75,15 +75,16 @@ public class SimulatedAnnealingLS<P extends NumericProblem<S, E>, S extends Solu
     * This algorithm repeatedly generates changes for the current solution and applies them if they improve it.
     * If a change does not improve the solution, it is applied with a certain chance based on the current temperature, which decreases as time passes by.
     * After <code>stopCount</code> iterations in which no improvements were found, the best known solution is returned.
+    * When a solution is found that is better or equal to the given bound, the search is stopped.
     */
    @Override
-   public S search(P problem, S solution) {
+   protected S doSearch(P problem, E bound, S solution) {
       SearchState state = newState(problem, solution);
       E curEval = problem.evaluate(state), bestEval = curEval;
 
       try {
          // Main loop: j holds the number of iterations since the last improvement
-         for(int sc = 0; sc < stopCount; sc++, state.iteration++) {
+         for(int sc = 0; sc < stopCount && !problem.betterEq(curEval, bound); sc++, state.iteration++) {
             // Mutate the solution
             state.changes.add(changer.makeChange(state));
             E newEval = problem.evaluate(state);

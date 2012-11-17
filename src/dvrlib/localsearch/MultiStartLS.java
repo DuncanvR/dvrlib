@@ -33,10 +33,10 @@ public class MultiStartLS<S extends Solution, E extends Comparable<E>> extends L
     * Searches for a solution for the given problem by applying the predefined search algorithm to multiple random solution.
     */
    @Override
-   public S search(Problem<S, E> problem) {
-      S bestSolution = null;
-      for(int i = 0; i < count; i++) {
-         S newSolution = ls.search(problem);
+   public S search(Problem<S, E> problem, E bound) {
+      S bestSolution = problem.randomSolution();
+      for(int i = 0; i < count && !problem.betterEq(bestSolution, bound); i++) {
+         S newSolution = ls.search(problem, bound);
          if(problem.better(newSolution, bestSolution))
             bestSolution = newSolution;
       }
@@ -44,16 +44,24 @@ public class MultiStartLS<S extends Solution, E extends Comparable<E>> extends L
    }
 
    /**
-    * Searches for a solution for the given problem by repeatedly applying the predefined search algorithm to the given solution.
+    * Searches for a solution for the given problem by applying the predefined search algorithm to the given solution.
     */
    @Override
-   public S search(Problem<S, E> problem, S startSolution) {
+   public S search(Problem<S, E> problem, E bound, S startSolution) {
       S bestSolution = startSolution;
-      for(int i = 0; i < count; i++) {
-         S newSolution = ls.search(problem, startSolution);
+      for(int i = 0; i < count && !problem.betterEq(bestSolution, bound); i++) {
+         S newSolution = ls.search(problem, bound, problem.copySolution(startSolution));
          if(problem.better(newSolution, bestSolution))
             bestSolution = newSolution;
       }
       return bestSolution;
+   }
+
+   /**
+    * Required method for LocalSearch subclasses, not needed for this search strategy.
+    */
+   @Override
+   protected S doSearch(Problem<S, E> problem, E bound, S solution) {
+      throw new IllegalStateException();
    }
 }

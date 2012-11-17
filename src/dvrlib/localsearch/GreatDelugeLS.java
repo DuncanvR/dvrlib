@@ -34,17 +34,18 @@ public abstract class GreatDelugeLS<P extends Problem<S, E>, S extends Solution,
    /**
     * Decays the tolerance value in the given state.
     */
-   public abstract void decay(SearchState state);
+   public abstract void decay(SearchState state); // TODO: This method should be moved to a sub-interface of Problem
 
    /**
     * Searches for an optimal solution for the given problem, starting from the given solution, which is saved and returned.
     * This algorithm keeps generating changes for the solution while it can be improved over the tolerance.
+    * When a solution is found that is better or equal to the given bound, the search is stopped.
     * @see GreatDelugeLS#iterate(GreatDelugeLS.GDSearchState, int)
     */
    @Override
-   public S search(P problem, S solution) {
+   protected S doSearch(P problem, E bound, S solution) {
       SearchState state = newState(problem, solution);
-      iterate(state, -1).saveSolution(); // TODO: Determine a good stopping criterium for this LS method.
+      iterate(state, bound, -1).saveSolution(); // TODO: Determine a good stopping criterium for this LS method.
       state.solution.setIterationCount(state.iterationCount());
       return state.solution();
    }
@@ -54,16 +55,16 @@ public abstract class GreatDelugeLS<P extends Problem<S, E>, S extends Solution,
     * @see GreatDelugeLS#iterate(Solution)
     */
    @Override
-   public SearchState iterate(SearchState state, long n) {
+   public SearchState iterate(SearchState state, E bound, long n) {
       if(n < 0)
          throw new IllegalArgumentException("The number of requested operations should not be less than zero");
 
-      E best = state.problem.evaluate(state), current;
+      E best = state.problem.evaluate(state), current = best;
 
       try {
          // Keep mutating as long as the maximum number of iterations has not been reached
          // TODO: Add another stopping criterium, in order to support n < 0
-         for(int i = 0; i < n; i++, state.iteration++) {
+         for(int i = 0; i < n && !state.problem.betterEq(current, bound); i++, state.iteration++) {
             state.changes.add(changer.makeChange(state));
             current = state.problem.evaluate(state);
 

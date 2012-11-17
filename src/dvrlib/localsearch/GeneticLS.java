@@ -54,8 +54,8 @@ public class GeneticLS<S extends Solution, E extends Comparable<E>> extends Stat
     * @see GeneticLS#search(GeneticLS.GLSSearchState)
     */
    @Override
-   public S search(GeneticProblem<S, E> problem, S solution) {
-      return search(newState(problem, solution)).solution();
+   protected S doSearch(GeneticProblem<S, E> problem, E bound, S solution) {
+      return search(newState(problem, solution), bound).solution();
    }
 
    /**
@@ -63,14 +63,16 @@ public class GeneticLS<S extends Solution, E extends Comparable<E>> extends Stat
     * This algorithm keeps replacing the worst solution in the population by the new combined solution if it is better, until a predefined number of iterations give no improvement.
     * @see GeneticLS#iterate(GeneticLS.GLSSearchState, int)
     */
-   public SearchState search(SearchState state) {
+   public SearchState search(SearchState state, E bound) {
+      assert (state != null) : "State should not be null";
+      assert (bound != null) : "Bound should not be null";
+
       combiner.reinitialize();
-      long n;
-      do {
+      long n = stopCount;
+      while(n > 0 && !state.problem.betterEq(state.solution(), bound)) {
+         iterate(state, bound, n);
          n = stopCount - (state.iteration - state.lastImprovement);
-         iterate(state, n);
       }
-      while(n > 0);
       state.solution().setIterationCount(state.iterationCount());
       state.saveSolution();
       return state;
@@ -78,10 +80,12 @@ public class GeneticLS<S extends Solution, E extends Comparable<E>> extends Stat
 
    /**
     * Does <code>n</code> iterations using the given search state, after which it is returned.
+    * When a solution is found that is better or equal to the given bound, the search is stopped.
     */
    @Override
-   public SearchState iterate(SearchState state, long n) {
-      for(long i = state.iterationCount(), iMax = i + n; i < iMax; i++) {
+   public SearchState iterate(SearchState state, E bound, long n) {
+      long i = state.iterationCount();
+      for(long iMax = i + n; i < iMax && !state.problem.betterEq(state.solution(), bound); i++) {
          // Generate new solution by combining two random solutions from the population
          state.solution = combiner.combine(state, state.population.peekRandom(), state.population.peekRandom());
 
@@ -99,7 +103,7 @@ public class GeneticLS<S extends Solution, E extends Comparable<E>> extends Stat
          }
       }
       state.solution = null;
-      state.iteration += n;
+      state.iteration = i;
       return state;
    }
 

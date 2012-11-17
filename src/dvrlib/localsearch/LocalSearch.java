@@ -32,14 +32,32 @@ public abstract class LocalSearch<P extends Problem<S, E>, S extends Solution, E
    }
 
    /**
-    * Searches for an optimal solution for the given problem, starting from a random solution.
+    * Searches for a solution for the given problem, starting from a random solution.
+    * When a solution is found that is better or equal to the given bound, the search is stopped.
+    * @see LocalSearch#search(Problem, Comparable, Solution)
     */
-   public S search(P problem) {
-      return search(problem, problem.randomSolution());
+   public S search(P problem, E bound) {
+      return search(problem, bound, problem.randomSolution());
    }
 
    /**
-    * Searches for an optimal solution for the given problem, starting from the given solution.
+    * Searches for a solution for the given problem, starting from the given solution.
+    * When a solution is found that is better or equal to the given bound, the search is stopped.
+    * With asserions enabled, this method first checks none of the arguments are null.
+    * @param problem  The problem instance.
+    * @param bound    The target evaluation value.
+    * @param solution The starting solution.
     */
-   public abstract S search(P problem, S solution);
+   public S search(P problem, E bound, S solution) {
+      assert (problem  != null) : "Problem should not be null";
+      assert (bound    != null) : "Bound should not be null";
+      assert (solution != null) : "Solution should not be null";
+      return doSearch(problem, bound, solution);
+   }
+
+   /**
+    * Implementation of search(), overwritten by subclasses.
+    * @see LocalSearch#search(Problem, Comparable, Solution)
+    */
+   protected abstract S doSearch(P problem, E bound, S solution);
 }
