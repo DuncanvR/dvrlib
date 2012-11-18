@@ -6,7 +6,7 @@
 
 package dvrlib.localsearch;
 
-public class HillClimbingLS<P extends Problem<S, E>, S extends Solution, E extends Comparable<E>> extends StatefulLocalSearch<P, S, E, SingularSearchState<P, S>> {
+public class HillClimbingLS<P extends BoundableProblem<S, E>, S extends Solution, E extends Comparable<E>> extends StatefulLocalSearch<P, S, E, SingularSearchState<P, S>> {
    protected final Changer<P, S, ? extends Changer<P, S, ?>.Change> changer;
 
    /**
@@ -42,29 +42,39 @@ public class HillClimbingLS<P extends Problem<S, E>, S extends Solution, E exten
    @Override
    public SingularSearchState<P, S> iterate(SingularSearchState<P, S> state, E bound, long n) {
       Changer<P, S, ?>.Change change = null;
-      E e1 = null, e2 = state.problem.evaluate(state);
+      E eOld = null, eNew = state.problem.evaluate(state);
 
       try {
          // Keep mutating as long as it improves the solution and the maximum number of iterations has not been reached
-         for(int i = 1; n < 0 || i < n; i++) {
-            e1 = e2;
+         for(long iMax = state.iteration + n; n < 0 || state.iteration < iMax; state.iteration++) {
+            eOld = eNew;
+            // Change the solution
             change = changer.makeChange(state);
-            e2 = state.problem.evaluate(state);
-            state.iteration++;
 
+            // If the solution cannot be better that the current, break here
+            if(!state.problem.better(state.problem.evaluationBound(state), eOld))
+               break;
+
+            // Evaluate the solution
+            eNew = state.problem.evaluate(state);
+
+            // Depending on the saving criterion, save the current solution
             if(savingCriterion == LocalSearch.SavingCriterion.EveryIteration)
                state.saveSolution();
 
-            if(!state.problem.better(e2, e1) || state.problem.betterEq(e2, bound))
+            // If the solution is either no better than the current, or better than or equal to the target value, break here
+            if(!state.problem.better(eNew, eOld) || state.problem.betterEq(eNew, bound))
                break;
 
+            // Depending on the saving criterion, save the current solution
             if(savingCriterion == LocalSearch.SavingCriterion.EveryImprovement || savingCriterion == LocalSearch.SavingCriterion.NewBest)
                state.saveSolution();
          }
       }
       catch(CannotChangeException _) { }
 
-      if(state.problem.better(e1, e2)) // Undo last change
+      // Undo the last change
+      if(state.problem.better(eOld, eNew))
          change.undo(state);
 
       return state;

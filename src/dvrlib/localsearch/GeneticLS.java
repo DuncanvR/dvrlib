@@ -89,7 +89,7 @@ public class GeneticLS<S extends Solution, E extends Comparable<E>> extends Stat
          // Generate new solution by combining two random solutions from the population
          state.solution = combiner.combine(state, state.population.peekRandom(), state.population.peekRandom());
 
-         if(state.population.contains(state.solution))
+         if(state.population.contains(state.solution) || !state.problem.better(state.problem.evaluationBound(state.solution), state.population.peekWorst()))
             continue;
 
          if(savingCriterion == LocalSearch.SavingCriterion.EveryIteration ||
