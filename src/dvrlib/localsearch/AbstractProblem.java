@@ -40,6 +40,13 @@ public abstract class AbstractProblem<S extends Solution, E extends Comparable<E
       return (e1 == null ? false : (e2 == null ? true : e1.compareTo(e2) == LocalSearch.asNumber(direction())));
    }
    /**
+    * Returns true if the given evaluation is better than the given solution, i.e. <code>better(e, evaluate(s))</code.
+    */
+   @Override
+   public boolean better(E e, S s) {
+      return (s == null ? e != null : better(e, evaluate(s)));
+   }
+   /**
     * Returns true if the given solution is better than the given evaluation, i.e. <code>better(evaluate(s), e)</code.
     */
    @Override
@@ -73,6 +80,13 @@ public abstract class AbstractProblem<S extends Solution, E extends Comparable<E
    @Override
    public final boolean betterEq(E e1, E e2) {
       return (e1 == null ? e2 == null : (e2 == null ? true : e1.compareTo(e2) != -LocalSearch.asNumber(direction())));
+   }
+   /**
+    * Returns true if the given evaluation is better than or equal to the given solution, i.e. <code>betterEq(e, evaluate(s))</code>.
+    */
+   @Override
+   public boolean betterEq(E e, S s) {
+      return (s == null ? true : betterEq(evaluate(s), e));
    }
    /**
     * Returns true if the given solution is better than or equal to the given evaluation, i.e. <code>betterEq(evaluate(s), e)</code>.

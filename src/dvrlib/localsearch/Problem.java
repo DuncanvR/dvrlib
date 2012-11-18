@@ -12,6 +12,10 @@ public interface Problem<S extends Solution, E extends Comparable<E>> {
     */
    public boolean better(E e1, E e2);
    /**
+    * Returns true if the given evaluation is better than the given solution, i.e. <code>better(e, evaluate(s))</code.
+    */
+   public boolean better(E e, S s);
+   /**
     * Returns true if the given solution is better than the given evaluation, i.e. <code>better(evaluate(s), e)</code.
     */
    public boolean better(S s, E e);
@@ -32,6 +36,10 @@ public interface Problem<S extends Solution, E extends Comparable<E>> {
     * Returns true if the first of the given evaluations is better than or equal to the second.
     */
    public boolean betterEq(E e1, E e2);
+   /**
+    * Returns true if the given evaluation is better than or equal to the given solution, i.e. <code>betterEq(e, evaluate(s))</code>.
+    */
+   public boolean betterEq(E e, S s);
    /**
     * Returns true if the given solution is better than or equal to the given evaluation, i.e. <code>betterEq(evaluate(s), e)</code>.
     */
