@@ -6,7 +6,7 @@
 
 package dvrlib.localsearch;
 
-public abstract class AbstractGeneticProblem<S extends Solution, E extends Comparable<E>> extends AbstractProblem<S, E> implements GeneticProblem<S, E> {
+public abstract class AbstractGeneticProblem<S extends Solution, E extends Comparable<E>> extends AbstractBoundableProblem<S, E> implements GeneticProblem<S, E> {
    /**
     * AbstractGeneticProblem constructor.
     * @param solutionPoolSize The maximum number of best solutions that will be kept track of.

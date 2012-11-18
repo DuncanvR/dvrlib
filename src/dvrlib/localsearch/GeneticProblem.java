@@ -6,7 +6,7 @@
 
 package dvrlib.localsearch;
 
-public interface GeneticProblem<S extends Solution, E extends Comparable<E>> extends Problem<S, E> {
+public interface GeneticProblem<S extends Solution, E extends Comparable<E>> extends BoundableProblem<S, E> {
    /**
     * Makes the first solution look most like the second one.
     */

@@ -120,13 +120,14 @@ public abstract class AbstractProblem<S extends Solution, E extends Comparable<E
    /**
     * Returns the evaluation of the given solution, ignoring <code>iterationNumber</code>.
     * Override this method to implement an evaluation function which takes the iteration number into account.
+    * @see Problem#evaluate(Solution)
     */
    @Override
    public final E evaluate(S s, long iterationNumber) {
       return evaluate(s);
    }
    /**
-    * Returns the evaluation of the current solution of the given search state.
+    * Returns the evaluation of the current solution of the given search state, using the current iteration-number.
     * @see Problem#evaluate(Solution, long)
     */
    @Override
