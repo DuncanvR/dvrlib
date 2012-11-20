@@ -18,7 +18,7 @@ public abstract class SubstitutionChanger<P extends Problem<S, ? extends Compara
        * Undoes this change by restoring the old solution.
        */
       @Override
-      protected final void undo(SingularSearchState<P, S> ss) {
+      public final void undo(SingularSearchState<P, S> ss) {
          ss.solution = old;
       }
    }
