@@ -13,33 +13,22 @@ import java.util.List;
 
 public class WeightedTreeNode<E> {
    protected WeightedTreeNode<E> parent = null, left = null, right = null;
-   protected List<E> values;
+   protected List<E> values = new ArrayList<E>();
    protected double key, weight;
    protected int size = 1, height = 0;
 
-   public WeightedTreeNode(double key, E value) {
-      values = new ArrayList<E>();
-      values.add(value);
+   public WeightedTreeNode(WeightedTreeNode<E> parent, double key, E value) {
+      this.parent = parent;
       this.key = key;
+      values.add(value);
       weight = key;
    }
 
-   public boolean contains(double key, E value) {
-      if(key < this.key)
-         return (left == null ? false : left.contains(key, value));
-      else if(key > this.key)
-         return (right == null ? false : right.contains(key, value));
-      else // key == this.key
-         return values.contains(value);
-   }
-
-   public boolean remove(double key, E value) {
-      if(key < this.key)
-         return (left == null ? false : left.remove(key, value));
-      else if(key > this.key)
-         return (right == null ? false : right.remove(key, value));
-      else // key == this.key
-         return values.remove(value);
+   /**
+    * Returns whether this node contains the given value.
+    */
+   public boolean contains(E value) {
+      return values.contains(value);
    }
 
    public int getHeight() {
@@ -79,99 +68,6 @@ public class WeightedTreeNode<E> {
    }
 
    /**
-    * Updates the size, height and weight of this node.
-    * O(1).
-    */
-   protected void updateSize() {
-      size   = getLeftSize() + values.size() + getRightSize();
-      height = Math.max(getLeftHeight() + 1, getRightHeight() + 1);
-      weight = getLeftWeight() + key * values.size() + getRightWeight();
-   }
-
-   /**
-    * @see WeightedTree#getWeighted(double)
-    */
-   public Tuple<Double, E> getWeighted(double normIndex) {
-      if(normIndex < 0 || normIndex >= 1.0)
-         throw new IllegalArgumentException("normIndex should be between 0 (inclusive) and 1 (exclusive), got " + normIndex);
-
-      double l = getLeftWeight();
-      if(l > 0) {
-         l = l / weight;
-         if(normIndex < l)
-            return left.getWeighted(normIndex / l);
-      }
-      double r = getRightWeight();
-      if(r > 0) {
-         r = (weight - r) / weight;
-         if(normIndex > r)
-            return right.getWeighted((normIndex - r) / (1 - r));
-      }
-      else
-         r = 1.0;
-
-      return new Tuple<Double, E>(key, values.get((int)(values.size() * (normIndex - l) / (r - l))));
-   }
-
-   /**
-    * Adds the given (key, value) to this subtree and returns the node it ends up in.
-    * O(height).
-    */
-   public WeightedTreeNode<E> add(double key, E value) {
-      WeightedTreeNode<E> node = null;
-      if(key < this.key) {
-         if(left == null) {
-            left = node = new WeightedTreeNode<E>(key, value);
-            left.parent = this;
-         }
-         else
-            node = left.add(key, value);
-      }
-      else if(key > this.key) {
-         if(right == null) {
-            right = node = new WeightedTreeNode<E>(key, value);
-            right.parent = this;
-         }
-         else
-            node = right.add(key, value);
-      }
-      else { // key == this.key
-         if(values.contains(value))
-            return null;
-         values.add(value);
-         node = this;
-      }
-      updateSize();
-      return node;
-   }
-
-   /**
-    * Adds the given (key, value) to this subtree and returns the node it ends up in.
-    * @see WeightedTreeNode#add(double, java.lang.Object)
-    */
-   public WeightedTreeNode<E> add(Tuple<Double, E> kv) {
-      return add(kv.a, kv.b);
-   }
-
-   /**
-    * Replaces the old subtree by the new one.
-    * @param old The subtree that will be replaced, either <code>old == left</code> or <code>old == right</code> should hold.
-    * O(1).
-    */
-   protected void replaceChild(WeightedTreeNode<E> old, WeightedTreeNode<E> that) {
-      if(old == left)
-         left = that;
-      else if(old == right)
-         right = that;
-      else
-         throw new IllegalArgumentException("WeightedTreeNode.replaceChild(WeightedTreeNode, WeightedTreeNode) expects the first argument to be one of it's subnodes");
-
-      if(that != null)
-         that.parent = this;
-      updateSize();
-   }
-
-   /**
     * Returns the element that was added last.
     * O(1).
     */
@@ -185,6 +81,14 @@ public class WeightedTreeNode<E> {
     */
    public E pop() {
       return values.remove(values.size() - 1);
+   }
+
+   /**
+    * Adds the given value to this node.
+    * @return A boolean indicating whether the value was actually added.
+    */
+   protected boolean add(E value) {
+      return (values.contains(value) ? false : values.add(value));
    }
 
    /**
@@ -203,9 +107,68 @@ public class WeightedTreeNode<E> {
       return (right == null ? this : right.getMax());
    }
 
+   /**
+    * @see WeightedTree#getWeighted(double)
+    */
+   protected Tuple<Double, E> getWeighted(double normIndex) {
+      assert (normIndex >= 0d && normIndex < 1d) : "normIndex should be between 0 (inclusive) and 1 (exclusive), got " + normIndex;
+
+      double l = getLeftWeight();
+      if(l > 0d) {
+         l = l / weight;
+         if(normIndex < l)
+            return left.getWeighted(normIndex / l);
+      }
+      double r = getRightWeight();
+      if(r > 0d) {
+         r = (weight - r) / weight;
+         if(normIndex > r)
+            return right.getWeighted((normIndex - r) / (1d - r));
+      }
+      else
+         r = 1d;
+
+      return new Tuple<Double, E>(key, values.get((int)(values.size() * (normIndex - l) / (r - l))));
+   }
+
+   /**
+    * Removes the given value from this node.
+    * @return A boolean indicating whether the value was actually removed.
+    */
+   protected boolean remove(E value) {
+      return values.remove(value);
+   }
+
+   /**
+    * Replaces the old subtree by the new one.
+    * @param old The subtree that will be replaced, either <code>old == left</code> or <code>old == right</code> should hold.
+    * O(1).
+    */
+   protected void replaceChild(WeightedTreeNode<E> old, WeightedTreeNode<E> that) {
+      if(old == left)
+         left = that;
+      else if(old == right)
+         right = that;
+      else
+         throw new IllegalArgumentException("WeightedTreeNode.replaceChild(WeightedTreeNode, WeightedTreeNode) expects the first argument to be either of its subnodes");
+
+      if(that != null)
+         that.parent = this;
+   }
+
+   /**
+    * Updates the size, height and weight of this node.
+    * O(1).
+    */
+   protected void updateSize() {
+      size   = getLeftSize() + values.size() + getRightSize();
+      height = 1 + Math.max(getLeftHeight(), getRightHeight());
+      weight = getLeftWeight() + key * values.size() + getRightWeight();
+   }
+
    @Override
    public String toString() {
-      return "TreeNode(" + key + "," + values + ")["+ size + "|" + height +"]{" + left + "," + right + "}";
+      return "TreeNode(" + key + "," + values + ")[" + height + "|" + size + "|" + weight + "]{" + left + "," + right + "}";
    }
 
    /**
@@ -217,7 +180,7 @@ public class WeightedTreeNode<E> {
          left.print(prefix + "\t");
       else
          System.out.println(prefix + "\tnull");
-      System.out.println(prefix + key + ": " + values);
+      System.out.println(prefix + "(" + key + "," + values + ")[" + height + "|" + size + "|" + weight + "]");
       if(right != null)
          right.print(prefix + "\t");
       else
