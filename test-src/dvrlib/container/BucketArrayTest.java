@@ -4,7 +4,7 @@
  * GraphTest.java
  */
 
-package dvrlib.generic;
+package dvrlib.container;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -44,7 +44,7 @@ public class BucketArrayTest {
       instance = new BucketArray<BucketItemTest>(-5, 5);
       assertEquals(5, instance.getFirstBucketIndex());
       assertEquals(-5, instance.getLastBucketIndex());
-      
+
       instance.add(-2, new BucketItemTest(0));
       assertEquals(-2, instance.getFirstBucketIndex());
       assertEquals(-2, instance.getLastBucketIndex());
