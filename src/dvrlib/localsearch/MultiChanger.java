@@ -6,38 +6,63 @@
 
 package dvrlib.localsearch;
 
-import dvrlib.generic.Tuple;
+import dvrlib.container.WeightedTree;
 
-import java.util.Collection;
-import java.util.HashSet;
+import java.util.Hashtable;
 
-public abstract class MultiChanger<P extends Problem<S, ? extends Comparable<?>>, S extends Solution, C extends Changer<P, S, ?>.Change> extends Changer<P, S, C> {
+public class MultiChanger<P extends Problem<S, ? extends Comparable<?>>, S extends Solution, C extends Changer<P, S, ?>.Change> extends Changer<P, S, C> {
+   protected final Hashtable<Changer<P, S, C>, Double> changers;
+
    /**
-    * Returns a changer that will be used to make the next change.
-    * @param ignored A collection of changers that should be ignored while picking a changer.
-    * @return The selected changer. This method should never return <code>null</code> to indicate no changer could be found, but throw a CannotChangeException instead.
-    * @throws CannotChangeException If there is no available changer.
+    * MultiChanger constructor.
+    * Creates an empty set of changers.
+    * @see MultiChanger#add(Changer, double)
     */
-   public abstract Changer<P, S, C> get(SearchState<P, S> ss, Collection<Changer<P, S, C>> ignored) throws CannotChangeException;
+   public MultiChanger() {
+      changers = new Hashtable<Changer<P, S, C>, Double>();
+   }
+
+   /**
+    * Adds the given changer with the given weight to the set of changers.
+    */
+   public void add(Changer<P, S, C> changer, Double weight) {
+      changers.put(changer, weight);
+   }
 
    /**
     * Generates, executes and returns a new change.
     * The change should be small, such that it transforms the solution into one that closely resembles it.
-    * @see Changer#undoChange(SingularSearchState, Change)
     * @throws CannotChangeException To indicate this changer was unable to change the given search state.
     */
-   @Override @SuppressWarnings("unchecked")
+   @Override
    public C makeChange(SingularSearchState<P, S> ss) throws CannotChangeException {
-      HashSet<Changer<P, S, C>> ignored = new HashSet<Changer<P, S, C>>();
+      WeightedTree<Changer<P, S, C>> tree = new WeightedTree<Changer<P, S, C>>();
+      for(java.util.Map.Entry<Changer<P, S, C>, Double> e : changers.entrySet()) {
+         tree.add(e.getValue(), e.getKey());
+      }
 
-      while(true) {
+      while(tree.size() > 0) {
+         Changer<P, S, C> c = tree.getWeighted(Math.random()).b;
          try {
-            return get(ss, ignored).makeChange(ss);
+            return c.makeChange(ss);
          }
          catch(CannotChangeException ex) {
-            assert ex.changer != null;
-            ignored.add(ex.changer);
+            assert (c == ex.changer);
+            if(!tree.remove(changers.get(c), c))
+               throw new IllegalStateException("Unable to remove changer");
          }
+      }
+      throw new CannotChangeException(this, "No eligible changers to choose from");
+   }
+
+   /**
+    * Reinitializes this changer and all its children changers.
+    * @see Changer#reinitialize(Problem)
+    */
+   @Override
+   public void reinitialize(P problem) {
+      for(Changer<P, S, C> c : changers.keySet()) {
+         c.reinitialize(problem);
       }
    }
 }
