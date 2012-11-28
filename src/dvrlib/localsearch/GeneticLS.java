@@ -84,13 +84,13 @@ public class GeneticLS<S extends Solution, E extends Comparable<E>> extends Stat
     */
    @Override
    public SearchState iterate(SearchState state, E bound, long n) {
-      long i = state.iterationCount();
-      for(long iMax = i + n; i < iMax && !state.problem.betterEq(state.solution(), bound); i++) {
+      for(long stop = state.iteration + n, skipped = 0; state.iteration < stop && skipped < stopCount && !state.problem.betterEq(state.solution(), bound); ) {
          // Generate new solution by combining two random solutions from the population
          state.solution = combiner.combine(state, state.population.peekRandom(), state.population.peekRandom());
 
          if(state.population.contains(state.solution) || !state.problem.better(state.problem.evaluationBound(state.solution), state.population.peekWorst())) {
             state.solution = null;
+            skipped++;
             continue;
          }
 
@@ -99,13 +99,14 @@ public class GeneticLS<S extends Solution, E extends Comparable<E>> extends Stat
             state.saveSolution();
 
          if(state.population.add(state.solution)) {
-            state.lastImprovement = i;
+            state.lastImprovement = state.iteration;
             if(savingCriterion == LocalSearch.SavingCriterion.EveryImprovement)
                state.saveSolution();
          }
+
+         state.iteration++;
       }
       state.solution = null;
-      state.iteration = i;
       return state;
    }
 
