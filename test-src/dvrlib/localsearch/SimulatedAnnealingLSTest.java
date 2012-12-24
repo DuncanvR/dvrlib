@@ -11,21 +11,45 @@ import java.util.Random;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class SimulatedAnnealingLSTest extends    AbstractMinProblem<SimulatedAnnealingLSTest.TestSolution, Integer>
-                                      implements Changer<SimulatedAnnealingLSTest, SimulatedAnnealingLSTest.TestSolution, Pair<Integer, Integer>> {
+public class SimulatedAnnealingLSTest extends    AbstractProblem<SimulatedAnnealingLSTest.TestSolution, Integer>
+                                      implements NumericProblem<SimulatedAnnealingLSTest.TestSolution, Integer> {
    protected class TestSolution extends AbstractSolution {
       protected int value;
+
       public TestSolution(int value) {
          this.value = value;
       }
+   }
+   protected class TestChanger extends SubstitutionChanger<SimulatedAnnealingLSTest, SimulatedAnnealingLSTest.TestSolution> {
       @Override
-      public void ensureMostCommon(dvrlib.localsearch.Solution s) { }
+      public Change makeChange(SingularSearchState<SimulatedAnnealingLSTest, TestSolution> state) throws CannotChangeException {
+         Change c = new Change(copySolution(state.solution()));
+         state.solution().value = values[r.nextInt(values.length)];
+         return c;
+      }
+
+      @Override
+      public void reinitialize(SimulatedAnnealingLSTest p) { }
    }
 
    protected final int    values[] = new int[]{11, 22, 33, 44, 55, 66, 77, 88, 99, 111 };
    protected final Random r        = new Random()                                       ;
 
+   public SimulatedAnnealingLSTest() {
+      super(5);
+   }
+
    // Problem methods
+   @Override
+   public TestSolution copySolution(TestSolution s) {
+      return new TestSolution(s.value);
+   }
+
+   @Override
+   public LocalSearch.SearchDirection direction() {
+      return LocalSearch.SearchDirection.Minimization;
+   }
+
    @Override
    public Integer evaluate(TestSolution s) {
       return s.value;
@@ -37,58 +61,16 @@ public class SimulatedAnnealingLSTest extends    AbstractMinProblem<SimulatedAnn
    }
 
    @Override
-   public void saveSolution(TestSolution s) { }
-
-   @Override
-   public TestSolution getBestSolution() {
-      throw new UnsupportedOperationException("Not supported yet.");
-   }
-
-   @Override
-   public Integer diffEval(Integer e1, Integer e2) {
+   public double diffEval(Integer e1, Integer e2) {
       return (e1 - e2);
    }
 
-   // Changer methods
-   @Override
-   public void reinitialize() { }
-
-   @Override
-   public Pair<Integer, Integer> generateChange(SearchState<SimulatedAnnealingLSTest, TestSolution> state) {
-      return new Pair(state.getSolution().value, values[r.nextInt(values.length)]);
-   }
-
-   @Override
-   public void doChange(SearchState<SimulatedAnnealingLSTest, TestSolution> state, Pair<Integer, Integer> c) {
-      state.getSolution().value = c.b;
-   }
-
-   @Override
-   public void undoChange(SearchState<SimulatedAnnealingLSTest, TestSolution> state, Pair<Integer, Integer> c) {
-      state.getSolution().value = c.a;
-   }
-
-   @Override
-   public boolean better(Integer e1, Integer e2) {
-      boolean b = super.better(e1, e2);
-      if((e1 >= e2 && b) || (e1 < e2 && !b))
-         System.out.println("\tSATest.better(" + e1 + ", " + e2 + ") = " + b);
-      return b;
-   }
-
-   @Override
-   public boolean betterEq(Integer e1, Integer e2) {
-      boolean b = super.betterEq(e1, e2);
-      if((e1 > e2 && b) || (e1 <= e2 && !b))
-         System.out.println("\tSATest.betterEq(" + e1 + ", " + e2 + ") = " + b);
-      return b;
-   }
-
    // Test methods
+   @SuppressWarnings("unchecked")
    @Test
    public void testSearch() {
-      SimulatedAnnealingLS ls = new SimulatedAnnealingLS(this, 100, 100);
-      TestSolution s = (TestSolution) ls.search(this);
+      SimulatedAnnealingLS ls = new SimulatedAnnealingLS(new TestChanger(), 100, 100);
+      TestSolution s = (TestSolution) ls.search(this, 15);
       assertEquals(11, s.value);
    }
 }
