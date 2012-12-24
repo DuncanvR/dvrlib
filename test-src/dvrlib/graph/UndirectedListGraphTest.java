@@ -16,6 +16,7 @@ public class UndirectedListGraphTest extends ListGraphTest {
    }
 
    @Override
+   @SuppressWarnings("unchecked")
    public void testHasEdge() {
       instance = newInstance(10);
       for(int i = 1; i < instance.nodeCount; i += 2) {
@@ -33,11 +34,7 @@ public class UndirectedListGraphTest extends ListGraphTest {
    }
 
    @Override
-   protected void assertNeighbours(int edges, int neighbours) {
-      assertEquals(edges * 2, neighbours);
-   }
-
-   @Override
+   @SuppressWarnings("unchecked")
    public void testDegrees() {
       instance = newInstance(6);
       assertDegrees(new int[]{0,0,0,0,0,0});
