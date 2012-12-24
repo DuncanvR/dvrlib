@@ -10,16 +10,18 @@ import dvrlib.generic.Tuple;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class DisjointForest<E> implements java.util.Set<E> {
-   protected HashMap<E, Tuple<E, Integer>> forest;
+   protected HashMap<E, Tuple<E, Integer>> parents;
+   protected HashMap<E, HashSet<E>>        sets    = new HashMap<E, HashSet<E>>();
 
    /**
     * DisjointForest constructor.
     * O(1).
     */
    public DisjointForest() {
-      forest = new HashMap<E, Tuple<E, Integer>>();
+      parents = new HashMap<E, Tuple<E, Integer>>();
    }
 
    /**
@@ -28,22 +30,40 @@ public class DisjointForest<E> implements java.util.Set<E> {
     * O(1).
     */
    public DisjointForest(int initCapacity) {
-      forest = new HashMap<E, Tuple<E, Integer>>(initCapacity);
+      parents = new HashMap<E, Tuple<E, Integer>>(initCapacity);
    }
 
    /**
-    * Finds the set containing the given element.
+    * Finds the representative of the set to which the given element belongs.
     * @param e The element to find.
     * @return The representative of the set containing the given element.
     * @throws IllegalArgumentException If the supplied element is not a member of this forest.
     */
-   public E find(E e) {
-      Tuple<E, Integer> data = forest.get(e);
+   public E representative(E e) {
+      Tuple<E, Integer> data = parents.get(e);
       if(data == null)
          throw new IllegalArgumentException("The supplied element is not a member of this forest");
       if(data.a != e)
-         data.a = find(data.a);
+         data.a = representative(data.a);
       return data.a;
+   }
+
+   /**
+    * Finds the set to which the given element belongs.
+    * @param 3 The element to find.
+    * @return The set containing the given element.
+    * @throws IllegalArgumentException If the supplied element is not a member of this forest.
+    */
+   public HashSet<E> retrieveSet(E e) {
+      return sets.get(representative(e));
+   }
+
+   /**
+    * Returns all the sets of this forest.
+    * @return The collection of contained sets.
+    */
+   public Collection<HashSet<E>> retrieveSets() {
+      return sets.values();
    }
 
    /**
@@ -54,24 +74,29 @@ public class DisjointForest<E> implements java.util.Set<E> {
     * @throws IllegalArgumentException If either of the given representatives is not a member of this forest.
     */
    public E union(E e1, E e2) {
-      e1 = find(e1);
-      e2 = find(e2);
+      e1 = representative(e1);
+      e2 = representative(e2);
       if(e1 == e2)
          return e1;
 
-      Tuple<E, Integer> d1 = forest.get(e1), d2 = forest.get(e2);
-      if(d1.b > d2.b) { // If the rank of the first set is larger than that of the second
-         d2.a = e1; // Set e1 as the parent of the second set
+      Tuple<E, Integer> d1 = parents.get(e1), d2 = parents.get(e2);
+      if(d1.b > d2.b) {                      // The rank of the first set is larger than that of the second
+         d2.a = e1;                          // Set e1 as the parent of the second set
+         sets.get(e1).addAll(sets.get(e2));  // Merge the sets
+         sets.remove(e2);
          return e1;
       }
       else {
-         d1.a = e2; // Set e2 as the parent of the first set
-         if(d1.b == d2.b)
-            d2.b++; // Update the rank of the second set if necessary
+         d1.a = e2;                          // Set e2 as the parent of the first set
+         sets.get(e2).addAll(sets.get(e1));  // Merge the sets
+         sets.remove(e1);
+         if(d1.b == d2.b)                    // Update the rank of the second set if necessary
+            d2.b++;
          return e2;
       }
    }
 
+   //--- java.util.Set methods
    /**
     * Adds the given element to this forest as a singleton set.
     * @param e The element to add.
@@ -81,9 +106,12 @@ public class DisjointForest<E> implements java.util.Set<E> {
     */
    @Override
    public boolean add(E e) {
-      if(forest.containsKey(e))
+      if(parents.containsKey(e))
          return false;
-      forest.put(e, new Tuple<E, Integer>(e, 0));
+      HashSet<E> s = new HashSet<E>();
+      s.add(e);
+      sets.put(e, s);
+      parents.put(e, new Tuple<E, Integer>(e, 0));
       return true;
    }
 
@@ -109,7 +137,8 @@ public class DisjointForest<E> implements java.util.Set<E> {
     */
    @Override
    public void clear() {
-      forest.clear();
+      parents.clear();
+      sets.clear();
    }
 
    /**
@@ -120,7 +149,7 @@ public class DisjointForest<E> implements java.util.Set<E> {
     */
    @Override
    public boolean contains(Object e) {
-      return forest.containsKey(e);
+      return parents.containsKey(e);
    }
 
    /**
@@ -144,7 +173,7 @@ public class DisjointForest<E> implements java.util.Set<E> {
     */
    @Override
    public boolean isEmpty() {
-      return forest.isEmpty();
+      return parents.isEmpty();
    }
 
    /**
@@ -153,13 +182,14 @@ public class DisjointForest<E> implements java.util.Set<E> {
     */
    @Override
    public java.util.Iterator<E> iterator() {
-      return new dvrlib.generic.ReadOnlyIterator<E>(forest.keySet().iterator());
+      return new dvrlib.generic.ReadOnlyIterator<E>(parents.keySet().iterator());
    }
 
    /**
     * Removals are not supported by DisjointForest.
     * @see java.util.Set#remove(java.lang.Object)
     */
+   @Override
    public boolean remove(Object e) {
       throw new UnsupportedOperationException("dvrlib.generic.DisjointForest#remove(java.lang.Object) is not implemented");
    }
@@ -189,7 +219,7 @@ public class DisjointForest<E> implements java.util.Set<E> {
     */
    @Override
    public int size() {
-      return forest.size();
+      return parents.size();
    }
 
    /**
@@ -198,7 +228,7 @@ public class DisjointForest<E> implements java.util.Set<E> {
     */
    @Override
    public Object[] toArray() {
-      return forest.keySet().toArray();
+      return parents.keySet().toArray();
    }
 
    /**
@@ -207,6 +237,6 @@ public class DisjointForest<E> implements java.util.Set<E> {
     */
    @Override
    public <T> T[] toArray(T[] a) {
-      return forest.keySet().toArray(a);
+      return parents.keySet().toArray(a);
    }
 }
