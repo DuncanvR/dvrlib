@@ -398,11 +398,17 @@ public class WeightedTree<E> implements Iterable<E> {
    }
 
    @Override
+   /**
+    * Returns an iterator to the elements in this tree, starting from the element with the largest weight.
+    * @see WeightedTreeIterator(WeightedTree)
+    */
    public Iterator<E> iterator() {
       return new WeightedTreeIterator<E>(this);
    }
 
    /**
+    * Returns the elements in this tree as an array.
+    * @see iterator()
     * @see Collection#toArray()
     */
    public Object[] toArray() {
@@ -414,6 +420,8 @@ public class WeightedTree<E> implements Iterable<E> {
       return array;
    }
    /**
+    * Copies the elements in this tree to the given array.
+    * @see iterator()
     * @see Collection#toArray(T[])
     */
    public E[] toArray(E[] array) {
@@ -423,18 +431,26 @@ public class WeightedTree<E> implements Iterable<E> {
       for(E e : this) {
          array[i++] = e;
       }
-      if(i < array.length)
+      for(; i < array.length; i++)
          array[i] = null;
       return array;
    }
 
    /**
     * Prints this tree to stdout.
-    * O(n).
+    * @see print(java.io.PrintStream)
     */
    public void print() {
-      System.out.println("dvrlib.container.WeightedTree(" + size() + ")");
+      print(System.out);
+   }
+
+   /**
+    * Prints this tree to the given stream.
+    * O(n).
+    */
+   public void print(java.io.PrintStream out) {
+      out.println("dvrlib.container.WeightedTree(" + size() + ")");
       if(root != null)
-         root.print("");
+         root.print(out, "");
    }
 }

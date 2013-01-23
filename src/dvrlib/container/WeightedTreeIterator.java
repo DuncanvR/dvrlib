@@ -15,7 +15,7 @@ public class WeightedTreeIterator<E> implements Iterator<E> {
 
    public WeightedTreeIterator(WeightedTree<E> tree) {
       this.tree = tree;
-      node = tree.getMin();
+      node = tree.getMax();
       if(node != null)
          nodeIterator = node.values.iterator();
    }
@@ -32,10 +32,10 @@ public class WeightedTreeIterator<E> implements Iterator<E> {
 
       E next = nodeIterator.next();
       if(!nodeIterator.hasNext()) {
-         if(node.right != null)
-            node = node.right.getMin();
+         if(node.left != null)
+            node = node.left.getMin();
          else {
-            while(node.parent != null && node.parent.right == node) {
+            while(node.parent != null && node.parent.left == node) {
                node = node.parent;
             }
             node = node.parent;

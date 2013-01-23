@@ -172,18 +172,18 @@ public class WeightedTreeNode<E> {
    }
 
    /**
-    * Prints this node and its children to stdout.
+    * Prints this node and its children to the given stream.
     * O(height).
     */
-   public void print(String prefix) {
+   public void print(java.io.PrintStream out, String prefix) {
       if(left != null)
-         left.print(prefix + "\t");
+         left.print(out, prefix + "\t");
       else
-         System.out.println(prefix + "\tnull");
-      System.out.println(prefix + "(" + key + "," + values + ")[" + height + "|" + size + "|" + weight + "]");
+         out.println(prefix + "\tnull");
+      out.println(prefix + "(" + key + "," + values + ")[" + height + "|" + size + "|" + weight + "]");
       if(right != null)
-         right.print(prefix + "\t");
+         right.print(out, prefix + "\t");
       else
-         System.out.println(prefix + "\tnull");
+         out.println(prefix + "\tnull");
    }
 }
