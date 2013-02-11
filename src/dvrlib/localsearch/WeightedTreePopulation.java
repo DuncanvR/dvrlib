@@ -75,11 +75,11 @@ public class WeightedTreePopulation<S extends Solution> implements GeneticPopula
 
    /**
     * Returns an iterator to the solutions of this population.
-    * @see Iterable#iterator()
+    * @see dvrlib.container.WeightedTree#iterator()
     */
    @Override
    public Iterator<S> iterator() {
-      return keys.keySet().iterator();
+      return tree.iterator();
    }
 
    /**

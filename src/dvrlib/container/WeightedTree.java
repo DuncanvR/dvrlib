@@ -18,7 +18,7 @@ public class WeightedTree<E> implements Iterable<E> {
     * Returns the number of elements in this tree.
     * O(1).
     */
-   public int     size   () {
+   public int size() {
       return (root == null ? 0 : root.size);
    }
    /**
@@ -32,7 +32,7 @@ public class WeightedTree<E> implements Iterable<E> {
     * Removes all elements from this tree.
     * O(1).
     */
-   public void    clear  () {
+   public void clear() {
       root = null;
    }
 
@@ -45,11 +45,31 @@ public class WeightedTree<E> implements Iterable<E> {
     */
    public boolean add(double key, E value) {
       if(root == null)
-         root = new WeightedTreeNode<E>(key, value);
+         root = new WeightedTreeNode<E>(null, key, value);
       else {
-         WeightedTreeNode<E> node = root.add(key, value);
-         if(node == null)
-            return false;
+         WeightedTreeNode<E> node = root;
+         while(true) {
+            if(key < node.key) {
+               if(node.left == null) {
+                  node.left = new WeightedTreeNode<E>(node, key, value);
+                  break;
+               }
+               else
+                  node = node.left;
+            }
+            else if(key > node.key) {
+               if(node.right == null) {
+                  node.right = new WeightedTreeNode<E>(node, key, value);
+                  break;
+               }
+               else
+                  node = node.right;
+            }
+            else { // key == node.key
+               node.add(value);
+               break;
+            }
+         }
          rebalanceUp(node);
       }
       return true;
@@ -61,15 +81,24 @@ public class WeightedTree<E> implements Iterable<E> {
     * O(height)
     */
    public boolean contains(double key, E value) {
-      return (root == null ? false : root.contains(key, value));
+      WeightedTreeNode<E> node = root;
+      while(node != null) {
+         if(key < node.key)
+            node = node.left;
+         else if(key > node.key)
+            node = node.right;
+         else // key == node.key
+            break;
+      }
+      return (node == null ? false : node.contains(value));
    }
 
    /**
     * Returns a (key, element) from the tree, reached with the given normalized index.
-    * In a tree with these four items: {(1, A), (2, B), (1.3, C), (1.7, D)}, the sum of the indices is 6.
+    * For example, in a tree with these four items: {(1, A), (2, B), (1.3, C), (1.7, D)}, the sum of the indices is 6.
     * A call to getWeighted(0.5) will then return the item with the summed index (0.5 * 6 = 3).
     * Moving through the tree from the smallest index, (A: 1 &lt; 3), (C: 1.3 &lt; (3 - 1)), (D: 1.7 &gt;= (3 - 1 - 1.3)).
-    * This means the item with the largest index has the most chance of getting selected.
+    * This means the item with the largest index has the most chance of getting selected, hence the weight.
     * @param normIndex A double between 0 and 1.
     */
    public Tuple<Double, E> getWeighted(double normIndex) {
@@ -118,7 +147,7 @@ public class WeightedTree<E> implements Iterable<E> {
     * @see WeightedTree#remove(WeightedTreeNode)
     * O(node.depth).
     */
-   protected Tuple<Double, E> pop   (WeightedTreeNode<E> node) {
+   protected Tuple<Double, E> pop(WeightedTreeNode<E> node) {
       Tuple<Double, E> item = new Tuple<Double, E>(node.key, node.pop());
       if(node.values.isEmpty())
          remove(node);
@@ -131,7 +160,7 @@ public class WeightedTree<E> implements Iterable<E> {
     * @see WeightedTree#getMin()
     * @see WeightedTree#pop(WeightedTreeNode)
     */
-   public    Tuple<Double, E> popMin()                         {
+   public Tuple<Double, E> popMin() {
       return pop(getMin());
    }
    /**
@@ -139,7 +168,7 @@ public class WeightedTree<E> implements Iterable<E> {
     * @see WeightedTree#getMax()
     * @see WeightedTree#pop(WeightedTreeNode)
     */
-   public    Tuple<Double, E> popMax()                         {
+   public Tuple<Double, E> popMax() {
       return pop(getMax());
    }
 
@@ -148,14 +177,28 @@ public class WeightedTree<E> implements Iterable<E> {
     * @return A boolean indicating whether the value was actually removed.
     */
    public boolean remove(double key, E value) {
-      return (root == null ? null : root.remove(key, value));
+      WeightedTreeNode<E> node = root;
+      while(node != null) {
+         if(key < node.key)
+            node = node.left;
+         else if(key > node.key)
+            node = node.right;
+         else { // key == node.key
+            if(node.remove(value)) {
+               rebalanceUp(node);
+               return true;
+            }
+            return false;
+         }
+      }
+      return false;
    }
 
    /**
     * Removes the given node from this tree.
     * O(node.height + node.depth).
     */
-   protected void remove        (WeightedTreeNode<E> node) {
+   protected void remove(WeightedTreeNode<E> node) {
       if(node.left == null || node.right == null)
          removeExternal(node);
       else {
@@ -218,10 +261,9 @@ public class WeightedTree<E> implements Iterable<E> {
     * O(node.depth).
     */
    protected void updateSizeUp(WeightedTreeNode<E> node) {
-      for(; node.parent != null; node = node.parent) {
+      for(; node != null; node = node.parent) {
          node.updateSize();
       }
-      node.updateSize();
    }
 
    /**
@@ -229,8 +271,9 @@ public class WeightedTree<E> implements Iterable<E> {
     * @see WeightedTree#rebalance(WeightedTreeNode)
     * O(node.depth).
     */
-   protected void                rebalanceUp(WeightedTreeNode<E> node) {
+   protected void rebalanceUp(WeightedTreeNode<E> node) {
       for(; node != null; node = node.parent) {
+         node.updateSize();
          node = rebalance(node);
       }
    }
@@ -239,7 +282,7 @@ public class WeightedTree<E> implements Iterable<E> {
     * @return The node at the original position of the given node after the rebalancing.
     * O(1).
     */
-   protected WeightedTreeNode<E> rebalance  (WeightedTreeNode<E> node) {
+   protected WeightedTreeNode<E> rebalance(WeightedTreeNode<E> node) {
       if(node != null) {
          int balance = node.getLeftHeight() - node.getRightHeight();
          if(balance > 1) {
@@ -355,14 +398,20 @@ public class WeightedTree<E> implements Iterable<E> {
    }
 
    @Override
+   /**
+    * Returns an iterator to the elements in this tree, starting from the element with the largest weight.
+    * @see WeightedTreeIterator(WeightedTree)
+    */
    public Iterator<E> iterator() {
       return new WeightedTreeIterator<E>(this);
    }
 
    /**
+    * Returns the elements in this tree as an array.
+    * @see iterator()
     * @see Collection#toArray()
     */
-   public Object[] toArray()          {
+   public Object[] toArray() {
       Object array[] = new Object[size()];
       int i = 0;
       for(E e : this) {
@@ -371,27 +420,37 @@ public class WeightedTree<E> implements Iterable<E> {
       return array;
    }
    /**
+    * Copies the elements in this tree to the given array.
+    * @see iterator()
     * @see Collection#toArray(T[])
     */
-   public E[]      toArray(E[] array) {
+   public E[] toArray(E[] array) {
       if(size() > array.length)
          throw new IllegalArgumentException("Unable to fit all items in the given array, provide a larger one");
       int i = 0;
       for(E e : this) {
          array[i++] = e;
       }
-      if(i < array.length)
+      for(; i < array.length; i++)
          array[i] = null;
       return array;
    }
 
    /**
     * Prints this tree to stdout.
-    * O(n).
+    * @see print(java.io.PrintStream)
     */
    public void print() {
-      System.out.println("dvrlib.container.WeightedTree(" + size() + ")");
+      print(System.out);
+   }
+
+   /**
+    * Prints this tree to the given stream.
+    * O(n).
+    */
+   public void print(java.io.PrintStream out) {
+      out.println("dvrlib.container.WeightedTree(" + size() + ")");
       if(root != null)
-         root.print("");
+         root.print(out, "");
    }
 }
