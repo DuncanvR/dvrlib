@@ -27,13 +27,15 @@ public class WeightedTreeIterator<E> implements Iterator<E> {
 
    @Override
    public E next() {
-      assert hasNext()      : "!hasNext()";
-      assert (node != null) : "node == null";
+      assert hasNext()              : "!hasNext()";
+      assert (node != null)         : "node == null";
+      assert (nodeIterator != null) : "nodeIterator == null";
+      assert nodeIterator.hasNext() : "!nodeIterator.hasNext()";
 
       E next = nodeIterator.next();
       if(!nodeIterator.hasNext()) {
          if(node.left != null)
-            node = node.left.getMin();
+            node = node.left.getMax();
          else {
             while(node.parent != null && node.parent.left == node) {
                node = node.parent;
