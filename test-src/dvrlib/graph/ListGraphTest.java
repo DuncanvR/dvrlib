@@ -1,7 +1,7 @@
 /*
  * DvRLib - Graph
- * Duncan van Roermund, 2010
- * AbstractGraphTest.java
+ * Duncan van Roermund, 2010-2012
+ * ListGraphTest.java
  */
 
 package dvrlib.graph;
@@ -10,25 +10,29 @@ import java.util.Iterator;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public abstract class AbstractGraphTest {
+public class ListGraphTest {
    AbstractGraph instance;
 
-   public abstract AbstractGraph newInstance(int nodeCount);
+   public AbstractGraph newInstance(int nodeCount) {
+      return new ListGraph(nodeCount);
+   }
 
+   @SuppressWarnings("unchecked")
    @Test
    public void testGetEdgeCount() {
       instance = newInstance(3);
-      assertEquals(0, instance.getEdgeCount());
+      assertEquals(0, instance.edgeCount());
       instance.addEdge(0, 1, null);
-      assertEquals(1, instance.getEdgeCount());
+      assertEquals(1, instance.edgeCount());
       instance.addEdge(2, 1, null);
-      assertEquals(2, instance.getEdgeCount());
+      assertEquals(2, instance.edgeCount());
       instance.removeEdge(2, 1);
-      assertEquals(1, instance.getEdgeCount());
+      assertEquals(1, instance.edgeCount());
       instance.removeEdge(0, 1);
-      assertEquals(0, instance.getEdgeCount());
+      assertEquals(0, instance.edgeCount());
    }
 
+   @SuppressWarnings("unchecked")
    @Test
    public void testHasEdge() {
       instance = newInstance(10);
@@ -46,74 +50,7 @@ public abstract class AbstractGraphTest {
       }
    }
 
-   @Test
-   public void testEdges() {
-      instance = newInstance(6);
-      AbstractEdge edges[] = new AbstractEdge[5];
-      edges[0] = addEdge(0, 1);
-      edges[1] = addEdge(2, 1);
-      edges[2] = addEdge(2, 3);
-      edges[3] = addEdge(5, 2);
-      edges[4] = addEdge(5, 4);
-      assertEdges(edges);
-
-      edges[4] = addEdge(5, 4);
-      edges[3] = addEdge(5, 2);
-      edges[2] = addEdge(2, 3);
-      edges[1] = addEdge(2, 1);
-      edges[0] = addEdge(0, 1);
-      assertEdges(edges);
-
-      edges[3] = addEdge(5, 2);
-      edges[0] = addEdge(0, 1);
-      edges[2] = addEdge(2, 3);
-      edges[4] = addEdge(5, 4);
-      edges[1] = addEdge(2, 1);
-      assertEdges(edges);
-   }
-
-   protected abstract AbstractEdge addEdge(int a, int b);
-
-   public void assertEdges(AbstractEdge edges[]) {
-      // Test getEdge(int, int)
-      for(AbstractEdge e : edges) {
-         assertTrue(instance.hasEdge(e.a, e.b));
-      }
-
-      assertNeighbours(edges);
-
-      // Test removeEdge(int, int)
-      for(AbstractEdge e : edges) {
-         assertNull(instance.removeEdge(e.a, e.b));
-         assertFalse(instance.hasEdge(e.a, e.b));
-      }
-
-      for(int i = 0; i < instance.nodeCount; i++) {
-         for(int j = 0; j < instance.nodeCount; j++) {
-            assertFalse(instance.hasEdge(i, j));
-         }
-      }
-   }
-
-   public void assertNeighbours(AbstractEdge edges[]) {
-      // Test getNeighbours(int)
-      int totalNeighbourCount = 0;
-      for(int i = 0; i < instance.getNodeCount(); i++) {
-         for(AbstractEdge e : edges) {
-            if(i == e.a)
-               assertTrue(instance.hasEdge(e.a, e.b));
-         }
-         for(Iterator<AbstractGraphNode> it = instance.neighbourIterator(i); it.hasNext(); it.next()) {
-            totalNeighbourCount++;
-         }
-      }
-      assertNeighbours(edges.length, totalNeighbourCount);
-   }
-
-   protected void assertNeighbours(int edges, int neighbours) {
-      assertEquals(edges, neighbours);
-   }
-
+   @SuppressWarnings("unchecked")
    @Test
    public void testDegrees() {
       instance = newInstance(6);
@@ -158,10 +95,10 @@ public abstract class AbstractGraphTest {
 
       // Test getDegree(int)
       for(int i = 0; i < ds.length; i++) {
-         assertEquals(ds[i], instance.getDegree(i));
+         assertEquals(ds[i], instance.outDegree(i));
          maxDegree = Math.max(maxDegree, ds[i]);
       }
       // Test getMaxDegree()
-      assertEquals(maxDegree, instance.getMaxDegree());
+      assertEquals(maxDegree, instance.maxOutDegree());
    }
 }

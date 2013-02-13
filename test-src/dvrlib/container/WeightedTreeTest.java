@@ -4,24 +4,28 @@
  * WeightedTreeTest.java
  */
 
-package dvrlib.generic;
+package dvrlib.container;
+
+import dvrlib.generic.Tuple;
 
 import java.util.Iterator;
+
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class WeightedTreeTest {
    @Test
    public void testSize() {
-      WeightedTree<Integer> instance = new WeightedTree();
-      Pair<Double, Integer> element;
+      WeightedTree<Integer> instance = new WeightedTree<Integer>();
+      Tuple<Double, Integer> element;
 
       assertTrue(instance.isEmpty());
+      assertEquals(0, instance.size());
       for(int i = 1; i < 9; i++) {
          instance.add((double) i, 10 - i);
 
-         assertEquals(i, instance.size());
          assertFalse(instance.isEmpty());
+         assertEquals(i, instance.size());
 
          testBalance(instance.root);
       }
@@ -63,6 +67,26 @@ public class WeightedTreeTest {
 
          testBalance(instance.root);
       }
+
+      assertTrue(instance.isEmpty());
+
+      for(int i = 1; i < 20; i++) {
+         instance.add((double) 1 + (i % 5), i);
+
+         assertFalse(instance.isEmpty());
+         assertEquals(i, instance.size());
+
+         testBalance(instance.root);
+      }
+
+      assertTrue(instance.remove(2, 1));
+      testBalance(instance.root);
+      assertTrue(instance.remove(2, 6));
+      testBalance(instance.root);
+      assertTrue(instance.remove(2, 11));
+      testBalance(instance.root);
+      assertTrue(instance.remove(2, 16));
+      testBalance(instance.root);
    }
 
    @Test
@@ -92,7 +116,7 @@ public class WeightedTreeTest {
       assertEquals(0.4, instance.getMax().key, 0.0);
    }
    public WeightedTree<Number> testAdd(Number keys[]) {
-      WeightedTree<Number> instance = new WeightedTree();
+      WeightedTree<Number> instance = new WeightedTree<Number>();
       assertNull(instance.root);
 
       double min = Double.MAX_VALUE, max = Double.MIN_VALUE;
@@ -132,28 +156,34 @@ public class WeightedTreeTest {
 
    @Test
    public void testIterator() {
-      WeightedTree<Integer> instance = new WeightedTree();
-      assertFalse(instance.iterator().hasNext());
+      WeightedTree<Integer> instance1 = new WeightedTree<Integer>(),
+                            instance2 = new WeightedTree<Integer>();
+      assertFalse(instance1.iterator().hasNext());
+      assertFalse(instance2.iterator().hasNext());
 
       for(int i = 0; i < 9; i++) {
          for(int j = 0; j < 9; j++) {
-            instance.add((double) i, i + j);
+            instance1.add((double) i, i + j);
+            instance2.add((double) j, i + j);
          }
       }
-
-      Iterator<Integer> it = instance.iterator();
-      for(int i = 0; i < 9; i++) {
+      Iterator<Integer> it1 = instance1.iterator(),
+                        it2 = instance2.iterator();
+      for(int i = 8; i >= 0; i--) {
          for(int j = 0; j < 9; j++) {
-            assertTrue(it.hasNext());
-            assertEquals(i + j, it.next().intValue());
+            assertTrue(it1.hasNext());
+            assertTrue(it2.hasNext());
+            assertEquals(i + j, it1.next().intValue());
+            assertEquals(i + j, it2.next().intValue());
          }
       }
-      assertFalse(it.hasNext());
+      assertFalse(it1.hasNext());
+      assertFalse(it2.hasNext());
    }
 
    @Test
    public void testWeighted() {
-      WeightedTree<Integer> instance = new WeightedTree();
+      WeightedTree<Integer> instance = new WeightedTree<Integer>();
       assertNull(instance.getWeighted(0.5));
 
       instance.add(0.3, 10);
@@ -184,8 +214,22 @@ public class WeightedTreeTest {
       assertEqualsWeighted(0.5, 15, instance.getWeighted(0.6666665));
       assertEqualsWeighted(0.5, 25, instance.getWeighted(0.6666667));
       assertEqualsWeighted(0.5, 25, instance.getWeighted(0.9999999));
+
+      instance.remove(0.5, 15);
+      assertEqualsWeighted(0.2, 20, instance.getWeighted(0.0));
+      assertEqualsWeighted(0.2, 20, instance.getWeighted(0.1999999));
+      assertEqualsWeighted(0.3, 10, instance.getWeighted(0.2000001));
+      assertEqualsWeighted(0.3, 10, instance.getWeighted(0.4999999));
+      assertEqualsWeighted(0.5, 25, instance.getWeighted(0.5000001));
+      assertEqualsWeighted(0.5, 25, instance.getWeighted(0.9999999));
+
+      instance.remove(0.2, 20);
+      assertEqualsWeighted(0.3, 10, instance.getWeighted(0.0));
+      assertEqualsWeighted(0.3, 10, instance.getWeighted(0.3749999));
+      assertEqualsWeighted(0.5, 25, instance.getWeighted(0.3750001));
+      assertEqualsWeighted(0.5, 25, instance.getWeighted(0.9999999));
    }
-   public void assertEqualsWeighted(double k, int v, Pair<Double, Integer> e) {
+   public void assertEqualsWeighted(double k, int v, Tuple<Double, Integer> e) {
       assertEquals(k, e.a.doubleValue(), 0.0);
       assertEquals(v, e.b.intValue());
    }
