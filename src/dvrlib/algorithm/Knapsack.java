@@ -6,15 +6,20 @@
 
 package dvrlib.algorithm;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.TreeMap;
 
 public class Knapsack<O extends KnapsackObject> {
-   protected final O      objects[];
-   protected final double entries[][];
+   protected final static double IllegalValue = -Double.MAX_VALUE;
 
-   protected int bestC = -1;
+   protected final O                        objects[];
+   protected final TreeMap<Integer, Double> entries[];
+   protected final int                      capacityLB,
+                                            capacityUB;
+   protected final double                   totalValue;
+
+   protected boolean solved = false;
+   protected Integer bestC  = null;
 
    /**
     * Knapsack constructor.
@@ -22,39 +27,60 @@ public class Knapsack<O extends KnapsackObject> {
    @SuppressWarnings({"unchecked"})
    public Knapsack(O objects[], int capacity) {
       this.objects = objects;
-      entries = new double[capacity][objects.length];
+      entries = (TreeMap<Integer, Double>[]) new TreeMap[objects.length];
+      double tV = 0d;
+      int tW = 0, maxW = 0;
+      for(int i = 0; i < objects.length; i++) {
+         entries[i] = new TreeMap<Integer, Double>();
+         assert (objects[i].value() > 0d) : "Knapsack does not support negative values";
+         tV += objects[i].value();
+         assert (objects[i].weight() > 0) : "Knapsack does not support negative weights";
+         tW += objects[i].weight();
+         maxW = Math.max(maxW, objects[i].weight());
+      }
+      capacityUB = Math.min(tW, capacity) - 1;
+      capacityLB = Math.max(0, capacityUB - maxW);
+      totalValue = tV;
    }
 
    /**
     * Solves this knapsack problem and returns the value of the optimal solution.
-    * @return The combined value of the optimal set of objects selected within the set capacity.
+    * @return The combined value of the optimal set of objects with combined weight within the set capacity.
     */
    public double solve() {
-      if(bestC < 0) {
-         double bestProfit = Double.MIN_VALUE;
-         for(int c = 0; c < entries.length; c++) {
-            double p = entry(c, objects.length - 1);
-            if(p > bestProfit) {
-               bestC      = c;
-               bestProfit = p;
+      if(!solved && capacityUB >= 0) {
+         solved = true;
+         double bestValue = IllegalValue;
+         for(int c = capacityUB; c >= capacityLB; c--) {
+            double v = entry(c, objects.length - 1);
+            assert (v <= totalValue) : "Illegal value returned";
+            if(bestValue >= totalValue) {
+               bestC = -1;
+               break;
+            }
+            if(v > bestValue) {
+               bestC     = c;
+               bestValue = v;
             }
          }
       }
-      if(bestC >= 0)
-         return entries[bestC][objects.length - 1];
-      else
+      if(bestC == null)
          return 0d;
+      else if(bestC == -1)
+         return totalValue;
+      else
+         return entries[objects.length - 1].get(bestC).doubleValue();
    }
 
    protected double entry(int c, int i) {
       if(c == -1)
-         return 0;
+         return 0d;
       if(c < 0 || i < 0)
-         return -Double.MAX_VALUE;
+         return IllegalValue;
 
-      if(entries[c][i] <= 0)
-         entries[c][i] = Math.max(entry(c, i - 1), entry(c - objects[i].weight(), i - 1) + objects[i].value());
-      return entries[c][i];
+      if(!entries[i].containsKey(c))
+         entries[i].put(c, Math.max(entry(c, i - 1), entry(c - objects[i].weight(), i - 1) + objects[i].value()));
+      return entries[i].get(c);
    }
 
    /**
@@ -62,19 +88,28 @@ public class Knapsack<O extends KnapsackObject> {
     * @return The set containing the objects of the optimal solution.
     */
    public HashSet<O> solution() {
+      if(!solved)
+         solve();
       HashSet<O> knapsack = new HashSet<O>();
-      fill(knapsack, bestC, objects.length - 1);
+      if(bestC != null) {
+         if(bestC == -1)
+            for(O o : objects) {
+               knapsack.add(o);
+            }
+         else
+            fill(knapsack, bestC, objects.length - 1);
+      }
       return knapsack;
    }
 
-   protected void fill(Collection<O> knapsack, int c, int i) {
+   protected void fill(HashSet<O> knapsack, int c, int i) {
       if(c >= 0 && i >= 0) {
-         O ko = objects[i];
-         if(entry(c, i - 1) >= entry(c - ko.weight(), i - 1) + ko.value())
+         O o = objects[i];
+         if(entry(c, i - 1) >= entry(c - o.weight(), i - 1) + o.value())
             fill(knapsack, c, i - 1);
          else {
-            knapsack.add(ko);
-            fill(knapsack, c - ko.weight(), i - 1);
+            knapsack.add(o);
+            fill(knapsack, c - o.weight(), i - 1);
          }
       }
    }

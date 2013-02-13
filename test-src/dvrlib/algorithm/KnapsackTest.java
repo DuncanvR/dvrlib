@@ -94,6 +94,7 @@ public class KnapsackTest {
       testSolve(objects, 23, new boolean[] {  true,  true,  true, false }, 31d);
       testSolve(objects, 26, new boolean[] {  true,  true,  true, false }, 31d);
       testSolve(objects, 27, new boolean[] {  true,  true,  true,  true }, 37d);
+      testSolve(objects, 99, new boolean[] {  true,  true,  true,  true }, 37d);
    }
 
    protected void testSolve(ArrayList<KnapsackTestObject> objects, int capacity, boolean inclusions[], double profit) {
