@@ -10,7 +10,7 @@ import java.util.Iterator;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public abstract class ListGraphTest {
+public class ListGraphTest {
    AbstractGraph instance;
 
    public AbstractGraph newInstance(int nodeCount) {

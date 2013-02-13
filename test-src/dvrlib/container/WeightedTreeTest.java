@@ -156,23 +156,29 @@ public class WeightedTreeTest {
 
    @Test
    public void testIterator() {
-      WeightedTree<Integer> instance = new WeightedTree<Integer>();
-      assertFalse(instance.iterator().hasNext());
+      WeightedTree<Integer> instance1 = new WeightedTree<Integer>(),
+                            instance2 = new WeightedTree<Integer>();
+      assertFalse(instance1.iterator().hasNext());
+      assertFalse(instance2.iterator().hasNext());
 
       for(int i = 0; i < 9; i++) {
          for(int j = 0; j < 9; j++) {
-            instance.add((double) i, i + j);
+            instance1.add((double) i, i + j);
+            instance2.add((double) j, i + j);
          }
       }
-
-      Iterator<Integer> it = instance.iterator();
-      for(int i = 0; i < 9; i++) {
+      Iterator<Integer> it1 = instance1.iterator(),
+                        it2 = instance2.iterator();
+      for(int i = 8; i >= 0; i--) {
          for(int j = 0; j < 9; j++) {
-            assertTrue(it.hasNext());
-            assertEquals(i + j, it.next().intValue());
+            assertTrue(it1.hasNext());
+            assertTrue(it2.hasNext());
+            assertEquals(i + j, it1.next().intValue());
+            assertEquals(i + j, it2.next().intValue());
          }
       }
-      assertFalse(it.hasNext());
+      assertFalse(it1.hasNext());
+      assertFalse(it2.hasNext());
    }
 
    @Test
