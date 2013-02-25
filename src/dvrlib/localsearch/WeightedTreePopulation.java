@@ -11,7 +11,7 @@ import dvrlib.container.WeightedTree;
 import java.util.Iterator;
 import java.util.Hashtable;
 
-public class WeightedTreePopulation<S extends Solution> implements GeneticPopulation<S> {
+public class WeightedTreePopulation<S extends Solution> extends GeneticPopulation<S> {
    protected final Hashtable<S, Double> keys    = new Hashtable<S, Double>();
    protected final GeneticProblem<S, ?> problem;
    protected final WeightedTree<S>      tree    = new WeightedTree<S>();
@@ -74,6 +74,14 @@ public class WeightedTreePopulation<S extends Solution> implements GeneticPopula
    }
 
    /**
+    * Returns true if this collection contains no elements.
+    */
+   @Override
+   public boolean isEmpty() {
+      return keys.isEmpty();
+   }
+
+   /**
     * Returns an iterator to the solutions of this population.
     * @see dvrlib.container.WeightedTree#iterator()
     */
@@ -127,5 +135,20 @@ public class WeightedTreePopulation<S extends Solution> implements GeneticPopula
    @Override
    public int size() {
       return keys.size();
+   }
+
+   /**
+    * Returns an array containing all of the elements in this collection.
+    */
+   @Override
+   public Object[] toArray() {
+      return tree.toArray();
+   }
+   /**
+    * Returns an array containing all of the elements in this collection; the runtime type of the returned array is that of the specified array.
+    */
+   @Override
+   public <T> T[] toArray(T[] a) {
+      return tree.toArray(a);
    }
 }

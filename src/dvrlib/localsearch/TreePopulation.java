@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.TreeMap;
 
-public class TreePopulation<S extends Solution, E extends Comparable<E>> implements Population<S> {
+public class TreePopulation<S extends Solution, E extends Comparable<E>> extends Population<S> {
    protected final HashSet<S>               keys      = new HashSet<S>();
    protected final TreeMap<E, ArrayList<S>> tree      = new TreeMap<E, ArrayList<S>>();
    protected final Problem<S, E>            problem;
@@ -93,8 +93,15 @@ public class TreePopulation<S extends Solution, E extends Comparable<E>> impleme
    }
 
    /**
+    * Returns true if this collection contains no elements.
+    */
+   @Override
+   public boolean isEmpty() {
+      return keys.isEmpty();
+   }
+
+   /**
     * Returns an iterator to the solutions of this population, ordered best to worst.
-    * @see Iterable#iterator()
     */
    @Override
    public Iterator<S> iterator() {
@@ -171,5 +178,20 @@ public class TreePopulation<S extends Solution, E extends Comparable<E>> impleme
    @Override
    public int size() {
       return keys.size();
+   }
+
+   /**
+    * Returns an array containing all of the elements in this collection.
+    */
+   @Override
+   public Object[] toArray() {
+      return keys.toArray();
+   }
+   /**
+    * Returns an array containing all of the elements in this collection; the runtime type of the returned array is that of the specified array.
+    */
+   @Override
+   public <T> T[] toArray(T[] a) {
+      return keys.toArray(a);
    }
 }

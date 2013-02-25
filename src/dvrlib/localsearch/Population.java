@@ -6,41 +6,79 @@
 
 package dvrlib.localsearch;
 
-public interface Population<S extends Solution> extends Iterable<S> {
+import java.util.Collection;
+
+public abstract class Population<S extends Solution> implements Collection<S> {
    /**
-    * Adds the given solution to this population if it is not already present.
-    * If this population is full and the given solution is better than the the current worst, the worst solution is removed.
-    * @return A boolean indicating whether the solution was actually added.
+    * Iterates over the given solutions, adding them to this population if they are not already present.
+    * If this population is full, each solution is compared to the current worst, replacing it if better.
+    * @return A boolean indicating whether this population was changed.
     */
-   public boolean add(S solution);
+   @Override
+   public boolean addAll(Collection<? extends S> solutions) {
+      boolean changed = false;
+      for(S s : solutions) {
+         changed |= add(s);
+      }
+      return changed;
+   }
 
    /**
-    * Removes all solutions from this population.
+    * Returns true if this collection contains the specified element.
+    * @see Population#contains(S)
     */
-   public void clear();
-
+   @Override
+   public boolean contains(Object o) {
+      return (o instanceof Solution ? contains((Solution) o) : false);
+   }
    /**
     * Returns whether the given solution is part of this population.
     */
-   public boolean contains(S solution);
+   public abstract boolean contains(S solution);
+   /**
+    * Returns true if this collection contains all of the elements in the specified collection.
+    */
+   @Override
+   public boolean containsAll(Collection<?> c) {
+      for(Object o : c) {
+         if(!contains(o))
+            return false;
+      }
+      return true;
+   }
 
    /**
     * Returns but does not remove the best solution in this population.
     */
-   public S peekBest();
-
+   public abstract S peekBest();
    /**
     * Returns but does not remove the worst solution in this population.
     */
-   public S peekWorst();
-
+   public abstract S peekWorst();
    /**
     * Removes and returns the worst solution in this population.
     */
-   public S popWorst();
+   public abstract S popWorst();
 
    /**
-    * Returns the number of solutions in this population.
+    * Unsupported operation.
     */
-   public int size();
+   @Override
+   public boolean remove(Object o) {
+      throw new UnsupportedOperationException();
+   }
+   /**
+    * Unsupported operation.
+    */
+   @Override
+   public boolean removeAll(Collection<?> c) {
+      throw new UnsupportedOperationException();
+   }
+   /**
+    * Unsupported operation.
+    */
+   @Override
+   public boolean retainAll(Collection<?> c) {
+      throw new UnsupportedOperationException();
+   }
 }

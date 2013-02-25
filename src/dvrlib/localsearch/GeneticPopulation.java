@@ -6,9 +6,9 @@
 
 package dvrlib.localsearch;
 
-public interface GeneticPopulation<S extends Solution> extends Population<S> {
+public abstract class GeneticPopulation<S extends Solution> extends Population<S> {
    /**
     * Returns but does not remove a random solution from this population.
     */
-   public S peekRandom();
+   public abstract S peekRandom();
 }

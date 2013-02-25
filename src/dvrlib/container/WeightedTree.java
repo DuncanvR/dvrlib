@@ -397,19 +397,17 @@ public class WeightedTree<E> implements Iterable<E> {
       return x;
    }
 
-   @Override
    /**
     * Returns an iterator to the elements in this tree, starting from the element with the largest weight.
     * @see WeightedTreeIterator(WeightedTree)
     */
+   @Override
    public Iterator<E> iterator() {
       return new WeightedTreeIterator<E>(this);
    }
 
    /**
     * Returns the elements in this tree as an array.
-    * @see iterator()
-    * @see Collection#toArray()
     */
    public Object[] toArray() {
       Object array[] = new Object[size()];
@@ -421,19 +419,18 @@ public class WeightedTree<E> implements Iterable<E> {
    }
    /**
     * Copies the elements in this tree to the given array.
-    * @see iterator()
-    * @see Collection#toArray(T[])
     */
-   public E[] toArray(E[] array) {
-      if(size() > array.length)
-         throw new IllegalArgumentException("Unable to fit all items in the given array, provide a larger one");
+   @SuppressWarnings("unchecked")
+   public <T> T[] toArray(T[] a) {
+      if(a.length < size())
+         a = (T[]) java.lang.reflect.Array.newInstance(a.getClass().getComponentType(), size());
       int i = 0;
       for(E e : this) {
-         array[i++] = e;
+         a[i++] = (T) e;
       }
-      for(; i < array.length; i++)
-         array[i] = null;
-      return array;
+      if(i < a.length - 1)
+         a[i] = null;
+      return a;
    }
 
    /**
