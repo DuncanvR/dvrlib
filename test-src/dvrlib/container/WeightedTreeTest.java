@@ -1,5 +1,5 @@
 /*
- * DvRLib - Generic
+ * DvRLib - Container
  * Duncan van Roermund, 2010
  * WeightedTreeTest.java
  */
