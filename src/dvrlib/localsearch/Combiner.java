@@ -14,10 +14,12 @@ public interface Combiner<P extends GeneticProblem<S, ?>, S extends Solution> {
    public void reinitialize();
 
    /**
-    * Returns a combination of the two given solutions.
-    * This method could also introduce mutations after creating the new solution.
+    * Returns a set of combinations of the two given solutions.
+    * The resulting set should provide an appropriate ordering on the solutions if GeneticLS.CombinerStrategy.FirstImprovement is used.
+    * This method may also introduce mutations after creating a new solution.
+    * @see GeneticLS.CombinerStrategy
     */
-   public S combine(SearchState<P, S> ss, S s1, S s2);
+   public java.util.TreeSet<S> combine(SearchState<P, S> ss, S s1, S s2);
 
    /**
     * Creates a new population with at least the given solutions and at most <code>popSize</code> solutions.

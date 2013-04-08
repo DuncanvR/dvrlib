@@ -28,9 +28,14 @@ public class GeneticLS<S extends Solution, E extends Comparable<E>> extends Stat
          return (solution == null ? population.peekBest() : solution);
       }
    }
+
+   public enum CombinerStrategy { FirstImprovement, BestImprovement };
+
    protected final Combiner<GeneticProblem<S, E>, S> combiner;
    protected final int                               popSize,
                                                      stopCount;
+
+   protected CombinerStrategy combinerStrategy = CombinerStrategy.FirstImprovement;
 
    /**
     * GeneticLS constructor.
@@ -47,6 +52,14 @@ public class GeneticLS<S extends Solution, E extends Comparable<E>> extends Stat
       this.combiner  = combiner;
       this.popSize   = populationSize;
       this.stopCount = stopCount;
+   }
+
+   /**
+    * Sets the criterion for deciding which generated child to pick.
+    * @see GeneticLS.CombinerStrategy
+    */
+   public void setCombinerStrategy(CombinerStrategy combinerStrategy) {
+      this.combinerStrategy = combinerStrategy;
    }
 
    /**
@@ -84,13 +97,23 @@ public class GeneticLS<S extends Solution, E extends Comparable<E>> extends Stat
     */
    @Override
    public SearchState iterate(SearchState state, E bound, long n) {
-      for(long stop = state.iteration + n, skipped = 0; state.iteration < stop && skipped < stopCount && !state.problem.betterEq(state.solution(), bound); ) {
-         // Generate new solution by combining two random solutions from the population
-         state.solution = combiner.combine(state, state.population.peekRandom(), state.population.peekRandom());
+      for(long stop = state.iteration + n; state.iteration < stop && !state.problem.betterEq(state.solution(), bound); state.iteration++) {
+         // Generate new solutions by combining two random solutions from the population
+         java.util.TreeSet<S> ss = combiner.combine(state, state.population.peekRandom(), state.population.peekRandom());
+         state.solution = state.population.peekWorst();
 
-         if(state.population.contains(state.solution) || !state.problem.better(state.problem.evaluationBound(state.solution), state.population.peekWorst())) {
+         for(S s : ss) {
+            if(state.population.contains(s))
+               continue;
+            if(state.problem.better(state.problem.evaluationBound(s), state.solution) && state.problem.better(s, state.solution)) {
+               state.solution = s;
+               if(combinerStrategy == CombinerStrategy.FirstImprovement)
+                  break;
+            }
+         }
+
+         if(state.solution == state.population.peekWorst()) {
             state.solution = null;
-            skipped++;
             continue;
          }
 
@@ -103,8 +126,6 @@ public class GeneticLS<S extends Solution, E extends Comparable<E>> extends Stat
             if(savingCriterion == LocalSearch.SavingCriterion.EveryImprovement)
                state.saveSolution();
          }
-
-         state.iteration++;
       }
       state.solution = null;
       return state;
