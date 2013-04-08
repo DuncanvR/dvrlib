@@ -11,6 +11,24 @@ import dvrlib.generic.Tuple;
 import java.util.HashSet;
 
 public class DisjointForest<E> extends AbstractDisjointForest<E, Object> {
+
+   /**
+    * DisjointForest constructor.
+    * O(1).
+    */
+   public DisjointForest() {
+      super();
+   }
+
+   /**
+    * DisjointForest constructor.
+    * @param initCapacity Sets the initial capacity of this disjoint forest.
+    * O(1).
+    */
+   public DisjointForest(int initCapacity) {
+      super(initCapacity);
+   }
+
    /**
     * Adds the given element to this forest as a singleton set.
     * @param e The element to add.
