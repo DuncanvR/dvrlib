@@ -6,49 +6,26 @@
 
 package dvrlib.graph;
 
-import dvrlib.generic.Pair;
+import dvrlib.generic.Triple;
 
-import java.lang.Iterable;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
 
-public class ListGraphNode<NodeData, EdgeData> extends AbstractGraphNode<ListGraphNode<NodeData, EdgeData>, NodeData, EdgeData> {
-   protected class EdgeIterator implements Iterator<Pair<EdgeData, ListGraphNode<NodeData, EdgeData>>> {
-      protected Iterator<Map.Entry<ListGraphNode<NodeData, EdgeData>, EdgeData>> it;
-
-      public EdgeIterator(Iterator<Map.Entry<ListGraphNode<NodeData, EdgeData>, EdgeData>> it) {
-         this.it = it;
-      }
-
-      @Override
-      public boolean hasNext() {
-         return it.hasNext();
-      }
-      @Override
-      public Pair<EdgeData, ListGraphNode<NodeData, EdgeData>> next() {
-         Map.Entry<ListGraphNode<NodeData, EdgeData>, EdgeData> entry = it.next();
-         return new Pair<EdgeData, ListGraphNode<NodeData, EdgeData>>(entry.getValue(), entry.getKey());
-      }
-      @Override
-      public void remove() {
-         throw new UnsupportedOperationException(this.getClass().getName() + ".remove() is not supported");
-      }
-   }
-
-   protected final ListGraph                                        graph;
-   protected final Map<ListGraphNode<NodeData, EdgeData>, EdgeData> inEdges, outEdges;
+public class ListGraphNode<Id, NodeData, EdgeData> extends AbstractGraphNode<Id, ListGraphNode<Id, NodeData, EdgeData>, NodeData, EdgeData> {
+   protected final ListGraph                                                graph;
+   protected final HashMap<ListGraphNode<Id, NodeData, EdgeData>, EdgeData> outEdges = new HashMap<ListGraphNode<Id, NodeData, EdgeData>, EdgeData>();
+   protected final HashSet<ListGraphNode<Id, NodeData, EdgeData>>           inEdges  = new HashSet<ListGraphNode<Id, NodeData, EdgeData>>();
 
    /**
     * ListGraphNode constructor.
+    * @param id The identifier of this node.
     * @param graph The graph this node is in.
-    * @param index The index of this node.
+    * @param data The data that will be associated with this node.
     */
-   public ListGraphNode(ListGraph graph, int index, NodeData data) {
-      super(index, data);
+   public ListGraphNode(Id id, ListGraph graph, NodeData data) {
+      super(id, data);
       this.graph = graph;
-      inEdges  = new HashMap<ListGraphNode<NodeData, EdgeData>, EdgeData>();
-      outEdges = new HashMap<ListGraphNode<NodeData, EdgeData>, EdgeData>();
    }
 
    /**
@@ -56,7 +33,7 @@ public class ListGraphNode<NodeData, EdgeData> extends AbstractGraphNode<ListGra
     * O(e).
     */
    @Override
-   public boolean hasEdge(ListGraphNode<NodeData, EdgeData> that) {
+   public boolean hasEdge(ListGraphNode<Id, NodeData, EdgeData> that) {
       if(that == null)
          return false;
       return outEdges.containsKey(that);
@@ -67,7 +44,7 @@ public class ListGraphNode<NodeData, EdgeData> extends AbstractGraphNode<ListGra
     * @throws IllegalArgumentException If the given edge does not exist in this graph.
     */
    @Override
-   public EdgeData edge(ListGraphNode<NodeData, EdgeData> that) {
+   public EdgeData edge(ListGraphNode<Id, NodeData, EdgeData> that) {
       return outEdges.get(that);
    }
 
@@ -75,7 +52,7 @@ public class ListGraphNode<NodeData, EdgeData> extends AbstractGraphNode<ListGra
     * Sets the data associated with the edge from this node to the given node and returns the old data.
     */
    @Override
-   public EdgeData replaceEdge(ListGraphNode<NodeData, EdgeData> that, EdgeData data) {
+   public EdgeData replaceEdge(ListGraphNode<Id, NodeData, EdgeData> that, EdgeData data) {
       return outEdges.put(that, data);
    }
 
@@ -98,30 +75,57 @@ public class ListGraphNode<NodeData, EdgeData> extends AbstractGraphNode<ListGra
    }
 
    /**
-    * Returns an iterable to the outgoing edges of this node.
+    * Returns an iterator to the outgoing edges of this node.
     * O(1).
     */
    @Override
-   public Iterable<Pair<EdgeData, ListGraphNode<NodeData, EdgeData>>> outEdgesIterable() {
-      return new Iterable<Pair<EdgeData, ListGraphNode<NodeData, EdgeData>>>() {
-         @Override
-         public Iterator<Pair<EdgeData, ListGraphNode<NodeData, EdgeData>>> iterator() {
-            return new EdgeIterator(outEdges.entrySet().iterator());
-         }
-      };
+   public Iterator<Triple<ListGraphNode<Id, NodeData, EdgeData>, EdgeData, ListGraphNode<Id, NodeData, EdgeData>>> outEdgesIterator() {
+      return new Iterator<Triple<ListGraphNode<Id, NodeData, EdgeData>, EdgeData, ListGraphNode<Id, NodeData, EdgeData>>>() {
+            protected final Iterator<ListGraphNode<Id, NodeData, EdgeData>> it = outEdges.keySet().iterator();
+
+            @Override
+            public boolean hasNext() {
+               return it.hasNext();
+            }
+            @Override
+            public Triple<ListGraphNode<Id, NodeData, EdgeData>, EdgeData, ListGraphNode<Id, NodeData, EdgeData>> next() {
+               ListGraphNode<Id, NodeData, EdgeData> n = it.next();
+               return new Triple<ListGraphNode<Id, NodeData, EdgeData>, EdgeData, ListGraphNode<Id, NodeData, EdgeData>>(ListGraphNode.this, edge(n), n);
+            }
+            @Override
+            public void remove() {
+               throw new UnsupportedOperationException(this.getClass().getName() + ".remove() is not supported");
+            }
+         };
    }
 
    /**
-    * Returns an iterable to the incoming edges of this node.
+    * Returns an iterator to the incoming edges of this node.
     * O(1).
     */
    @Override
-   public Iterable<Pair<EdgeData, ListGraphNode<NodeData, EdgeData>>> inEdgesIterable() {
-      return new Iterable<Pair<EdgeData, ListGraphNode<NodeData, EdgeData>>>() {
-         @Override
-         public Iterator<Pair<EdgeData, ListGraphNode<NodeData, EdgeData>>> iterator() {
-            return new EdgeIterator(inEdges.entrySet().iterator());
-         }
-      };
+   public Iterator<Triple<ListGraphNode<Id, NodeData, EdgeData>, EdgeData, ListGraphNode<Id, NodeData, EdgeData>>> inEdgesIterator() {
+      return new Iterator<Triple<ListGraphNode<Id, NodeData, EdgeData>, EdgeData, ListGraphNode<Id, NodeData, EdgeData>>>() {
+            protected final Iterator<ListGraphNode<Id, NodeData, EdgeData>> it = inEdges.iterator();
+
+            @Override
+            public boolean hasNext() {
+               return it.hasNext();
+            }
+            @Override
+            public Triple<ListGraphNode<Id, NodeData, EdgeData>, EdgeData, ListGraphNode<Id, NodeData, EdgeData>> next() {
+               ListGraphNode<Id, NodeData, EdgeData> n = it.next();
+               return new Triple<ListGraphNode<Id, NodeData, EdgeData>, EdgeData, ListGraphNode<Id, NodeData, EdgeData>>(n, n.edge(ListGraphNode.this), ListGraphNode.this);
+            }
+            @Override
+            public void remove() {
+               throw new UnsupportedOperationException(this.getClass().getName() + ".remove() is not supported");
+            }
+         };
+   }
+
+   @Override
+   public String toString() {
+      return "dvrlib.graph.ListGraphNode(" + data + ", " + inEdges.size() + " in-edges, " + outEdges.size() + " out-edges)";
    }
 }

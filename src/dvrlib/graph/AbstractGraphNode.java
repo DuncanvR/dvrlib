@@ -1,27 +1,28 @@
 /*
  * DvRlib - Graph
- * Duncan van Roermund, 2010-2012
+ * Duncan van Roermund, 2010-2013
  * AbstractGraphNode.java
  */
 
 package dvrlib.graph;
 
-import dvrlib.generic.Pair;
+import dvrlib.generic.Triple;
 
-import java.lang.Iterable;
+import java.util.Iterator;
 
-public abstract class AbstractGraphNode<Node extends AbstractGraphNode, NodeData, EdgeData> {
-   public final int      index;
+public abstract class AbstractGraphNode<Id, Node extends AbstractGraphNode, NodeData, EdgeData> {
+   public final Id       id;
    public       NodeData data;
 
    /**
     * AbstractGraphNode constructor.
-    * @param index The index of this node.
+    * @param id The identifier of this node.
+    * @param data The data that will be associated with this node.
     * O(1).
     */
-   public AbstractGraphNode(int index, NodeData data) {
-      this.index = index;
-      this.data  = data;
+   public AbstractGraphNode(Id id, NodeData data) {
+      this.id   = id;
+      this.data = data;
    }
 
    /**
@@ -50,12 +51,12 @@ public abstract class AbstractGraphNode<Node extends AbstractGraphNode, NodeData
    public abstract int outDegree();
 
    /**
-    * Returns an iterable to the outgoing edges of this node.
+    * Returns an iterator to the outgoing edges of this node.
     */
-   public abstract Iterable<Pair<EdgeData, Node>> outEdgesIterable();
+   public abstract Iterator<Triple<Node, EdgeData, Node>> outEdgesIterator();
 
    /**
-    * Returns an iterable to the incoming edges of this node.
+    * Returns an iterator to the incoming edges of this node.
     */
-   public abstract Iterable<Pair<EdgeData, Node>> inEdgesIterable();
+   public abstract Iterator<Triple<Node, EdgeData, Node>> inEdgesIterator();
 }
