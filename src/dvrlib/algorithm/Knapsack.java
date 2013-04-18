@@ -1,5 +1,5 @@
 /*
- * DvRLib - Algorithm
+ * DvRlib - Algorithm
  * Duncan van Roermund, 2013
  * Knapsack.java
  */

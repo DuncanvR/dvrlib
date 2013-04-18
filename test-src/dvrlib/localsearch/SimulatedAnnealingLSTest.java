@@ -1,5 +1,5 @@
 /*
- * DvRLib - Local search
+ * DvRlib - Local search
  * Duncan van Roermund, 2010-2011
  * SimulatedAnnealingLSTest.java
  */

@@ -1,5 +1,5 @@
 /*
- * DvRLib - Container
+ * DvRlib - Container
  * Duncan van Roermund, 2013
  * DisjointForestTest.java
  */

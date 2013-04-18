@@ -1,5 +1,5 @@
 /*
- * DvRLib - Local search
+ * DvRlib - Local search
  * Duncan van Roermund, 2011-2012
  * AbstractProblem.java
  */

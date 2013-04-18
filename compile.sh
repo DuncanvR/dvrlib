@@ -35,7 +35,7 @@ if [ -d $DIR ] ; then
    echo " *** Packaging..."
    mkdir -p $DIR/dist
    cd $DIR/dist/
-   jar cf DvRLib.jar -C ../build/ dvrlib
+   jar cf DvRlib.jar -C ../build/ dvrlib
    if [ "$?" != "0" ] ; then
       echo " *** Error(s) while packaging; Aborting"
       exit

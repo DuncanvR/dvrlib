@@ -1,5 +1,5 @@
 /*
- * DvRLib - Matrix
+ * DvRlib - Matrix
  * Duncan van Roermund, 2010-2012
  * AbstractAdjustableMatrix.java
  */

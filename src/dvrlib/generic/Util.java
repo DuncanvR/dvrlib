@@ -1,5 +1,5 @@
 /*
- * DvRLib - Generic
+ * DvRlib - Generic
  * Duncan van Roermund, 2012
  * Util.java
  */

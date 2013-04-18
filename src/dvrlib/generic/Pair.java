@@ -1,5 +1,5 @@
 /*
- * DvRLib - Generic
+ * DvRlib - Generic
  * Duncan van Roermund, 2010 - 2012
  * Pair.java
  */
