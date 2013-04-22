@@ -1,7 +1,7 @@
 /*
  * DvRlib - Container
  * Duncan van Roermund, 2012-2013
- * AbstractDisjointForest.java
+ * AbstractDisjointSetForest.java
  */
 
 package dvrlib.container;
@@ -13,29 +13,28 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 /**
- * Disjoint forest implementation.
+ * Disjoint set forest implementation.
  * @param E Element type.
  * @param S Set data type.
- * @see DisjointForest
  */
-public abstract class AbstractDisjointForest<E, S> implements java.util.Set<E> {
+public abstract class AbstractDisjointSetForest<E, S> implements java.util.Set<E> {
    protected HashMap<E, Tuple<E, Integer>>    parents;
    protected HashMap<E, Tuple<HashSet<E>, S>> sets    = new HashMap<E, Tuple<HashSet<E>, S>>();
 
    /**
-    * AbstractDisjointForest constructor.
+    * AbstractDisjointSetForest constructor.
     * O(1).
     */
-   public AbstractDisjointForest() {
+   public AbstractDisjointSetForest() {
       parents = new HashMap<E, Tuple<E, Integer>>();
    }
 
    /**
-    * AbstractDisjointForest constructor.
-    * @param initCapacity Sets the initial capacity of this disjoint forest.
+    * AbstractDisjointSetForest constructor.
+    * @param initCapacity Sets the initial capacity of this disjoint set forest.
     * O(1).
     */
-   public AbstractDisjointForest(int initCapacity) {
+   public AbstractDisjointSetForest(int initCapacity) {
       parents = new HashMap<E, Tuple<E, Integer>>(initCapacity);
    }
 
@@ -114,11 +113,11 @@ public abstract class AbstractDisjointForest<E, S> implements java.util.Set<E> {
     * Adds the given element and data to this forest as a singleton set.
     * @param e The element to add.
     * @param s The associated data to add.
-    * @return Whether the element was succesfully added.
+    * @return Whether the element was successfully added.
     * O(1).
     */
    public boolean add(E e, S s) {
-      if(parents.containsKey(e))
+      if(contains(e))
          return false;
       HashSet<E> es = new HashSet<E>();
       es.add(e);
@@ -130,18 +129,21 @@ public abstract class AbstractDisjointForest<E, S> implements java.util.Set<E> {
    //--- java.util.Set methods
    /**
     * Adds the given element to this forest as a singleton set.
+    * The default implementation throws an UnsupportedOperationException, override to make meaningful.
     * @param e The element to add.
-    * @return Whether the element was succesfully added.
-    * @see AbstractDisjointForest#add(java.lang.Object, java.lang.Object)
+    * @return Whether the element was successfully added.
+    * @see AbstractDisjointSetForest#add(java.lang.Object, java.lang.Object)
     * @see java.util.Set#add(java.lang.Object)
     */
-   public abstract boolean add(E e);
+   public boolean add(E e) {
+      throw new UnsupportedOperationException("dvrlib.container.AbstractDisjointForest#add(java.lang.Object) is not implemented");
+   }
 
    /**
     * Adds all the elements in the given collection to this forest, each as a singleton set.
     * @param es The elements to add.
-    * @return Whether at least element was succesfully added.
-    * @see DisjointForest#add(java.lang.Object)
+    * @return Whether at least element was successfully added.
+    * @see AbstractDisjointSetForest#add(java.lang.Object)
     * @see java.util.Set#addAll(java.util.Collection)
     * O(n).
     */
@@ -208,30 +210,57 @@ public abstract class AbstractDisjointForest<E, S> implements java.util.Set<E> {
    }
 
    /**
-    * Removals are not supported by DisjointForest.
+    * Removes the specified element from this set if it is present.
+    * @param e Element to be removed from this set.
+    * @return <code>true</code> if this set contained the specified element, <code>false</code> otherwise.
     * @see java.util.Set#remove(java.lang.Object)
     */
    @Override
    public boolean remove(Object e) {
-      throw new UnsupportedOperationException("dvrlib.generic.DisjointForest#remove(java.lang.Object) is not implemented");
+      if(contains(e)) {
+         @SuppressWarnings("unchecked")
+         E r = representative((E) e);
+         Tuple<HashSet<E>, S> t = retrieveSet(r);
+         parents.remove(e);
+         t.a.remove(e);
+         if(e == r) {
+            for(E n : t.a) {
+               r = n;
+               sets.put(r, t);
+               break;
+            }
+            sets.remove(e);
+         }
+         for(E n : t.a) {
+            parents.get(n).a = r;
+         }
+         return true;
+      }
+      return false;
    }
 
    /**
-    * Removals are not supported by DisjointForest.
+    * Removes all the elements of the given collection from this set.
+    * @param os The collection of elements to remove from this set.
+    * @return <code>true</code> if this set changed as a result of this call.
     * @see java.util.Set#removeAll(java.util.Collection)
     */
    @Override
-   public boolean removeAll(Collection<?> es) {
-      throw new UnsupportedOperationException("dvrlib.generic.DisjointForest#removeAll(java.util.Collection) is not implemented");
+   public boolean removeAll(Collection<?> os) {
+      boolean changed = false;
+      for(Object o : os) {
+         changed |= remove(o);
+      }
+      return changed;
    }
 
    /**
-    * Removals are not supported by DisjointForest.
+    * Not supported by DisjointSetForest.
     * @see java.util.Set#retainAll(java.util.Collection)
     */
    @Override
    public boolean retainAll(Collection<?> es) {
-      throw new UnsupportedOperationException("dvrlib.generic.DisjointForest#retainAll(java.util.Collection) is not implemented");
+      throw new UnsupportedOperationException("dvrlib.container.AbstractDisjointSetForest#retainAll(java.util.Collection) is not implemented");
    }
 
    /**

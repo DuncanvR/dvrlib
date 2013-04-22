@@ -1,7 +1,7 @@
 /*
  * DvRlib - Container
  * Duncan van Roermund, 2012-2013
- * DisjointForest.java
+ * DisjointSetForest.java
  */
 
 package dvrlib.container;
@@ -10,29 +10,34 @@ import dvrlib.generic.Tuple;
 
 import java.util.HashSet;
 
-public class DisjointForest<E> extends AbstractDisjointForest<E, Object> {
+/**
+ * Disjoint set forest implementation.
+ * @param E Element type.
+ * @see AbstractDisjointSetForest
+ */
+public class DisjointSetForest<E> extends AbstractDisjointSetForest<E, Object> {
 
    /**
-    * DisjointForest constructor.
+    * DisjointSetForest constructor.
     * O(1).
     */
-   public DisjointForest() {
+   public DisjointSetForest() {
       super();
    }
 
    /**
-    * DisjointForest constructor.
-    * @param initCapacity Sets the initial capacity of this disjoint forest.
+    * DisjointSetForest constructor.
+    * @param initCapacity Sets the initial capacity of this disjoint set forest.
     * O(1).
     */
-   public DisjointForest(int initCapacity) {
+   public DisjointSetForest(int initCapacity) {
       super(initCapacity);
    }
 
    /**
     * Adds the given element to this forest as a singleton set.
     * @param e The element to add.
-    * @return Whether the element was succesfully added.
+    * @return Whether the element was successfully added.
     * O(1).
     */
    @Override

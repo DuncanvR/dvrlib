@@ -1,7 +1,7 @@
 /*
  * DvRlib - Container
  * Duncan van Roermund, 2013
- * DisjointForestTest.java
+ * DisjointSetForestTest.java
  */
 
 package dvrlib.container;
@@ -14,22 +14,22 @@ import java.util.HashSet;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class DisjointForestTest {
+public class DisjointSetForestTest {
    @Test
    public void testForests() {
-      testForest(new Integer[][]{{ }});
-      testForest(new Integer[][]{{ 1 }});
-      testForest(new Integer[][]{{ 1, 2 }});
-      testForest(new Integer[][]{{ 1 }, { 2 }});
-      testForest(new Integer[][]{{ 1, 2 }, { 3, 4 }});
-      testForest(new Integer[][]{{ 1, 2, 3 }});
-      testForest(new Integer[][]{{ 1, 2, 3 }, { 4, 5, 6 }});
-      testForest(new Integer[][]{{ 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 }});
-      testForest(new Integer[][]{{ 1, 2 }, { 3, 4, 5, 6 }, { 7 }, { 8, 9 }});
+      testForests(new Integer[][]{ });
+      testForests(new Integer[][]{{ 1 }});
+      testForests(new Integer[][]{{ 1, 2 }});
+      testForests(new Integer[][]{{ 1 }, { 2 }});
+      testForests(new Integer[][]{{ 1, 2 }, { 3, 4 }});
+      testForests(new Integer[][]{{ 1, 2, 3 }});
+      testForests(new Integer[][]{{ 1, 2, 3 }, { 4, 5, 6 }});
+      testForests(new Integer[][]{{ 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 }});
+      testForests(new Integer[][]{{ 1, 2 }, { 3, 4, 5, 6 }, { 7 }, { 8, 9 }});
    }
 
-   protected void testForest(Integer[][] es) {
-      testForest(new DisjointForest<Integer>() {
+   protected void testForests(Integer[][] es) {
+      testForest(buildForest(new DisjointSetForest<Integer>() {
             @Override
             public Collection<Tuple<HashSet<Integer>, Object>> retrieveSets() {
                Collection<Tuple<HashSet<Integer>, Object>> ts = super.retrieveSets();
@@ -38,9 +38,9 @@ public class DisjointForestTest {
                }
                return ts;
             }
-         }, es);
+         }, es), es);
 
-      testForest(new AbstractDisjointForest<Integer, Integer>() {
+      testForest(buildForest(new AbstractDisjointSetForest<Integer, Integer>() {
             @Override
             public boolean add(Integer e) {
                return add(e, e);
@@ -63,10 +63,10 @@ public class DisjointForestTest {
                }
                return ts;
             }
-         }, es);
+         }, es), es);
    }
 
-   protected void testForest(AbstractDisjointForest<Integer, ?> df, Integer[][] es) {
+   protected AbstractDisjointSetForest<Integer, ?> buildForest(AbstractDisjointSetForest<Integer, ?> df, Integer[][] es) {
       assertTrue(df.isEmpty());
       assertEquals(df.size(), 0);
 
@@ -89,13 +89,18 @@ public class DisjointForestTest {
          }
       }
 
+      return df;
+   }
+
+   protected void testForest(AbstractDisjointSetForest<Integer, ?> df, Integer[][] es) {
       for(int i = 0; i < es.length; i++) {
+         Integer r = df.representative(es[i][0]);
          for(int j = 0; j < es[i].length; j++) {
             assertSetsMatch(df.retrieveSet(es[i][j]).a, es[i]);
+            assertEquals(r, df.representative(es[i][j]));
          }
+         assertTrue(df.retrieveSet(es[i][0]).a.contains(r));
       }
-
-      df.retrieveSets();
    }
 
    protected <E> void assertSetsMatch(HashSet<E> s, E[] es) {
@@ -103,5 +108,19 @@ public class DisjointForestTest {
       for(E e : es) {
          assertTrue(s.contains(e));
       }
+   }
+
+   @Test
+   public void testRemove() {
+      AbstractDisjointSetForest<Integer, ?> df = buildForest(new DisjointSetForest<Integer>(), new Integer[][]{{ 1, 2, 3 }, { 4, 5 }, { 6 }, { 7, 8, 9 }});
+      testForest(df, new Integer[][]{{ 1, 2, 3 }, { 4, 5 }, { 6 }, { 7, 8, 9 }});
+      df.remove(4);
+      testForest(df, new Integer[][]{{ 1, 2, 3 }, { 5 }, { 6 }, { 7, 8, 9 }});
+      df.remove(5);
+      testForest(df, new Integer[][]{{ 1, 2, 3 }, { 6 }, { 7, 8, 9 }});
+      df.remove(8);
+      testForest(df, new Integer[][]{{ 1, 2, 3 }, { 6 }, { 7, 9 }});
+      df.remove(1);
+      testForest(df, new Integer[][]{{ 2, 3 }, { 6 }, { 7, 9 }});
    }
 }
