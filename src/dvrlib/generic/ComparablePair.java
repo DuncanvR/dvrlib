@@ -6,9 +6,12 @@
 
 package dvrlib.generic;
 
-public class ComparablePair<A extends Comparable<A>, B extends Comparable<B>> extends Pair<A, B> implements Comparable<ComparablePair<A, B>> {
+public class ComparablePair<A extends Comparable<A>, B extends Comparable<B>>
+             extends Pair<A, B> implements Comparable<ComparablePair<A, B>> {
    /**
     * ComparablePair constructor.
+    * @param a The first element in this pair.
+    * @param b The second element in this pair.
     * @see Pair#Pair(java.lang.Object, java.lang.Object)
     */
    public ComparablePair(A a, B b) {
@@ -21,7 +24,9 @@ public class ComparablePair<A extends Comparable<A>, B extends Comparable<B>> ex
     */
    @Override
    public int compareTo(ComparablePair<A, B> that) {
-      int cA = a.compareTo(that.a);
-      return (cA == 0 ? b.compareTo(that.b) : cA);
+      int cmp = a.compareTo(that.a);
+      if(cmp != 0)
+         return cmp;
+      return b.compareTo(that.b);
    }
 }
