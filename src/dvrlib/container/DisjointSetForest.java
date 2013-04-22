@@ -6,7 +6,7 @@
 
 package dvrlib.container;
 
-import dvrlib.generic.Tuple;
+import dvrlib.generic.Pair;
 
 import java.util.HashSet;
 
@@ -53,7 +53,7 @@ public class DisjointSetForest<E> extends AbstractDisjointSetForest<E, Object> {
     * O(1).
     */
    @Override
-   protected Tuple<HashSet<E>, Object> merge(Tuple<HashSet<E>, Object> t1, Tuple<HashSet<E>, Object> t2) {
+   protected Pair<HashSet<E>, Object> merge(Pair<HashSet<E>, Object> t1, Pair<HashSet<E>, Object> t2) {
       t1.a.addAll(t2.a);
       return t1;
    }

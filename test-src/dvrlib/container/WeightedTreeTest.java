@@ -6,7 +6,7 @@
 
 package dvrlib.container;
 
-import dvrlib.generic.Tuple;
+import dvrlib.generic.Pair;
 
 import java.util.Iterator;
 
@@ -17,7 +17,7 @@ public class WeightedTreeTest {
    @Test
    public void testSize() {
       WeightedTree<Integer> instance = new WeightedTree<Integer>();
-      Tuple<Double, Integer> element;
+      Pair<Double, Integer> element;
 
       assertTrue(instance.isEmpty());
       assertEquals(0, instance.size());
@@ -229,7 +229,7 @@ public class WeightedTreeTest {
       assertEqualsWeighted(0.5, 25, instance.getWeighted(0.3750001));
       assertEqualsWeighted(0.5, 25, instance.getWeighted(0.9999999));
    }
-   public void assertEqualsWeighted(double k, int v, Tuple<Double, Integer> e) {
+   public void assertEqualsWeighted(double k, int v, Pair<Double, Integer> e) {
       assertEquals(k, e.a.doubleValue(), 0.0);
       assertEquals(v, e.b.intValue());
    }

@@ -6,7 +6,7 @@
 
 package dvrlib.graph;
 
-import dvrlib.generic.Tuple;
+import dvrlib.generic.Pair;
 
 import java.lang.Iterable;
 import java.util.Iterator;
@@ -217,7 +217,7 @@ public class ListGraph<NodeData, EdgeData> extends AbstractGraph<ListGraphNode<N
     * Returns an iterable to the outgoing edges of the given node.
     */
    @Override
-   public Iterable<Tuple<EdgeData, ListGraphNode<NodeData, EdgeData>>> outEdgesIterable(int index) {
+   public Iterable<Pair<EdgeData, ListGraphNode<NodeData, EdgeData>>> outEdgesIterable(int index) {
       return node(index).outEdgesIterable();
    }
 
@@ -225,7 +225,7 @@ public class ListGraph<NodeData, EdgeData> extends AbstractGraph<ListGraphNode<N
     * Returns an iterable to the incoming edges of the given node.
     */
    @Override
-   public Iterable<Tuple<EdgeData, ListGraphNode<NodeData, EdgeData>>> inEdgesIterable(int index) {
+   public Iterable<Pair<EdgeData, ListGraphNode<NodeData, EdgeData>>> inEdgesIterable(int index) {
       return node(index).inEdgesIterable();
    }
 }

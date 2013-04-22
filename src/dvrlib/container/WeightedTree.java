@@ -6,7 +6,7 @@
 
 package dvrlib.container;
 
-import dvrlib.generic.Tuple;
+import dvrlib.generic.Pair;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -101,7 +101,7 @@ public class WeightedTree<E> implements Iterable<E> {
     * This means the item with the largest index has the most chance of getting selected, hence the weight.
     * @param normIndex A double between 0 and 1.
     */
-   public Tuple<Double, E> getWeighted(double normIndex) {
+   public Pair<Double, E> getWeighted(double normIndex) {
       if(normIndex < 0 || normIndex > 1)
          throw new IllegalArgumentException("The argument of WeightedTree.getWeighted(double) should be between 0 and 1");
       return (root == null ? null : root.getWeighted(normIndex));
@@ -127,18 +127,18 @@ public class WeightedTree<E> implements Iterable<E> {
     * @see WeightedTree#getMin()
     * @see WeightedTreeNode#peek()
     */
-   public Tuple<Double, E> peekMin() {
+   public Pair<Double, E> peekMin() {
       WeightedTreeNode<E> node = getMin();
-      return new Tuple<Double, E>(node.key, node.peek());
+      return new Pair<Double, E>(node.key, node.peek());
    }
    /**
     * Returns an element from the node with the largest key along with that key.
     * @see WeightedTree#getMax()
     * @see WeightedTreeNode#peek()
     */
-   public Tuple<Double, E> peekMax() {
+   public Pair<Double, E> peekMax() {
       WeightedTreeNode<E> node = getMax();
-      return new Tuple<Double, E>(node.key, node.peek());
+      return new Pair<Double, E>(node.key, node.peek());
    }
 
    /**
@@ -147,8 +147,8 @@ public class WeightedTree<E> implements Iterable<E> {
     * @see WeightedTree#remove(WeightedTreeNode)
     * O(node.depth).
     */
-   protected Tuple<Double, E> pop(WeightedTreeNode<E> node) {
-      Tuple<Double, E> item = new Tuple<Double, E>(node.key, node.pop());
+   protected Pair<Double, E> pop(WeightedTreeNode<E> node) {
+      Pair<Double, E> item = new Pair<Double, E>(node.key, node.pop());
       if(node.values.isEmpty())
          remove(node);
       else
@@ -160,7 +160,7 @@ public class WeightedTree<E> implements Iterable<E> {
     * @see WeightedTree#getMin()
     * @see WeightedTree#pop(WeightedTreeNode)
     */
-   public Tuple<Double, E> popMin() {
+   public Pair<Double, E> popMin() {
       return pop(getMin());
    }
    /**
@@ -168,7 +168,7 @@ public class WeightedTree<E> implements Iterable<E> {
     * @see WeightedTree#getMax()
     * @see WeightedTree#pop(WeightedTreeNode)
     */
-   public Tuple<Double, E> popMax() {
+   public Pair<Double, E> popMax() {
       return pop(getMax());
    }
 

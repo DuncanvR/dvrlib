@@ -6,7 +6,7 @@
 
 package dvrlib.localsearch;
 
-import dvrlib.generic.Tuple;
+import dvrlib.generic.Pair;
 
 public class PhasedChanger<P extends Problem<S, ? extends Comparable<?>>, S extends Solution, C extends Changer<P, S, ?>.Change> extends Changer<P, S, PhasedChanger<P, S, C>.Change> {
    protected class Change extends Changer<P, S, ?>.Change {

@@ -6,7 +6,7 @@
 
 package dvrlib.container;
 
-import dvrlib.generic.Tuple;
+import dvrlib.generic.Pair;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -31,9 +31,9 @@ public class DisjointSetForestTest {
    protected void testForests(Integer[][] es) {
       testForest(buildForest(new DisjointSetForest<Integer>() {
             @Override
-            public Collection<Tuple<HashSet<Integer>, Object>> retrieveSets() {
-               Collection<Tuple<HashSet<Integer>, Object>> ts = super.retrieveSets();
-               for(Tuple<HashSet<Integer>, Object> t : ts) {
+            public Collection<Pair<HashSet<Integer>, Object>> retrieveSets() {
+               Collection<Pair<HashSet<Integer>, Object>> ts = super.retrieveSets();
+               for(Pair<HashSet<Integer>, Object> t : ts) {
                   assertNull(t.b);
                }
                return ts;
@@ -47,14 +47,14 @@ public class DisjointSetForestTest {
             }
 
             @Override
-            protected Tuple<HashSet<Integer>, Integer> merge(Tuple<HashSet<Integer>, Integer> t1, Tuple<HashSet<Integer>, Integer> t2) {
+            protected Pair<HashSet<Integer>, Integer> merge(Pair<HashSet<Integer>, Integer> t1, Pair<HashSet<Integer>, Integer> t2) {
                t1.a.addAll(t2.a);
                t1.b += t2.b;
                return t1;
             }
-            public Collection<Tuple<HashSet<Integer>, Integer>> retrieveSets() {
-               Collection<Tuple<HashSet<Integer>, Integer>> ts = super.retrieveSets();
-               for(Tuple<HashSet<Integer>, Integer> t : ts) {
+            public Collection<Pair<HashSet<Integer>, Integer>> retrieveSets() {
+               Collection<Pair<HashSet<Integer>, Integer>> ts = super.retrieveSets();
+               for(Pair<HashSet<Integer>, Integer> t : ts) {
                   int s = 0;
                   for(Integer i : t.a) {
                      s += i;

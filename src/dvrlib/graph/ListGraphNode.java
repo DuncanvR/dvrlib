@@ -6,7 +6,7 @@
 
 package dvrlib.graph;
 
-import dvrlib.generic.Tuple;
+import dvrlib.generic.Pair;
 
 import java.lang.Iterable;
 import java.util.HashMap;
@@ -14,7 +14,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class ListGraphNode<NodeData, EdgeData> extends AbstractGraphNode<ListGraphNode<NodeData, EdgeData>, NodeData, EdgeData> {
-   protected class EdgeIterator implements Iterator<Tuple<EdgeData, ListGraphNode<NodeData, EdgeData>>> {
+   protected class EdgeIterator implements Iterator<Pair<EdgeData, ListGraphNode<NodeData, EdgeData>>> {
       protected Iterator<Map.Entry<ListGraphNode<NodeData, EdgeData>, EdgeData>> it;
 
       public EdgeIterator(Iterator<Map.Entry<ListGraphNode<NodeData, EdgeData>, EdgeData>> it) {
@@ -26,9 +26,9 @@ public class ListGraphNode<NodeData, EdgeData> extends AbstractGraphNode<ListGra
          return it.hasNext();
       }
       @Override
-      public Tuple<EdgeData, ListGraphNode<NodeData, EdgeData>> next() {
+      public Pair<EdgeData, ListGraphNode<NodeData, EdgeData>> next() {
          Map.Entry<ListGraphNode<NodeData, EdgeData>, EdgeData> entry = it.next();
-         return new Tuple<EdgeData, ListGraphNode<NodeData, EdgeData>>(entry.getValue(), entry.getKey());
+         return new Pair<EdgeData, ListGraphNode<NodeData, EdgeData>>(entry.getValue(), entry.getKey());
       }
       @Override
       public void remove() {
@@ -102,10 +102,10 @@ public class ListGraphNode<NodeData, EdgeData> extends AbstractGraphNode<ListGra
     * O(1).
     */
    @Override
-   public Iterable<Tuple<EdgeData, ListGraphNode<NodeData, EdgeData>>> outEdgesIterable() {
-      return new Iterable<Tuple<EdgeData, ListGraphNode<NodeData, EdgeData>>>() {
+   public Iterable<Pair<EdgeData, ListGraphNode<NodeData, EdgeData>>> outEdgesIterable() {
+      return new Iterable<Pair<EdgeData, ListGraphNode<NodeData, EdgeData>>>() {
          @Override
-         public Iterator<Tuple<EdgeData, ListGraphNode<NodeData, EdgeData>>> iterator() {
+         public Iterator<Pair<EdgeData, ListGraphNode<NodeData, EdgeData>>> iterator() {
             return new EdgeIterator(outEdges.entrySet().iterator());
          }
       };
@@ -116,10 +116,10 @@ public class ListGraphNode<NodeData, EdgeData> extends AbstractGraphNode<ListGra
     * O(1).
     */
    @Override
-   public Iterable<Tuple<EdgeData, ListGraphNode<NodeData, EdgeData>>> inEdgesIterable() {
-      return new Iterable<Tuple<EdgeData, ListGraphNode<NodeData, EdgeData>>>() {
+   public Iterable<Pair<EdgeData, ListGraphNode<NodeData, EdgeData>>> inEdgesIterable() {
+      return new Iterable<Pair<EdgeData, ListGraphNode<NodeData, EdgeData>>>() {
          @Override
-         public Iterator<Tuple<EdgeData, ListGraphNode<NodeData, EdgeData>>> iterator() {
+         public Iterator<Pair<EdgeData, ListGraphNode<NodeData, EdgeData>>> iterator() {
             return new EdgeIterator(inEdges.entrySet().iterator());
          }
       };

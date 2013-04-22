@@ -6,7 +6,7 @@
 
 package dvrlib.graph;
 
-import dvrlib.generic.Tuple;
+import dvrlib.generic.Pair;
 
 import java.lang.Iterable;
 
@@ -125,12 +125,12 @@ public abstract class AbstractGraph<Node extends AbstractGraphNode<Node, NodeDat
    /**
     * Returns an iterable to the outgoing edges of the given node.
     */
-   public abstract Iterable<Tuple<EdgeData, Node>> outEdgesIterable(int index);
+   public abstract Iterable<Pair<EdgeData, Node>> outEdgesIterable(int index);
 
    /**
     * Returns an iterable to the incoming edges of the given node.
     */
-   public abstract Iterable<Tuple<EdgeData, Node>> inEdgesIterable(int index);
+   public abstract Iterable<Pair<EdgeData, Node>> inEdgesIterable(int index);
 
    /**
     * Returns true if there is an edge between nodes a and b, false otherwise.

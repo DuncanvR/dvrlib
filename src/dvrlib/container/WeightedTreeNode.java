@@ -6,7 +6,7 @@
 
 package dvrlib.container;
 
-import dvrlib.generic.Tuple;
+import dvrlib.generic.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -110,7 +110,7 @@ public class WeightedTreeNode<E> {
    /**
     * @see WeightedTree#getWeighted(double)
     */
-   protected Tuple<Double, E> getWeighted(double normIndex) {
+   protected Pair<Double, E> getWeighted(double normIndex) {
       assert (normIndex >= 0d && normIndex < 1d) : "normIndex should be between 0 (inclusive) and 1 (exclusive), got " + normIndex;
 
       double l = getLeftWeight();
@@ -128,7 +128,7 @@ public class WeightedTreeNode<E> {
       else
          r = 1d;
 
-      return new Tuple<Double, E>(key, values.get((int)(values.size() * (normIndex - l) / (r - l))));
+      return new Pair<Double, E>(key, values.get((int)(values.size() * (normIndex - l) / (r - l))));
    }
 
    /**

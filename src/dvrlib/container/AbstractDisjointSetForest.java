@@ -6,7 +6,7 @@
 
 package dvrlib.container;
 
-import dvrlib.generic.Tuple;
+import dvrlib.generic.Pair;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -18,15 +18,15 @@ import java.util.HashSet;
  * @param S Set data type.
  */
 public abstract class AbstractDisjointSetForest<E, S> implements java.util.Set<E> {
-   protected HashMap<E, Tuple<E, Integer>>    parents;
-   protected HashMap<E, Tuple<HashSet<E>, S>> sets    = new HashMap<E, Tuple<HashSet<E>, S>>();
+   protected HashMap<E, Pair<E, Integer>>    parents;
+   protected HashMap<E, Pair<HashSet<E>, S>> sets    = new HashMap<E, Pair<HashSet<E>, S>>();
 
    /**
     * AbstractDisjointSetForest constructor.
     * O(1).
     */
    public AbstractDisjointSetForest() {
-      parents = new HashMap<E, Tuple<E, Integer>>();
+      parents = new HashMap<E, Pair<E, Integer>>();
    }
 
    /**
@@ -35,7 +35,7 @@ public abstract class AbstractDisjointSetForest<E, S> implements java.util.Set<E
     * O(1).
     */
    public AbstractDisjointSetForest(int initCapacity) {
-      parents = new HashMap<E, Tuple<E, Integer>>(initCapacity);
+      parents = new HashMap<E, Pair<E, Integer>>(initCapacity);
    }
 
    /**
@@ -44,7 +44,7 @@ public abstract class AbstractDisjointSetForest<E, S> implements java.util.Set<E
     * @param t2 The second tuple of elements and data, that is being merged into the first.
     * @return The union of the elements and data of the two sets.
     */
-   protected abstract Tuple<HashSet<E>, S> merge(Tuple<HashSet<E>, S> t1, Tuple<HashSet<E>, S> t2);
+   protected abstract Pair<HashSet<E>, S> merge(Pair<HashSet<E>, S> t1, Pair<HashSet<E>, S> t2);
 
    /**
     * Finds the representative of the set to which the given element belongs.
@@ -53,7 +53,7 @@ public abstract class AbstractDisjointSetForest<E, S> implements java.util.Set<E
     * @throws IllegalArgumentException If the supplied element is not a member of this forest.
     */
    public E representative(E e) {
-      Tuple<E, Integer> data = parents.get(e);
+      Pair<E, Integer> data = parents.get(e);
       if(data == null)
          throw new IllegalArgumentException("The supplied element is not a member of this forest");
       if(data.a != e)
@@ -67,7 +67,7 @@ public abstract class AbstractDisjointSetForest<E, S> implements java.util.Set<E
     * @return The set containing the given element and the associated data.
     * @throws IllegalArgumentException If the supplied element is not a member of this forest.
     */
-   public Tuple<HashSet<E>, S> retrieveSet(E e) {
+   public Pair<HashSet<E>, S> retrieveSet(E e) {
       return sets.get(representative(e));
    }
 
@@ -75,7 +75,7 @@ public abstract class AbstractDisjointSetForest<E, S> implements java.util.Set<E
     * Returns all the sets of this forest.
     * @return The collection of contained sets and their associated data.
     */
-   public Collection<Tuple<HashSet<E>, S>> retrieveSets() {
+   public Collection<Pair<HashSet<E>, S>> retrieveSets() {
       return sets.values();
    }
 
@@ -92,7 +92,7 @@ public abstract class AbstractDisjointSetForest<E, S> implements java.util.Set<E
       if(e1 == e2)
          return e1;
 
-      Tuple<E, Integer> d1 = parents.get(e1), d2 = parents.get(e2);
+      Pair<E, Integer> d1 = parents.get(e1), d2 = parents.get(e2);
       if(d1.b > d2.b) { // If the rank of the first set is larger than that of the second
          d2.a = e1;                                       // Set e1 as the parent of the second set
          sets.put(e1, merge(sets.get(e1), sets.get(e2))); // Merge the sets
@@ -121,8 +121,8 @@ public abstract class AbstractDisjointSetForest<E, S> implements java.util.Set<E
          return false;
       HashSet<E> es = new HashSet<E>();
       es.add(e);
-      sets.put(e, new Tuple<HashSet<E>, S>(es, s));
-      parents.put(e, new Tuple<E, Integer>(e, 0));
+      sets.put(e, new Pair<HashSet<E>, S>(es, s));
+      parents.put(e, new Pair<E, Integer>(e, 0));
       return true;
    }
 
@@ -220,7 +220,7 @@ public abstract class AbstractDisjointSetForest<E, S> implements java.util.Set<E
       if(contains(e)) {
          @SuppressWarnings("unchecked")
          E r = representative((E) e);
-         Tuple<HashSet<E>, S> t = retrieveSet(r);
+         Pair<HashSet<E>, S> t = retrieveSet(r);
          parents.remove(e);
          t.a.remove(e);
          if(e == r) {
