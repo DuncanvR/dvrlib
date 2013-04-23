@@ -32,26 +32,23 @@ public class GeneticLS<S extends Solution, E extends Comparable<E>> extends Stat
    public enum CombinerStrategy { FirstImprovement, BestImprovement };
 
    protected final Combiner<GeneticProblem<S, E>, S> combiner;
-   protected final int                               popSize,
-                                                     stopCount;
 
+   protected int              populationSize,
+                              stopCount;
    protected CombinerStrategy combinerStrategy = CombinerStrategy.FirstImprovement;
 
    /**
     * GeneticLS constructor.
     * @param combiner       The combiner used to combine solutions when searching for a solution.
-    * @param populationSize The default number of solutions kept in a population.
+    * @param populationSize The maximum number of solutions kept in a population.
     * @param stopCount      The number of iterations in which no better solution was found after which the algorithm will stop.
+    * @see GeneticLS#setPopulationSize(int)
+    * @see GeneticLS#setStopCount(int)
     */
    public GeneticLS(Combiner<GeneticProblem<S, E>, S> combiner, int populationSize, int stopCount) {
-      if(populationSize < 1)
-         throw new IllegalArgumentException("populationSize should be > 0");
-      if(stopCount < 1)
-         throw new IllegalArgumentException("stopCount should be > 0");
-
       this.combiner  = combiner;
-      this.popSize   = populationSize;
-      this.stopCount = stopCount;
+      setPopulationSize(populationSize);
+      setStopCount(stopCount);
    }
 
    /**
@@ -60,6 +57,24 @@ public class GeneticLS<S extends Solution, E extends Comparable<E>> extends Stat
     */
    public void setCombinerStrategy(CombinerStrategy combinerStrategy) {
       this.combinerStrategy = combinerStrategy;
+   }
+
+   /**
+    * Sets the maximum number of solutions to keep.
+    */
+   public void setPopulationSize(int populationSize) {
+      if(populationSize < 1)
+         throw new IllegalArgumentException("populationSize should be > 0");
+      this.populationSize = populationSize;
+   }
+
+   /**
+    * Sets the number of iterations in which no better solutions are found after which the search will stop.
+    */
+   public void setStopCount(int stopCount) {
+      if(stopCount < 1)
+         throw new IllegalArgumentException("stopCount should be > 0");
+      this.stopCount = stopCount;
    }
 
    /**
@@ -139,7 +154,7 @@ public class GeneticLS<S extends Solution, E extends Comparable<E>> extends Stat
    }
 
    public SearchState newState(GeneticProblem<S, E> problem, Iterable<S> solutions) {
-      GeneticPopulation<S> population = combiner.createPopulation(problem, solutions, popSize);
+      GeneticPopulation<S> population = combiner.createPopulation(problem, solutions, populationSize);
       problem.saveSolution(population.peekBest());
       return new SearchState(problem, population);
    }
