@@ -1,6 +1,6 @@
 /*
  * DvRlib - Local search
- * Duncan van Roermund, 2012
+ * Duncan van Roermund, 2012-2013
  * MultiChanger.java
  */
 
@@ -23,16 +23,15 @@ public class MultiChanger<P extends Problem<S, ? extends Comparable<?>>, S exten
    }
 
    /**
-    * Adds the given changer with the given weight to the set of changers.
+    * Adds the given changer with the given weight to the set of underlying changers.
     */
    public void add(Changer<P, S, C> changer, Double weight) {
       changers.put(changer, weight);
    }
 
    /**
-    * Generates, executes and returns a new change.
-    * The change should be small, such that it transforms the solution into one that closely resembles it.
-    * @throws CannotChangeException To indicate this changer was unable to change the given search state.
+    * Generates, executes and returns a new change, by invoking one of its underlying changers.
+    * @throws CannotChangeException To indicate none of the underlying changers were able to change the given search state.
     */
    @Override
    public C makeChange(SingularSearchState<P, S> ss) throws CannotChangeException {
@@ -56,13 +55,13 @@ public class MultiChanger<P extends Problem<S, ? extends Comparable<?>>, S exten
    }
 
    /**
-    * Reinitializes this changer and all its children changers.
-    * @see Changer#reinitialize(Problem)
+    * Reinitialises this changer and all its underlying changers.
+    * @see Changer#reinitialise(Problem)
     */
    @Override
-   public void reinitialize(P problem) {
+   public void reinitialise(P problem) {
       for(Changer<P, S, C> c : changers.keySet()) {
-         c.reinitialize(problem);
+         c.reinitialise(problem);
       }
    }
 }

@@ -1,12 +1,12 @@
 /*
  * DvRlib - Local search
- * Duncan van Roermund, 2010-2012
+ * Duncan van Roermund, 2010-2013
  * SimulatedAnnealingLS.java
  */
 
 package dvrlib.localsearch;
 
-public class SimulatedAnnealingLS<P extends NumericProblem<S, E>, S extends Solution, E extends Number & Comparable<E>> extends LocalSearch<P, S, E> {
+public class SimulatedAnnealingLS<P extends Problem<S, E>, S extends Solution, E extends Number & Comparable<E>> extends LocalSearch<P, S, E> {
    public class SearchState extends SingularSearchState<P, S> {
       protected ChangeList<P, S> changes     = new ChangeList<P, S>();
       protected double           temperature = initTemp;
@@ -108,7 +108,7 @@ public class SimulatedAnnealingLS<P extends NumericProblem<S, E>, S extends Solu
                      state.saveSolution();
                }
             }
-            else if(Math.random() < Math.exp(problem.diffEval(newEval, curEval) * LocalSearch.asNumber(problem.direction()) / state.temperature)) {
+            else if(Math.random() < Math.exp((newEval.doubleValue() - curEval.doubleValue()) * LocalSearch.asNumber(problem.direction()) / state.temperature)) {
                // Accept the change, even though it's not an improvement
                curEval = newEval;
             }
@@ -131,7 +131,7 @@ public class SimulatedAnnealingLS<P extends NumericProblem<S, E>, S extends Solu
    }
 
    protected SearchState newState(P problem, S solution) {
-      changer.reinitialize(problem);
+      changer.reinitialise(problem);
       return new SearchState(problem, solution);
    }
 }

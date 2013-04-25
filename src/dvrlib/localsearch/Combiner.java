@@ -1,6 +1,6 @@
 /*
  * DvRlib - Local search
- * Duncan van Roermund, 2010-2012
+ * Duncan van Roermund, 2010-2013
  * Combiner.java
  */
 
@@ -8,10 +8,10 @@ package dvrlib.localsearch;
 
 public interface Combiner<P extends GeneticProblem<S, ?>, S extends Solution> {
    /**
-    * Reinitializes this combiner, used when a new search is started.
+    * Reinitialises this combiner; used when a new search is started.
     * @see LocalSearch#search(Problem, Solution)
     */
-   public void reinitialize();
+   public void reinitialise(P problem);
 
    /**
     * Returns a set of combinations of the two given solutions.

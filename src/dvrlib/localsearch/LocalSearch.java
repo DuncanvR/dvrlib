@@ -8,15 +8,15 @@ package dvrlib.localsearch;
 
 public abstract class LocalSearch<P extends Problem<S, E>, S extends Solution, E extends Comparable<E>> {
    public enum SavingCriterion { EveryIteration, EveryImprovement, NewBest, EndOnly };
-   public enum SearchDirection { Maximization, Minimization };
+   public enum SearchDirection { Maximisation, Minimisation };
 
    protected SavingCriterion savingCriterion = SavingCriterion.NewBest;
 
    public static final int asNumber(SearchDirection direction) {
       switch(direction) {
-         case Maximization:
+         case Maximisation:
             return 1;
-         case Minimization:
+         case Minimisation:
             return -1;
          default:
             throw new IllegalArgumentException("Unknown instance of LocalSearch.Direction supplied");

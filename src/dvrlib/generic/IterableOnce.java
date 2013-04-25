@@ -10,7 +10,7 @@ import java.util.Iterator;
 
 /**
  * This class wraps an Iterator in an Iterable, to allow use of it in a for-each loop.
- * As the name suggests, it can only be used once, succesive calls of iterator() will return null.
+ * As the name suggests, it can only be used once, successive calls of iterator() will return null.
  */
 public class IterableOnce<E> implements Iterable<E> {
    Iterator<E> iterator;

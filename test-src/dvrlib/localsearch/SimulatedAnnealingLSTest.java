@@ -11,8 +11,7 @@ import java.util.Random;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class SimulatedAnnealingLSTest extends    AbstractProblem<SimulatedAnnealingLSTest.TestSolution, Integer>
-                                      implements NumericProblem<SimulatedAnnealingLSTest.TestSolution, Integer> {
+public class SimulatedAnnealingLSTest extends AbstractProblem<SimulatedAnnealingLSTest.TestSolution, Integer> {
    protected class TestSolution extends AbstractSolution {
       protected int value;
 
@@ -29,7 +28,7 @@ public class SimulatedAnnealingLSTest extends    AbstractProblem<SimulatedAnneal
       }
 
       @Override
-      public void reinitialize(SimulatedAnnealingLSTest p) { }
+      public void reinitialise(SimulatedAnnealingLSTest p) { }
    }
 
    protected final int    values[] = new int[]{11, 22, 33, 44, 55, 66, 77, 88, 99, 111 };
@@ -47,7 +46,7 @@ public class SimulatedAnnealingLSTest extends    AbstractProblem<SimulatedAnneal
 
    @Override
    public LocalSearch.SearchDirection direction() {
-      return LocalSearch.SearchDirection.Minimization;
+      return LocalSearch.SearchDirection.Minimisation;
    }
 
    @Override
@@ -58,11 +57,6 @@ public class SimulatedAnnealingLSTest extends    AbstractProblem<SimulatedAnneal
    @Override
    public TestSolution randomSolution() {
       return new TestSolution(100);
-   }
-
-   @Override
-   public double diffEval(Integer e1, Integer e2) {
-      return (e1 - e2);
    }
 
    // Test methods

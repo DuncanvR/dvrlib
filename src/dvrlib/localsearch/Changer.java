@@ -1,6 +1,6 @@
 /*
  * DvRlib - Local search
- * Duncan van Roermund, 2010-2012
+ * Duncan van Roermund, 2010-2013
  * Changer.java
  */
 
@@ -26,8 +26,8 @@ public abstract class Changer<P extends Problem<S, ? extends Comparable<?>>, S e
    public abstract C makeChange(SingularSearchState<P, S> ss) throws CannotChangeException;
 
    /**
-    * Reinitializes this changer, used when a new search is started.
+    * Reinitialises this changer; used when a new search is started.
     * @see LocalSearch#search(Problem, Solution)
     */
-   public abstract void reinitialize(P problem);
+   public abstract void reinitialise(P problem);
 }

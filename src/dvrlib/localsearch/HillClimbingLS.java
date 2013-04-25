@@ -82,7 +82,7 @@ public class HillClimbingLS<P extends BoundableProblem<S, E>, S extends Solution
 
    @Override
    public SingularSearchState<P, S> newState(P problem, S solution) {
-      changer.reinitialize(problem);
+      changer.reinitialise(problem);
       return new SingularSearchState<P, S>(problem, solution);
    }
 }

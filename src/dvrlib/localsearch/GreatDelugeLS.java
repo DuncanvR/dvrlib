@@ -102,7 +102,7 @@ public abstract class GreatDelugeLS<P extends Problem<S, E>, S extends Solution,
 
    @Override
    public SearchState newState(P problem, S solution) {
-      changer.reinitialize(problem);
+      changer.reinitialise(problem);
       return new SearchState(problem, solution, initTolerance);
    }
 }

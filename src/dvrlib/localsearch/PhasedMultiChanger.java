@@ -1,14 +1,14 @@
 /*
  * DvRlib - Local search
- * Duncan van Roermund, 2012
- * PhasedChanger.java
+ * Duncan van Roermund, 2012-2013
+ * PhasedMultiChanger.java
  */
 
 package dvrlib.localsearch;
 
 import dvrlib.generic.Pair;
 
-public class PhasedChanger<P extends Problem<S, ? extends Comparable<?>>, S extends Solution, C extends Changer<P, S, ?>.Change> extends Changer<P, S, PhasedChanger<P, S, C>.Change> {
+public class PhasedMultiChanger<P extends Problem<S, ? extends Comparable<?>>, S extends Solution, C extends Changer<P, S, ?>.Change> extends Changer<P, S, PhasedMultiChanger<P, S, C>.Change> {
    protected class Change extends Changer<P, S, ?>.Change {
       protected C   change;
       protected int phase;
@@ -21,7 +21,7 @@ public class PhasedChanger<P extends Problem<S, ? extends Comparable<?>>, S exte
       @Override
       protected final void undo(SingularSearchState<P, S> ss) {
          change.undo(ss);
-         PhasedChanger.this.phase = phase;
+         PhasedMultiChanger.this.phase = phase;
       }
    }
 
@@ -29,19 +29,18 @@ public class PhasedChanger<P extends Problem<S, ? extends Comparable<?>>, S exte
    protected int                phase;
 
    /**
-    * PhasedChanger constructor.
+    * PhasedMultiChanger constructor.
     * @param changers The changers that will be used for each phase.
     */
-   public PhasedChanger(Changer<P, S, C>[] changers) {
+   public PhasedMultiChanger(Changer<P, S, C>[] changers) {
       this.changers = changers;
    }
 
    // dvrlib.localsearch.Changer methods
    /**
-    * Generates, executes and returns a new change.
-    * The change should be small, such that it transforms the solution into one that closely resembles it.
+    * Generates, executes and returns a new change, by invoking the current phase.
     * @see Changer#undoChange(SingularSearchState, Change)
-    * @throws CannotChangeException To indicate this changer was unable to change the given search state.
+    * @throws CannotChangeException To indicate the current phase was unable to change the given search state.
     */
    @Override
    public Change makeChange(SingularSearchState<P, S> ss) throws CannotChangeException {
@@ -49,13 +48,13 @@ public class PhasedChanger<P extends Problem<S, ? extends Comparable<?>>, S exte
    }
 
    /**
-    * Reinitializes this changer and all its phases.
-    * @see Changer#reinitialize(Problem)
+    * Reinitialises this changer and all its phases.
+    * @see Changer#reinitialise(Problem)
     */
    @Override
-   public void reinitialize(P problem) {
+   public void reinitialise(P problem) {
       for(Changer<P, S, C> c : changers) {
-         c.reinitialize(problem);
+         c.reinitialise(problem);
       }
       phase = 0;
    }

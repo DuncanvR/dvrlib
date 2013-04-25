@@ -1,6 +1,6 @@
 /*
  * DvRlib - Local search
- * Duncan van Roermund, 2010-2012
+ * Duncan van Roermund, 2010-2013
  * GeneticLS.java
  */
 
@@ -95,7 +95,7 @@ public class GeneticLS<S extends Solution, E extends Comparable<E>> extends Stat
       assert (state != null) : "State should not be null";
       assert (bound != null) : "Bound should not be null";
 
-      combiner.reinitialize();
+      combiner.reinitialise(state.problem);
       long n = stopCount;
       while(n > 0 && !state.problem.betterEq(state.solution(), bound)) {
          iterate(state, bound, n);
