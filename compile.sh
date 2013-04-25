@@ -2,7 +2,11 @@ DIR=~/projects/dvrlib/
 if [ -d $DIR ] ; then
    # Build
    echo " *** Building source..."
-   mkdir -p $DIR/build
+   if [ -d $DIR/build ] ; then
+      rm -R $DIR/build/* 2>/dev/null
+   else
+      mkdir -p $DIR/build
+   fi
    cd $DIR/src/
    javac -d ../build/ dvrlib/*/* -g -Xlint:unchecked
    if [ "$?" != "0" ] ; then
@@ -13,7 +17,11 @@ if [ -d $DIR ] ; then
    if [ -d $DIR/test-src ] ; then
       # Build tests
       echo " *** Building tests..."
-      mkdir -p $DIR/test-build
+      if [ -d $DIR/test-build ] ; then
+         rm -R $DIR/test-build/* 2>/dev/null
+      else
+         mkdir -p $DIR/test-build
+      fi
       cd $DIR/test-src/
       javac -cp /usr/share/java/junit.jar:../build/ -d ../test-build/ dvrlib/*/* -Xlint:unchecked
       if [ "$?" != "0" ] ; then
