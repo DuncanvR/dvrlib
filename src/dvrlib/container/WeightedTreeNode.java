@@ -88,7 +88,7 @@ public class WeightedTreeNode<E> {
     * @return A boolean indicating whether the value was actually added.
     */
    protected boolean add(E value) {
-      return (values.contains(value) ? false : values.add(value));
+      return values.add(value);
    }
 
    /**

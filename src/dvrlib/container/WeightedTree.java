@@ -185,7 +185,10 @@ public class WeightedTree<E> implements Iterable<E> {
             node = node.right;
          else { // key == node.key
             if(node.remove(value)) {
-               rebalanceUp(node);
+               if(node.values.isEmpty())
+                  remove(node);
+               else
+                  rebalanceUp(node);
                return true;
             }
             return false;
@@ -239,9 +242,11 @@ public class WeightedTree<E> implements Iterable<E> {
     * @see WeightedTree#remove(WeightedTreeNode)
     * O(node.depth).
     */
-   protected void removeExternal(WeightedTreeNode<E> node) {
+   private void removeExternal(WeightedTreeNode<E> node) {
       if(node == null)
          throw new IllegalArgumentException("Cannot remove null node");
+      if(node.left != null && node.right != null)
+         throw new IllegalArgumentException("Can only remove external nodes");
       else if(node == root) {
          root = (node.left != null ? node.left : node.right);
          if(root != null)
