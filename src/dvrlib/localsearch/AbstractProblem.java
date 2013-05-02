@@ -142,6 +142,6 @@ public abstract class AbstractProblem<S extends Solution, E extends Comparable<E
     */
    @Override
    public final boolean saveSolution(S s) {
-      return solutionPool.add(copySolution(s));
+      return solutionPool.add(cloneSolution(s));
    }
 }

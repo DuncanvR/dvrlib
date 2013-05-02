@@ -63,9 +63,9 @@ public interface Problem<S extends Solution, E extends Comparable<E>> {
    public S bestSolution();
 
    /**
-    * Returns a copy of the given solution.
+    * Returns a clone of the given solution.
     */
-   public S copySolution(S s);
+   public S cloneSolution(S s);
 
    /**
     * Returns the direction of the search.

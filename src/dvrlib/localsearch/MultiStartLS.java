@@ -50,7 +50,7 @@ public class MultiStartLS<S extends Solution, E extends Comparable<E>> extends L
    public S search(Problem<S, E> problem, E bound, S startSolution) {
       S bestSolution = startSolution;
       for(int i = 0; i < count && !problem.betterEq(bestSolution, bound); i++) {
-         S newSolution = ls.search(problem, bound, problem.copySolution(startSolution));
+         S newSolution = ls.search(problem, bound, problem.cloneSolution(startSolution));
          if(problem.better(newSolution, bestSolution))
             bestSolution = newSolution;
       }
