@@ -39,12 +39,29 @@ public abstract class AbstractDisjointSetForest<E, S> implements java.util.Set<E
    }
 
    /**
+    * Adds the given element and data to this forest as a singleton set.
+    * @param e The element to add.
+    * @param s The associated data to add.
+    * @return Whether the element was successfully added.
+    * O(1).
+    */
+   public boolean add(E e, S s) {
+      if(contains(e))
+         return false;
+      HashSet<E> es = new HashSet<E>();
+      es.add(e);
+      sets.put(e, new Pair<HashSet<E>, S>(es, s));
+      parents.put(e, new Pair<E, Integer>(e, 0));
+      return true;
+   }
+
+   /**
     * Merges the two given sets of elements and associated data.
-    * @param t1 The first tuple of elements and data.
-    * @param t2 The second tuple of elements and data, that is being merged into the first.
+    * @param p1 The first pair of elements and data.
+    * @param p2 The second pair of elements and data, that is being merged into the first.
     * @return The union of the elements and data of the two sets.
     */
-   protected abstract Pair<HashSet<E>, S> merge(Pair<HashSet<E>, S> t1, Pair<HashSet<E>, S> t2);
+   protected abstract Pair<HashSet<E>, S> merge(Pair<HashSet<E>, S> p1, Pair<HashSet<E>, S> p2);
 
    /**
     * Finds the representative of the set to which the given element belongs.
@@ -107,23 +124,6 @@ public abstract class AbstractDisjointSetForest<E, S> implements java.util.Set<E
             d2.b++;
          return e2;
       }
-   }
-
-   /**
-    * Adds the given element and data to this forest as a singleton set.
-    * @param e The element to add.
-    * @param s The associated data to add.
-    * @return Whether the element was successfully added.
-    * O(1).
-    */
-   public boolean add(E e, S s) {
-      if(contains(e))
-         return false;
-      HashSet<E> es = new HashSet<E>();
-      es.add(e);
-      sets.put(e, new Pair<HashSet<E>, S>(es, s));
-      parents.put(e, new Pair<E, Integer>(e, 0));
-      return true;
    }
 
    //--- java.util.Set methods

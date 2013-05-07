@@ -47,14 +47,14 @@ public class DisjointSetForest<E> extends AbstractDisjointSetForest<E, Object> {
 
    /**
     * Merges the two given sets of elements and associated data.
-    * @param t1 The first tuple of elements and data.
-    * @param t2 The second tuple of elements and data, that is being merged into the first.
+    * @param p1 The first pair of elements and data.
+    * @param p2 The second pair of elements and data, that is being merged into the first.
     * @return The union of the elements and data of the two sets.
     * O(1).
     */
    @Override
-   protected Pair<HashSet<E>, Object> merge(Pair<HashSet<E>, Object> t1, Pair<HashSet<E>, Object> t2) {
-      t1.a.addAll(t2.a);
-      return t1;
+   protected Pair<HashSet<E>, Object> merge(Pair<HashSet<E>, Object> p1, Pair<HashSet<E>, Object> p2) {
+      p1.a.addAll(p2.a);
+      return p1;
    }
 }
