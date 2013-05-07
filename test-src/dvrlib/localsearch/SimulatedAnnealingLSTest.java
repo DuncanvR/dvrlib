@@ -22,9 +22,7 @@ public class SimulatedAnnealingLSTest extends AbstractProblem<SimulatedAnnealing
    protected class TestChanger extends SubstitutionChanger<SimulatedAnnealingLSTest, SimulatedAnnealingLSTest.TestSolution> {
       @Override
       public Change makeChange(SingularSearchState<SimulatedAnnealingLSTest, TestSolution> state) throws CannotChangeException {
-         Change c = new Change(cloneSolution(state.solution()));
-         state.solution().value = values[r.nextInt(values.length)];
-         return c;
+         return setSolution(state, new TestSolution(values[r.nextInt(values.length)]));
       }
 
       @Override
