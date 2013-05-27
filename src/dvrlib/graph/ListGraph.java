@@ -157,6 +157,17 @@ public class ListGraph<Id, NodeData, EdgeData> extends AbstractGraph<Id, ListGra
    }
 
    /**
+    * Clears all nodes and edges from this graph.
+    */
+   public void clear() {
+      edgeCount    = 0;
+      maxInDegree  = 0;
+      maxOutDegree = 0;
+      nodes.clear();
+      map.clear();
+   }
+
+   /**
     * Merges the nodes <code>a</code> and <code>b</code> into the returned node.
     */
    @Override

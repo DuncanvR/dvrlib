@@ -99,6 +99,11 @@ public abstract class AbstractGraph<Id, Node extends AbstractGraphNode<Id, Node,
    public abstract NodeData remove(Node node);
 
    /**
+    * Clears all nodes and edges from this graph.
+    */
+   public abstract void clear();
+
+   /**
     * Merges the nodes <code>a</code> and <code>b</code> into one.
     */
    public void merge(Id a, Id b) {
