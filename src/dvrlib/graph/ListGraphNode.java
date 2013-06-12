@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 
-public class ListGraphNode<Id, NodeData, EdgeData> extends AbstractGraphNode<Id, ListGraphNode<Id, NodeData, EdgeData>, NodeData, EdgeData> {
+public class ListGraphNode<Id extends Comparable<Id>, NodeData, EdgeData> extends AbstractGraphNode<Id, ListGraphNode<Id, NodeData, EdgeData>, NodeData, EdgeData> {
    protected final ListGraph                                                graph;
    protected final HashMap<ListGraphNode<Id, NodeData, EdgeData>, EdgeData> outEdges = new HashMap<ListGraphNode<Id, NodeData, EdgeData>, EdgeData>();
    protected final HashSet<ListGraphNode<Id, NodeData, EdgeData>>           inEdges  = new HashSet<ListGraphNode<Id, NodeData, EdgeData>>();

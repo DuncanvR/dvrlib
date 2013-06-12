@@ -10,7 +10,8 @@ import dvrlib.generic.Triple;
 
 import java.util.Iterator;
 
-public abstract class AbstractGraphNode<Id, Node extends AbstractGraphNode, NodeData, EdgeData> {
+public abstract class AbstractGraphNode<Id extends Comparable<Id>, Node extends AbstractGraphNode, NodeData, EdgeData>
+      implements Comparable<AbstractGraphNode<Id, Node, NodeData, EdgeData>> {
    public final Id       id;
    public       NodeData data;
 
@@ -59,4 +60,11 @@ public abstract class AbstractGraphNode<Id, Node extends AbstractGraphNode, Node
     * Returns an iterator to the incoming edges of this node.
     */
    public abstract Iterator<Triple<Node, EdgeData, Node>> inEdgesIterator();
+
+   /**
+    * Compares this object with the specified object for order.
+    */
+   public int compareTo(AbstractGraphNode<Id, Node, NodeData, EdgeData> that) {
+      return id.compareTo(that.id);
+   }
 }

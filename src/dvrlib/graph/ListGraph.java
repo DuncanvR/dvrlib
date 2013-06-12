@@ -11,16 +11,17 @@ import dvrlib.generic.IterableOnce;
 import dvrlib.generic.Pair;
 import dvrlib.generic.Triple;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.HashSet;
+import java.util.TreeSet;
 
 /**
  * Graph class, based on an adjacency list implementation.
  * This makes it slow at inserting and checking for edges, but fast at retrieving neighbouring nodes, compared to an adjacency matrix approach.
  */
-public class ListGraph<Id, NodeData, EdgeData> extends AbstractGraph<Id, ListGraphNode<Id, NodeData, EdgeData>, NodeData, EdgeData> {
-   protected final HashSet<ListGraphNode<Id, NodeData, EdgeData>> nodes = new HashSet<ListGraphNode<Id, NodeData, EdgeData>>();
+public class ListGraph<Id extends Comparable<Id>, NodeData, EdgeData> extends AbstractGraph<Id, ListGraphNode<Id, NodeData, EdgeData>, NodeData, EdgeData> {
+   protected final TreeSet<ListGraphNode<Id, NodeData, EdgeData>> nodes = new TreeSet<ListGraphNode<Id, NodeData, EdgeData>>();
    protected final AbstractDisjointSetForest<Id, ListGraphNode<Id, NodeData, EdgeData>> map = new AbstractDisjointSetForest<Id, ListGraphNode<Id, NodeData, EdgeData>>() {
          @Override
          protected Pair<HashSet<Id>, ListGraphNode<Id, NodeData, EdgeData>> merge(Pair<HashSet<Id>, ListGraphNode<Id, NodeData, EdgeData>> t1,

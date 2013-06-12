@@ -11,7 +11,7 @@ import dvrlib.generic.Triple;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public abstract class AbstractGraph<Id, Node extends AbstractGraphNode<Id, Node, NodeData, EdgeData>, NodeData, EdgeData> {
+public abstract class AbstractGraph<Id extends Comparable<Id>, Node extends AbstractGraphNode<Id, Node, NodeData, EdgeData>, NodeData, EdgeData> {
    protected int maxInDegree = 0, maxOutDegree = 0;
 
    /**

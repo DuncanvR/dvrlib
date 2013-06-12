@@ -6,7 +6,7 @@
 
 package dvrlib.graph;
 
-public class UndirectedListGraph<Id, NodeData, EdgeData> extends ListGraph<Id, NodeData, EdgeData> {
+public class UndirectedListGraph<Id extends Comparable<Id>, NodeData, EdgeData> extends ListGraph<Id, NodeData, EdgeData> {
 
    /**
     * Adds an edge between nodes <code>a</code> and <code>b</code>.
