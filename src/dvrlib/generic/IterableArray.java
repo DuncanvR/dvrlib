@@ -19,7 +19,12 @@ public class IterableArray<E> implements Iterable<E> {
 
       @Override
       public E next() {
-         return array[i++];
+         try {
+            return array[i++];
+         }
+         catch(ArrayIndexOutOfBoundsException _) {
+            throw new java.util.NoSuchElementException();
+         }
       }
 
       @Override
