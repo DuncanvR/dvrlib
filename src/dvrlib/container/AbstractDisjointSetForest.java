@@ -55,7 +55,7 @@ public abstract class AbstractDisjointSetForest<E, S> implements java.util.Set<E
     * Adds the given element and data to this forest as a singleton set.
     * @param e The element to add.
     * @param s The associated data to add.
-    * @return Whether the element was successfully added.
+    * @return A boolean indicating whether the element was successfully added.
     * O(1).
     */
    public boolean add(E e, S s) {
@@ -92,13 +92,26 @@ public abstract class AbstractDisjointSetForest<E, S> implements java.util.Set<E
    }
 
    /**
-    * Finds the set to which the given element belongs.
+    * Returns the set to which the given element belongs.
     * @param e The element to find.
     * @return The set containing the given element and the associated data.
     * @throws IllegalArgumentException If the supplied element is not a member of this forest.
     */
    public Pair<HashSet<E>, S> retrieveSet(E e) {
       return sets.get(representative(e));
+   }
+
+   /**
+    * Sets the given data as the associated data for the set to which the given element belongs.
+    * @param e The representative element.
+    * @param s The associated data to set.
+    * @return The data previously associated with the indicated set.
+    */
+   public S setData(E e, S s) {
+      Pair<HashSet<E>, S> p = sets.get(representative(e));
+      S old = p.b;
+      p.b = s;
+      return old;
    }
 
    /**
