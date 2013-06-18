@@ -37,17 +37,33 @@ public class IterableTest {
       assertNull(ibl.iterator());
 
       // Test CombinedIterable
-      ibl = new CombinedIterable<Integer>(new Iterable[]{ new IterableArray<Integer>(es)
-                                                        , new IterableOnce<Integer>(new IterableArray<Integer>(es).iterator())
-                                                        , new IterableArray<Integer>(es)
-                                                        , new IterableOnce<Integer>(new IterableArray<Integer>(es).iterator())
-                                                        });
-      it = ibl.iterator();
+      CombinedIterable<Integer> cibl = new CombinedIterable<Integer>();
+      assertFalse(cibl.iterator().hasNext());
+
+      cibl.combine(new CombinedIterable<Integer>());
+      assertFalse(cibl.iterator().hasNext());
+
+      cibl.combine(new IterableOnce<Integer>(new IterableArray<Integer>(es).iterator()));
+      it = cibl.iterator();
+      testIterator(it);
+      assertFalse(it.hasNext());
+
+      cibl.combine(new IterableArray<Integer>(es));
+      it = cibl.iterator();
+      testIterator(it);
+      assertFalse(it.hasNext());
+
+      cibl = new CombinedIterable<Integer>(new Iterable[]{ new IterableArray<Integer>(es)
+                                                         , new IterableOnce<Integer>(new IterableArray<Integer>(es).iterator())
+                                                         , new IterableArray<Integer>(es)
+                                                         , new IterableOnce<Integer>(new IterableArray<Integer>(es).iterator())
+                                                         });
+      it = cibl.iterator();
       for(int i = 0; i < 4; i++) {
          testIterator(it);
       }
       assertFalse(it.hasNext());
-      it = ibl.iterator();
+      it = cibl.iterator();
       for(int i = 0; i < 2; i++) {
          testIterator(it);
       }

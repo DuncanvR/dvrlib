@@ -7,6 +7,7 @@
 package dvrlib.generic;
 
 import java.util.Iterator;
+import java.util.LinkedList;
 
 /**
  * <code>CombinedIterable</code> iterates in order over the elements of the given array of <code>Iterable</code>s, as if it was one big iterable.
@@ -14,44 +15,63 @@ import java.util.Iterator;
  */
 public class CombinedIterable<E> implements Iterable<E> {
    public class CombinedIterator implements Iterator<E> {
-      protected int         nextIt = 0;
-      protected Iterator<E> it     = null;
+      protected Iterator<Iterable<E>> esIt = ess.iterator();
+      protected Iterator<E>           eIt  = null;
 
       public CombinedIterator() {
          nextIterator();
       }
 
       protected void nextIterator() {
-         it = null;
-         for(; es.length > nextIt && it == null; nextIt++) {
-            if(es[nextIt] != null)
-               it = es[nextIt].iterator();
+         eIt = null;
+         while(esIt.hasNext() && (eIt == null || !eIt.hasNext())) {
+            Iterable<E> es = esIt.next();
+            if(es != null)
+               eIt = es.iterator();
          }
       }
 
       @Override
       public boolean hasNext() {
-         return (it != null && it.hasNext());
+         return (eIt != null && eIt.hasNext());
       }
 
       @Override
       public E next() {
-         E e = it.next();
-         if(!it.hasNext())
+         E e = eIt.next();
+         if(!eIt.hasNext())
             nextIterator();
          return e;
       }
 
       @Override
       public void remove() {
-         it.remove();
+         throw new UnsupportedOperationException(this.getClass().getName() + ".remove() is not supported");
       }
    }
 
-   protected final Iterable<E>[] es;
+   protected final LinkedList<Iterable<E>> ess;
 
-   public CombinedIterable(Iterable<E>[] es) {
-      this.es = es;
+   public CombinedIterable() {
+      ess = new LinkedList<Iterable<E>>();
+   }
+
+   public CombinedIterable(LinkedList<Iterable<E>> ess) {
+      this.ess = ess;
+   }
+
+   public CombinedIterable(Iterable<E>[] ess) {
+      this();
+      for(Iterable<E> es : ess) {
+         combine(es);
+      }
+   }
+
+   /**
+    * Appends the given iterable to the list.
+    */
+   public void combine(Iterable<E> es) {
+      ess.add(es);
    }
 
    @Override
