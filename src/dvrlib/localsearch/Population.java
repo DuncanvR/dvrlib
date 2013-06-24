@@ -69,6 +69,10 @@ public abstract class Population<S extends Solution> implements Collection<S> {
     */
    public abstract S peekWorst();
    /**
+    * Removes and returns the best solution in this population.
+    */
+   public abstract S popBest();
+   /**
     * Removes and returns the worst solution in this population.
     */
    public abstract S popWorst();

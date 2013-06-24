@@ -131,6 +131,17 @@ public class WeightedTreePopulation<S extends Solution> extends GeneticPopulatio
    }
 
    /**
+    * Removes and returns the best solution in this population.
+    * @see Population#popBest()
+    */
+   @Override
+   public S popBest() {
+      S best = tree.popMax().b;
+      keys.remove(best);
+      return best;
+   }
+
+   /**
     * Removes and returns the worst solution in this population.
     * @see Population#popWorst()
     */

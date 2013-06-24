@@ -167,6 +167,24 @@ public class TreePopulation<S extends Solution, E extends Comparable<E>> extends
    }
 
    /**
+    * Removes and returns the best solution in this population.
+    * @see Population#popBest()
+    */
+   @Override
+   public S popBest() {
+      ArrayList<S> bestList = getList(-direction);
+      S best = bestList.remove(0);
+      keys.remove(best);
+      if(bestList.isEmpty()) {
+         if(direction > 0)
+            tree.pollLastEntry();
+         else
+            tree.pollFirstEntry();
+      }
+      return best;
+   }
+
+   /**
     * Removes and returns the worst solution in this population.
     * @see Population#popWorst()
     */
