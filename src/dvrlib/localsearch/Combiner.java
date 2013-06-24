@@ -28,11 +28,11 @@ public interface Combiner<P extends GeneticProblem<S, ?>, S extends Solution> {
 
    /**
     * Returns a set of combinations of the two given solutions.
-    * The resulting set should provide an appropriate ordering on the solutions if GeneticLS.CombinerStrategy.FirstImprovement is used.
+    * The resulting set should provide an appropriate ordering on the solutions if a strategy other than GeneticLS.CombinerStrategy.Best is used.
     * This method may also introduce mutations after creating a new solution.
     * @see GeneticLS.CombinerStrategy
     */
-   public java.util.TreeSet<S> combine(SearchState<P, S> ss, S s1, S s2);
+   public java.util.Set<S> combine(SearchState<P, S> ss, S s1, S s2);
 
    /**
     * Creates a new population with at least the given solutions and at most <code>popSize</code> solutions.

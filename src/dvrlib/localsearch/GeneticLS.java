@@ -42,13 +42,21 @@ public class GeneticLS<S extends Solution, E extends Comparable<E>> extends Stat
       }
    }
 
-   public enum CombinerStrategy { FirstImprovement, BestImprovement };
+   /**
+    * Defines the strategy for when to stop evaluating newly generated solutions.
+    *   First: stop after the first improvement;
+    *   Last:  continue until a non-improving solution is encountered;
+    *   Best:  evaluate all solutions;
+    * Note that the first two expect an appropriate ordering on the set of solutions given by Combiner#combine(SearchState, Solution, Solution).
+    * @see GeneticLS#setCombinerStrategy(GeneticLS.CombinerStrategy)
+    */
+   public enum CombinerStrategy { First, Last, Best };
 
    protected final Combiner<GeneticProblem<S, E>, S> combiner;
 
    protected int              populationSize,
                               stopCount;
-   protected CombinerStrategy combinerStrategy = CombinerStrategy.FirstImprovement;
+   protected CombinerStrategy combinerStrategy = CombinerStrategy.First;
 
    /**
     * GeneticLS constructor.
@@ -127,20 +135,26 @@ public class GeneticLS<S extends Solution, E extends Comparable<E>> extends Stat
    public SearchState iterate(SearchState state, E bound, long n) {
       for(long stop = state.iteration + n; state.iteration < stop && !state.problem.betterEq(state.solution(), bound); state.iteration++) {
          // Generate new solutions by combining two random solutions from the population
-         java.util.TreeSet<S> ss = combiner.combine(state, state.population.peekRandom(), state.population.peekRandom());
-         state.solution = state.population.peekWorst();
+         java.util.Set<S> ss = combiner.combine(state, state.population.peekRandom(), state.population.peekRandom());
+         state.solution = (state.population.size() < populationSize ? null : state.population.peekWorst());
 
          for(S s : ss) {
             if(state.population.contains(s))
                continue;
-            if(state.problem.better(state.problem.evaluationBound(s), state.solution) && state.problem.better(s, state.solution)) {
-               state.solution = s;
-               if(combinerStrategy == CombinerStrategy.FirstImprovement)
+            if(state.problem.better(state.problem.evaluationBound(s), state.solution)) {
+               if(state.problem.better(s, state.solution)) {
+                  state.solution = s;
+                  if(combinerStrategy == CombinerStrategy.First)
+                     break;
+               }
+               else if(combinerStrategy == CombinerStrategy.Last)
                   break;
             }
          }
 
-         if(state.solution == state.population.peekWorst()) {
+         if(state.solution == null)
+            continue;
+         else if(state.solution == state.population.peekWorst()) {
             state.solution = null;
             continue;
          }
