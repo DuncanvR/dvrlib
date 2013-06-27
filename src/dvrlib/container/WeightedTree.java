@@ -102,7 +102,33 @@ public class WeightedTree<E> extends AbstractBinaryTree<WeightedTree<E>.Node> im
    }
 
    /**
-    * Returns a (key, element) from the tree, reached with the given normalised index.
+    * Returns a (key, element) from the tree, reached with the given index.
+    * @param index An integer between 0 (inclusive) and the size of this tree (exclusive).
+    */
+   public Pair<Double, E> getIndexed(int index) {
+      if(index < 0 || index >= size())
+         throw new IllegalArgumentException("The argument of WeightedTree.getIndexed(int) should be between 0 (inclusive) and the size of the tree (exclusive), got " + index);
+      return (root == null ? null : getIndexed(root, index));
+   }
+   /**
+    * Returns a (key, element) from the subtree rooted at the given node, reached with the given index.
+    * @param index An integer between 0 (inclusive) and the size of this subtree (exclusive).
+    */
+   protected Pair<Double, E> getIndexed(Node node, int index) {
+      assert (index >= 0 && index < size()) : "index should be between 0 (inclusive) and the size of the tree (exclusive), got " + index;
+      int s = size(node.left);
+      if(node.left != null && index < s)
+         return getIndexed(node.left, index);
+      index -= s;
+      s = size(node);
+      if(index < s)
+         return new Pair<Double, E>(node.key, node.values.get(index));
+      index -= s;
+      return getIndexed(node.right, index);
+   }
+
+   /**
+    * Returns a (key, element) from the tree, reached with the given normalised weighted index.
     * For example, in a tree with these four items: {(1, A), (2, B), (1.3, C), (1.7, D)}, the sum of the indices is 6.
     * A call to getWeighted(0.5) will then return the item with the summed index (0.5 * 6 = 3).
     * Moving through the tree from the smallest index, (A: 1 &lt; 3), (C: 1.3 &lt; (3 - 1)), (D: 1.7 &gt;= (3 - 1 - 1.3)).
@@ -115,7 +141,7 @@ public class WeightedTree<E> extends AbstractBinaryTree<WeightedTree<E>.Node> im
       return (root == null ? null : getWeighted(root, normIndex));
    }
    /**
-    * Returns a (key, element) from the subtree rooted at the given node, reached with the given normalised index.
+    * Returns a (key, element) from the subtree rooted at the given node, reached with the given normalised weighted index.
     * @param normIndex A double between 0 (inclusive) and 1 (exclusive).
     */
    protected Pair<Double, E> getWeighted(Node node, double normIndex) {
