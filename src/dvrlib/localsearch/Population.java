@@ -98,4 +98,22 @@ public abstract class Population<S extends Solution> implements Collection<S> {
    public boolean retainAll(Collection<?> c) {
       throw new UnsupportedOperationException();
    }
+
+   /**
+    * Clears this population, retaining only the given number of best solutions.
+    * The default implementation expects <code>iterator()</code> to return a valid iterator that lists the solutions from best to worst,
+    *    and that supports the <code>remove()</code> method.
+    * @see Collection#iterator()
+    * @see java.util.Iterator#remove()
+    */
+   public void retainBest(int n) {
+      java.util.Iterator it = iterator();
+      for(int i = 0; i < n && it.hasNext(); i++) {
+         it.next();
+      }
+      while(it.hasNext()) {
+         it.next();
+         it.remove();
+      }
+   }
 }

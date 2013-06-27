@@ -114,7 +114,10 @@ public class WeightedTreeTest {
       instance = testAdd(new Double []{0.6, 0.5, 0.4, 0.3, 0.2, 0.1});
       instance = testAdd(new Double []{0.1, 0.6, 0.2, 0.5, 0.3, 0.4});
 
-      instance = testAdd(new Double []{0.5, 0.3, 0.2, 0.6, 0.1, 0.4});
+      Number vs[] = new Double []{0.5, 0.3, 0.2, 0.6, 0.1, 0.4};
+      instance = testAdd(vs);
+      testBalance(instance, instance.root);
+      assertContains(instance, vs);
       assertEquals(0.6, instance.max().key, 0.0);
       instance.popMax();
       testBalance(instance, instance.root);
@@ -129,7 +132,10 @@ public class WeightedTreeTest {
       assertEquals(0.2, instance.min().key, 0.0);
       assertEquals(0.4, instance.max().key, 0.0);
 
-      instance = testAdd(new Double []{0.3, 0.4, 0.2, 0.5, 0.1, 0.6, 0.2, 0.2});
+      vs = new Double []{0.3, 0.4, 0.2, 0.5, 0.1, 0.6, 0.2, 0.2};
+      instance = testAdd(vs);
+      testBalance(instance, instance.root);
+      assertContains(instance, vs);
       assertTrue(instance.remove(0.3, new Double(0.3)));
       assertFalse(instance.remove(0.3, new Double(0.3)));
       testBalance(instance, instance.root);
@@ -142,6 +148,20 @@ public class WeightedTreeTest {
       testBalance(instance, instance.root);
       assertTrue(instance.remove(0.1, new Double(0.1)));
       assertFalse(instance.remove(0.1, new Double(0.1)));
+      testBalance(instance, instance.root);
+
+      vs = new Double []{0.3, 0.4, 0.2, 0.5, 0.1, 0.6, 0.2, 0.2};
+      instance = testAdd(vs);
+      assertContains(instance, vs);
+      testBalance(instance, instance.root);
+      instance.retainBest(6);
+      assertContains(instance, new Double[]{0.2, 0.2, 0.3, 0.4, 0.5, 0.6});
+      testBalance(instance, instance.root);
+      instance.retainBest(4);
+      assertContains(instance, new Double[]{0.3, 0.4, 0.5, 0.6});
+      testBalance(instance, instance.root);
+      instance.retainBest(1);
+      assertContains(instance, new Double[]{0.6});
       testBalance(instance, instance.root);
    }
    public WeightedTree<Number> testAdd(Number keys[]) {
@@ -181,6 +201,12 @@ public class WeightedTreeTest {
             assertTrue(((WeightedTree.Node) node.right).key > ((WeightedTree.Node) node).key);
             testBalance(instance, (WeightedTree.Node) node.right);
          }
+      }
+   }
+   public void assertContains(WeightedTree<Number> instance, Number ks[]) {
+      assertEquals(ks.length, instance.size());
+      for(Number k : ks) {
+         assertTrue(instance.contains(k.doubleValue(), k));
       }
    }
 

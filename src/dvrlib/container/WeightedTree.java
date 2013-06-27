@@ -266,6 +266,37 @@ public class WeightedTree<E> extends AbstractBinaryTree<WeightedTree<E>.Node> im
    }
 
    /**
+    * Clears this tree, retaining only the given number of elements with the highests keys.
+    */
+   public void retainBest(int n) {
+      if(root != null && n < root.size)
+         retainBest(root, n);
+   }
+
+   protected void retainBest(Node node, int n) {
+      if(node.right != null && n < node.right.size)
+         retainBest(node.right, n);
+      else if(node.left != null && n > node.size - node.left.size)
+         retainBest(node.left, n - (node.size - node.left.size));
+      else {
+         if(node.right != null)
+            n -= node.right.size;
+         if(n > 0) {
+            for(int i = node.values.size() - 1; i >= n; i--) {
+               node.values.remove(i);
+            }
+            updateUp(node);
+            node = leftOf(node);
+         }
+         while(node != null) {
+            Node old = node;
+            node = leftOf(node);
+            remove(old);
+         }
+      }
+   }
+
+   /**
     * Removes the given key and value from this tree.
     * @return A boolean indicating whether the value was actually removed.
     */

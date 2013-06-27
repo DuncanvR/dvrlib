@@ -165,6 +165,14 @@ public class WeightedTreePopulation<S extends Solution> extends GeneticPopulatio
    }
 
    /**
+    * Clears this population, retaining only the given number of best solutions.
+    */
+   @Override
+   public void retainBest(int n) {
+      tree.retainBest(n);
+   }
+
+   /**
     * Returns the number of solutions in this population.
     * @see Population#size()
     */
