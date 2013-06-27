@@ -305,42 +305,41 @@ public class WeightedTree<E> extends AbstractBinaryTree<WeightedTree<E>.Node> im
    public Iterator<E> iterator() {
       return new Iterator<E>() {
             protected Node        node         = max();
-            protected Iterator<E> nodeIterator = (node == null ? null : node.values.iterator());
+            protected Iterator<E> nodeIterator = null;
 
             @Override
             public boolean hasNext() {
-               return (nodeIterator != null);
-            }
-
-            @Override
-            public E next() {
-               assert hasNext()              : "!hasNext()";
-               assert (node != null)         : "node == null";
-               assert (nodeIterator != null) : "nodeIterator == null";
-               assert nodeIterator.hasNext() : "!nodeIterator.hasNext()";
-
-               E next = nodeIterator.next();
-               if(!nodeIterator.hasNext()) {
-                  if(node.left != null)
-                     node = max(node.left);
-                  else {
-                     while(node.parent != null && node.parent.left == node) {
-                        node = node.parent;
-                     }
-                     node = node.parent;
-                  }
+               if(node == null)
+                  return false;
+               if(nodeIterator == null)
+                  nodeIterator = node.values.iterator();
+               else if(!nodeIterator.hasNext()) {
+                  nodeIterator = null;
+                  node = leftOf(node);
 
                   if(node != null)
                      nodeIterator = node.values.iterator();
                   else
-                     nodeIterator = null;
+                     return false;
                }
-               return next;
+               return nodeIterator.hasNext();
+            }
+
+            @Override
+            public E next() {
+               if(!hasNext())
+                  throw new java.util.NoSuchElementException();
+               return nodeIterator.next();
             }
 
             @Override
             public void remove() {
-               throw new UnsupportedOperationException(this.getClass().getName() + ".remove() is not supported");
+               nodeIterator.remove();
+               if(node.values.isEmpty()) {
+                  Node old = node;
+                  hasNext();
+                  WeightedTree.this.remove(old);
+               }
             }
          };
    }

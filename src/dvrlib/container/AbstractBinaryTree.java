@@ -93,6 +93,31 @@ public abstract class AbstractBinaryTree<N extends AbstractBinaryTree<N>.Node> {
    }
 
    /**
+    * Returns the first node to the left of the given one.
+    * O(height).
+    */
+   protected N leftOf(N node) {
+      if(node.left != null)
+         return max(node.left);
+      while(node.parent != null && node.parent.left == node) {
+         node = node.parent;
+      }
+      return node.parent;
+   }
+   /**
+    * Returns the first node to the right of the given one.
+    * O(height).
+    */
+   protected N rightOf(N node) {
+      if(node.right != null)
+         return min(node.right);
+      while(node.parent != null && node.parent.right == node) {
+         node = node.parent;
+      }
+      return node.parent;
+   }
+
+   /**
     * Returns the leftmost node in this tree.
     * O(height).
     */

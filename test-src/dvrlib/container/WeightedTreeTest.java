@@ -205,6 +205,27 @@ public class WeightedTreeTest {
             assertTrue(it2.hasNext());
             assertEquals(i + j, it1.next().intValue());
             assertEquals(i + j, it2.next().intValue());
+            if(i % 3 == 0)
+               it1.remove();
+            if(j % 2 == 0)
+               it2.remove();
+         }
+      }
+      assertFalse(it1.hasNext());
+      assertFalse(it2.hasNext());
+
+      it1 = instance1.iterator();
+      it2 = instance2.iterator();
+      for(int i = 8; i >= 0; i--) {
+         for(int j = 0; j < 9; j++) {
+            if(i % 3 != 0) {
+               assertTrue(it1.hasNext());
+               assertEquals(i + j, it1.next().intValue());
+            }
+            if(j % 2 != 0) {
+               assertTrue(it2.hasNext());
+               assertEquals(i + j, it2.next().intValue());
+            }
          }
       }
       assertFalse(it1.hasNext());
