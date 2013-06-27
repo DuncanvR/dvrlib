@@ -22,6 +22,13 @@ package dvrlib.localsearch;
 public abstract class GeneticPopulation<S extends Solution> extends Population<S> {
    /**
     * Returns but does not remove a random solution from this population.
+    * The chance a solution is chosen is equal for all solutions.
     */
    public abstract S peekRandom();
+
+   /**
+    * Returns but does not remove a random solution from this population.
+    * The chance a solution is chosen is directly proportionate to its fitness score.
+    */
+   public abstract S peekWeighted();
 }

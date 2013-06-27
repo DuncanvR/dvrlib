@@ -21,10 +21,13 @@ package dvrlib.localsearch;
 
 import dvrlib.container.WeightedTree;
 
-import java.util.Iterator;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Random;
 
 public class WeightedTreePopulation<S extends Solution> extends GeneticPopulation<S> {
+   protected static final Random Rnd = new Random();
+
    protected final Hashtable<S, Double> keys    = new Hashtable<S, Double>();
    protected final GeneticProblem<S, ?> problem;
    protected final WeightedTree<S>      tree    = new WeightedTree<S>();
@@ -114,11 +117,20 @@ public class WeightedTreePopulation<S extends Solution> extends GeneticPopulatio
 
    /**
     * Returns but does not remove a random solution from this population.
-    * @see Population#peekRandom()
+    * The chance a solution is chosen is equal for all solutions.
     */
    @Override
    public S peekRandom() {
-      return tree.getWeighted(Math.random()).b;
+      return tree.getIndexed(Rnd.nextInt(tree.size())).b;
+   }
+
+   /**
+    * Returns but does not remove a random solution from this population.
+    * The chance a solution is chosen is directly proportionate to its fitness score.
+    */
+   @Override
+   public S peekWeighted() {
+      return tree.getWeighted(Rnd.nextDouble()).b;
    }
 
    /**
