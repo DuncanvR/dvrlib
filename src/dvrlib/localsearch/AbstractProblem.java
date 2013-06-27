@@ -71,7 +71,7 @@ public abstract class AbstractProblem<S extends Solution, E extends Comparable<E
     */
    @Override
    public final boolean better(S s1, S s2) {
-      return (s1 == null ? false : (s2 == null ? true : (s1.equals(s2) ? false : better(evaluate(s1), evaluate(s2)))));
+      return (s1 == null ? false : (s2 == null ? true : better(evaluate(s1), evaluate(s2))));
    }
    /**
     * Returns true if the current solution of the given search state is better than the given evaluation, i.e. <code>better(evaluate(ss), e)</code>.
@@ -99,7 +99,7 @@ public abstract class AbstractProblem<S extends Solution, E extends Comparable<E
     */
    @Override
    public boolean betterEq(E e, S s) {
-      return (s == null ? true : betterEq(evaluate(s), e));
+      return (s == null ? true : betterEq(e, evaluate(s)));
    }
    /**
     * Returns true if the given solution is better than or equal to the given evaluation, i.e. <code>betterEq(evaluate(s), e)</code>.
@@ -113,7 +113,7 @@ public abstract class AbstractProblem<S extends Solution, E extends Comparable<E
     */
    @Override
    public final boolean betterEq(S s1, S s2) {
-      return (s1 == null ? s2 == null : (s2 == null ? true : (s1.equals(s2) ? true : betterEq(evaluate(s1), evaluate(s2)))));
+      return (s1 == null ? s2 == null : (s2 == null ? true : betterEq(evaluate(s1), evaluate(s2))));
    }
    /**
     * Returns true if the current solution of the given search state is better than or equal to the given evaluation, i.e. <code>betterEq(evaluate(ss), e)</code>.
@@ -128,6 +128,11 @@ public abstract class AbstractProblem<S extends Solution, E extends Comparable<E
    @Override
    public final boolean betterEq(SearchState<? extends Problem<S, E>, S> ss, S s) {
       return (ss == null ? s == null : (s == null ? true : betterEq(evaluate(ss), evaluate(s, ss.iterationCount()))));
+   }
+
+   @Override
+   public final int compare(S s1, S s2) {
+      return (s1 == null ? (s2 == null ? 0 : -1) : (s2 == null ? 1 : LocalSearch.asNumber(direction())) * evaluate(s1).compareTo(evaluate(s2)));
    }
 
    /**

@@ -19,7 +19,7 @@
 
 package dvrlib.localsearch;
 
-public interface Problem<S extends Solution, E extends Comparable<E>> {
+public interface Problem<S extends Solution, E extends Comparable<E>> extends java.util.Comparator<S> {
    /**
     * Returns true if the first of the given evaluations is better than the second.
     */
