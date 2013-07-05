@@ -1,6 +1,6 @@
 /*
  * DvRlib - Local search
- * Copyright (C) Duncan van Roermund, 2010-2012
+ * Copyright (C) Duncan van Roermund, 2010-2013
  * TreePopulation.java
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,44 +19,16 @@
 
 package dvrlib.localsearch;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.TreeMap;
+import java.util.TreeSet;
 
-public class TreePopulation<S extends Solution, E extends Comparable<E>> extends Population<S> {
-   protected final HashSet<S>               keys      = new HashSet<S>();
-   protected final TreeMap<E, ArrayList<S>> tree      = new TreeMap<E, ArrayList<S>>();
-   protected final Problem<S, E>            problem;
-   protected final int                      direction, size;
+public class TreePopulation<S extends Solution> extends Population<S> {
+   protected final TreeSet<S>    tree;
+   protected final int           sizeLim;
 
-   public TreePopulation(Problem<S, E> problem, int size) {
-      this.problem = problem;
-      this.size    = size;
-      direction    = LocalSearch.asNumber(problem.direction());
-   }
-
-   /**
-    * Returns the value of the given solution.
-    */
-   public E value(S solution) {
-      return problem.evaluate(solution);
-   }
-
-   /**
-    * Returns an iterator to the lists inside the tree.
-    */
-   private final Iterator<ArrayList<S>> treeIterator() {
-      if(direction > 0)
-         return tree.descendingMap().values().iterator();
-      else
-         return tree.values().iterator();
-   }
-
-   private final ArrayList<S> getList(int direction) {
-      ArrayList<S> list = (direction > 0 ? tree.lastEntry() : tree.firstEntry()).getValue();
-      assert !list.isEmpty();
-      return list;
+   public TreePopulation(Problem<S, ?> problem, int sizeLim) {
+      this.sizeLim = sizeLim;
+      tree = new TreeSet<S>(problem);
    }
 
    /**
@@ -67,23 +39,7 @@ public class TreePopulation<S extends Solution, E extends Comparable<E>> extends
     */
    @Override
    public boolean add(S solution) {
-      if(!contains(solution)) {
-         if(size() >= size) {
-            if(problem.better(solution, peekWorst()))
-               popWorst();
-            else
-               return false;
-         }
-
-         keys.add(solution);
-         E e = value(solution);
-         if(tree.get(e) == null)
-            tree.put(e, new ArrayList<S>());
-         tree.get(e).add(solution);
-
-         return true;
-      }
-      return false;
+      return tree.add(solution);
    }
 
    /**
@@ -92,7 +48,6 @@ public class TreePopulation<S extends Solution, E extends Comparable<E>> extends
     */
    @Override
    public void clear() {
-      keys.clear();
       tree.clear();
    }
 
@@ -102,7 +57,7 @@ public class TreePopulation<S extends Solution, E extends Comparable<E>> extends
     */
    @Override
    public boolean contains(S solution) {
-      return keys.contains(solution);
+      return tree.contains(solution);
    }
 
    /**
@@ -110,7 +65,7 @@ public class TreePopulation<S extends Solution, E extends Comparable<E>> extends
     */
    @Override
    public boolean isEmpty() {
-      return keys.isEmpty();
+      return tree.isEmpty();
    }
 
    /**
@@ -118,34 +73,7 @@ public class TreePopulation<S extends Solution, E extends Comparable<E>> extends
     */
    @Override
    public Iterator<S> iterator() {
-      return new Iterator<S>() {
-         protected Iterator<ArrayList<S>> ti = treeIterator();
-         protected Iterator<S>            li = null;
-
-         @Override
-         public boolean hasNext() {
-            while(li == null || !li.hasNext()) {
-               if(ti.hasNext())
-                  li = ti.next().iterator();
-               else
-                  return false;
-            }
-            return true;
-         }
-
-         @Override
-         public S next() {
-            if(!hasNext())
-               throw new java.util.NoSuchElementException();
-            return li.next();
-         }
-
-         @Override
-         public void remove() {
-            hasNext();
-            li.remove();
-         }
-      };
+      return tree.descendingIterator();
    }
 
    /**
@@ -154,7 +82,7 @@ public class TreePopulation<S extends Solution, E extends Comparable<E>> extends
     */
    @Override
    public S peekBest() {
-      return getList(direction).get(0);
+      return tree.last();
    }
 
    /**
@@ -163,7 +91,7 @@ public class TreePopulation<S extends Solution, E extends Comparable<E>> extends
     */
    @Override
    public S peekWorst() {
-      return getList(-direction).get(0);
+      return tree.first();
    }
 
    /**
@@ -172,16 +100,7 @@ public class TreePopulation<S extends Solution, E extends Comparable<E>> extends
     */
    @Override
    public S popBest() {
-      ArrayList<S> bestList = getList(-direction);
-      S best = bestList.remove(0);
-      keys.remove(best);
-      if(bestList.isEmpty()) {
-         if(direction > 0)
-            tree.pollLastEntry();
-         else
-            tree.pollFirstEntry();
-      }
-      return best;
+      return tree.pollLast();
    }
 
    /**
@@ -190,16 +109,7 @@ public class TreePopulation<S extends Solution, E extends Comparable<E>> extends
     */
    @Override
    public S popWorst() {
-      ArrayList<S> worstList = getList(-direction);
-      S worst = worstList.remove(0);
-      keys.remove(worst);
-      if(worstList.isEmpty()) {
-         if(direction > 0)
-            tree.pollFirstEntry();
-         else
-            tree.pollLastEntry();
-      }
-      return worst;
+      return tree.pollFirst();
    }
 
    /**
@@ -208,7 +118,7 @@ public class TreePopulation<S extends Solution, E extends Comparable<E>> extends
     */
    @Override
    public int size() {
-      return keys.size();
+      return tree.size();
    }
 
    /**
@@ -216,13 +126,13 @@ public class TreePopulation<S extends Solution, E extends Comparable<E>> extends
     */
    @Override
    public Object[] toArray() {
-      return keys.toArray();
+      return tree.toArray();
    }
    /**
     * Returns an array containing all of the elements in this collection; the runtime type of the returned array is that of the specified array.
     */
    @Override
    public <T> T[] toArray(T[] a) {
-      return keys.toArray(a);
+      return tree.toArray(a);
    }
 }

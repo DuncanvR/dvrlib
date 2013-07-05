@@ -1,6 +1,6 @@
 /*
  * DvRlib - Local search
- * Copyright (C) Duncan van Roermund, 2011-2012
+ * Copyright (C) Duncan van Roermund, 2011-2013
  * AbstractProblem.java
  *
  * This program is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ public abstract class AbstractProblem<S extends Solution, E extends Comparable<E
     * @param solutionPoolSize The maximum number of best solutions that will be kept track of.
     */
    public AbstractProblem(int solutionPoolSize) {
-      solutionPool = new TreePopulation<S, E>(this, solutionPoolSize);
+      solutionPool = new TreePopulation<S>(this, solutionPoolSize);
    }
 
    /**
