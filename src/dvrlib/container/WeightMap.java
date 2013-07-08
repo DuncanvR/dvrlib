@@ -22,11 +22,13 @@ package dvrlib.container;
 public class WeightMap<E> extends java.util.HashMap<E, Double> {
    protected WeightedTree<E> tree = new WeightedTree<E>();
 
+   /**
+    * Inserts the given key&value pair into this WeightMap.
+    * If <code>value == null</code>, it is replaced by zero.
+    */
    @Override
    public Double put(E key, Double value) {
-      if(value == null)
-         throw new IllegalArgumentException("dvrlib.container.WeightMap does not permit null values");
-      Double oldValue = super.put(key, value);
+      Double oldValue = super.put(key, (value == null ? 0d : value));
       if(oldValue != null)
          tree.remove(oldValue, key);
       tree.add(value, key);
@@ -52,11 +54,21 @@ public class WeightMap<E> extends java.util.HashMap<E, Double> {
 
    /**
     * Increases the weight of the given element with the given value.
-    * If the element is not present in this map, it will simply be added with the given value.
+    * If the element is not present in this map, it will be added with the given value.
     * @see WeightMap#put(E, Double)
     */
-   public void incWeight(E key, double incValue) {
+   public void increase(E key, double value) {
       Double oldValue = get(key);
-      put(key, (oldValue == null ? 0d : oldValue) + incValue);
+      put(key, (oldValue == null ? 0d : oldValue) + value);
+   }
+
+   /**
+    * Multiplies the weight of the given element by the given value.
+    * If the element is not present in this map, it will be set to zero.
+    * @see WeightMap#put(E, Double)
+    */
+   public void multiply(E key, double value) {
+      Double oldValue = get(key);
+      put(key, (oldValue == null ? 0d : oldValue * value));
    }
 }
