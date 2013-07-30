@@ -48,6 +48,13 @@ public class DisjointSetForest<E> extends AbstractDisjointSetForest<E, Object> {
    }
 
    /**
+    * DisjointSetForest copy constructor.
+    */
+   public DisjointSetForest(DisjointSetForest<E> that) {
+      super(that);
+   }
+
+   /**
     * Adds the given element to this forest as a singleton set.
     * @param e The element to add.
     * @return Whether the element was successfully added.

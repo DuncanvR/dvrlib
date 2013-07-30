@@ -52,6 +52,21 @@ public abstract class AbstractDisjointSetForest<E, S> implements java.util.Set<E
    }
 
    /**
+    * AbstractDisjointSetForest copy constructor.
+    */
+   @SuppressWarnings("unchecked")
+   public AbstractDisjointSetForest(AbstractDisjointSetForest<E, S> that) {
+      this(that.size());
+      for(java.util.Map.Entry<E, Pair<HashSet<E>, S>> s : that.sets.entrySet()) {
+         add(s.getKey());
+         for(E e : s.getValue().a) {
+            add(e);
+            union(s.getKey(), e);
+         }
+      }
+   }
+
+   /**
     * Adds the given element and data to this forest as a singleton set.
     * @param e The element to add.
     * @param s The associated data to add.

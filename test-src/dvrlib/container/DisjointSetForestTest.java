@@ -28,6 +28,53 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class DisjointSetForestTest {
+   protected class TestForest1 extends DisjointSetForest<Integer> {
+      public TestForest1() { }
+
+      public TestForest1(TestForest1 that) {
+         super(that);
+      }
+
+      @Override
+      public Collection<Pair<HashSet<Integer>, Object>> retrieveSets() {
+         Collection<Pair<HashSet<Integer>, Object>> ts = super.retrieveSets();
+         for(Pair<HashSet<Integer>, Object> t : ts) {
+            assertNull(t.b);
+         }
+         return ts;
+      }
+   }
+   protected class TestForest2 extends AbstractDisjointSetForest<Integer, Integer> {
+      public TestForest2() { }
+
+      public TestForest2(TestForest2 that) {
+         super(that);
+      }
+
+      @Override
+      public boolean add(Integer e) {
+         return add(e, e);
+      }
+
+      @Override
+      protected Pair<HashSet<Integer>, Integer> merge(Pair<HashSet<Integer>, Integer> t1, Pair<HashSet<Integer>, Integer> t2) {
+         t1.a.addAll(t2.a);
+         t1.b += t2.b;
+         return t1;
+      }
+      public Collection<Pair<HashSet<Integer>, Integer>> retrieveSets() {
+         Collection<Pair<HashSet<Integer>, Integer>> ts = super.retrieveSets();
+         for(Pair<HashSet<Integer>, Integer> t : ts) {
+            int s = 0;
+            for(Integer i : t.a) {
+               s += i;
+            }
+            assertEquals(t.b.intValue(), s);
+         }
+         return ts;
+      }
+   }
+
    @Test
    public void testForests() {
       testForests(new Integer[][]{ });
@@ -42,44 +89,18 @@ public class DisjointSetForestTest {
    }
 
    protected void testForests(Integer[][] es) {
-      testForest(buildForest(new DisjointSetForest<Integer>() {
-            @Override
-            public Collection<Pair<HashSet<Integer>, Object>> retrieveSets() {
-               Collection<Pair<HashSet<Integer>, Object>> ts = super.retrieveSets();
-               for(Pair<HashSet<Integer>, Object> t : ts) {
-                  assertNull(t.b);
-               }
-               return ts;
-            }
-         }, es), es);
+      TestForest1 tf1 = new TestForest1();
+      buildForest(tf1, es);
+      testForest(tf1, es);
+      testForest(new TestForest1(tf1), es);
 
-      testForest(buildForest(new AbstractDisjointSetForest<Integer, Integer>() {
-            @Override
-            public boolean add(Integer e) {
-               return add(e, e);
-            }
-
-            @Override
-            protected Pair<HashSet<Integer>, Integer> merge(Pair<HashSet<Integer>, Integer> t1, Pair<HashSet<Integer>, Integer> t2) {
-               t1.a.addAll(t2.a);
-               t1.b += t2.b;
-               return t1;
-            }
-            public Collection<Pair<HashSet<Integer>, Integer>> retrieveSets() {
-               Collection<Pair<HashSet<Integer>, Integer>> ts = super.retrieveSets();
-               for(Pair<HashSet<Integer>, Integer> t : ts) {
-                  int s = 0;
-                  for(Integer i : t.a) {
-                     s += i;
-                  }
-                  assertEquals(t.b.intValue(), s);
-               }
-               return ts;
-            }
-         }, es), es);
+      TestForest2 tf2 = new TestForest2();
+      buildForest(tf2, es);
+      testForest(tf2, es);
+      testForest(new TestForest2(tf2), es);
    }
 
-   protected AbstractDisjointSetForest<Integer, ?> buildForest(AbstractDisjointSetForest<Integer, ?> df, Integer[][] es) {
+   protected void buildForest(AbstractDisjointSetForest<Integer, ?> df, Integer[][] es) {
       assertTrue(df.isEmpty());
       assertEquals(df.size(), 0);
 
@@ -101,8 +122,6 @@ public class DisjointSetForestTest {
             assertEquals(df.size(), c);
          }
       }
-
-      return df;
    }
 
    protected void testForest(AbstractDisjointSetForest<Integer, ?> df, Integer[][] es) {
@@ -125,7 +144,8 @@ public class DisjointSetForestTest {
 
    @Test
    public void testRemove() {
-      AbstractDisjointSetForest<Integer, ?> df = buildForest(new DisjointSetForest<Integer>(), new Integer[][]{{ 1, 2, 3 }, { 4, 5 }, { 6 }, { 7, 8, 9 }});
+      AbstractDisjointSetForest<Integer, Object> df = new DisjointSetForest<Integer>();
+      buildForest(df, new Integer[][]{{ 1, 2, 3 }, { 4, 5 }, { 6 }, { 7, 8, 9 }});
       testForest(df, new Integer[][]{{ 1, 2, 3 }, { 4, 5 }, { 6 }, { 7, 8, 9 }});
       df.remove(4);
       testForest(df, new Integer[][]{{ 1, 2, 3 }, { 5 }, { 6 }, { 7, 8, 9 }});
