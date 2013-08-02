@@ -139,7 +139,8 @@ public class WeightedTreePopulation<S extends Solution> extends GeneticPopulatio
     */
    @Override
    public S peekWorst() {
-      return tree.peekMin().b;
+      dvrlib.generic.Pair<?, S> p = tree.peekMin();
+      return (p == null ? null : p.b);
    }
 
    /**

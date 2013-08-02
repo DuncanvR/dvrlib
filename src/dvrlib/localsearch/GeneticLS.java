@@ -87,6 +87,7 @@ public class GeneticLS<S extends Solution, E extends Comparable<E>> extends Stat
     * @see GeneticLS#setPopulationSize(int)
     * @see GeneticLS#setStopCount(int)
     * @see GeneticLS#setTabooIterationCount(int)
+    * @see GeneticLS#setElitistSelectionCount(int)
     */
    public GeneticLS(Selector<S> selector, Combiner<GeneticProblem<S, E>, S> combiner, int elitistSelectionCount, int populationSize, int stopCount, int tabooIterationCount) {
       this.combiner = combiner;
@@ -212,12 +213,10 @@ public class GeneticLS<S extends Solution, E extends Comparable<E>> extends Stat
             state.updateTaboo(taboo);
 
             // Check the solution
+            if(state.solution == state.population.peekWorst())
+               state.solution = null;
             if(state.solution == null)
                continue;
-            else if(state.solution == state.population.peekWorst()) {
-               state.solution = null;
-               continue;
-            }
 
             // Save the solution
             if(savingCriterion == LocalSearch.SavingCriterion.EveryImprovement && state.problem.better(state.solution, generationBestEval)) {

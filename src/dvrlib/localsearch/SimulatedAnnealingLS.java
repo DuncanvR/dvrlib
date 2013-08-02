@@ -30,7 +30,7 @@ public class SimulatedAnnealingLS<P extends Problem<S, E>, S extends Solution, E
       }
    }
 
-   /** The default number of retries attempted is 5. */
+   /** The default number of attempted retries is 5. */
    public final static int defaultRetryCount = 5;
    /** The default initial temperature is 2.4663035, so <code>dE = 1</code> results in a 2/3 chance of acceptance. */
    public final static double defaultTemp    = 2.4663035;
@@ -106,7 +106,7 @@ public class SimulatedAnnealingLS<P extends Problem<S, E>, S extends Solution, E
          boolean improved = false;
          try {
             for(int sc = 0; sc < stopCount && !problem.betterEq(bestEval, bound); sc++, state.iteration++) {
-               // Mutate the solution
+               // Change the solution
                state.changes.add(changer.makeChange(state));
                E newEval = problem.evaluate(state);
 
