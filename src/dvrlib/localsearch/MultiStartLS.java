@@ -1,6 +1,6 @@
 /*
  * DvRlib - Local search
- * Copyright (C) Duncan van Roermund, 2010-2012
+ * Copyright (C) Duncan van Roermund, 2010-2013
  * MultiStartLS.java
  *
  * This program is free software: you can redistribute it and/or modify
@@ -46,10 +46,11 @@ public class MultiStartLS<S extends Solution, E extends Comparable<E>> extends L
     * Searches for a solution for the given problem by applying the predefined search algorithm to multiple random solution.
     */
    @Override
-   public S search(Problem<S, E> problem, E bound) {
+   public S search(Problem<S, E> problem, E bound, long timeLimit) {
       S bestSolution = problem.randomSolution();
+      long maxTimeMillis = (timeLimit >= 0 ? timeLimit + System.currentTimeMillis() : Long.MAX_VALUE);
       for(int i = 0; i < count && !problem.betterEq(bestSolution, bound); i++) {
-         S newSolution = ls.search(problem, bound);
+         S newSolution = ls.search(problem, bound, maxTimeMillis - System.currentTimeMillis());
          if(problem.better(newSolution, bestSolution))
             bestSolution = newSolution;
       }
@@ -60,10 +61,11 @@ public class MultiStartLS<S extends Solution, E extends Comparable<E>> extends L
     * Searches for a solution for the given problem by applying the predefined search algorithm to the given solution.
     */
    @Override
-   public S search(Problem<S, E> problem, E bound, S startSolution) {
+   public S search(Problem<S, E> problem, E bound, long timeLimit, S startSolution) {
       S bestSolution = startSolution;
+      long maxTimeMillis = (timeLimit >= 0 ? timeLimit + System.currentTimeMillis() : Long.MAX_VALUE);
       for(int i = 0; i < count && !problem.betterEq(bestSolution, bound); i++) {
-         S newSolution = ls.search(problem, bound, problem.cloneSolution(startSolution));
+         S newSolution = ls.search(problem, bound, maxTimeMillis - System.currentTimeMillis(), problem.cloneSolution(startSolution));
          if(problem.better(newSolution, bestSolution))
             bestSolution = newSolution;
       }
@@ -74,7 +76,7 @@ public class MultiStartLS<S extends Solution, E extends Comparable<E>> extends L
     * Required method for LocalSearch subclasses, not needed for this search strategy.
     */
    @Override
-   protected S doSearch(Problem<S, E> problem, E bound, S solution) {
+   protected S doSearch(Problem<S, E> problem, E bound, long maxTimeMillis, S solution) {
       throw new IllegalStateException();
    }
 }

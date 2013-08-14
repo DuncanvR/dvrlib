@@ -1,6 +1,6 @@
 /*
  * DvRlib - Local search
- * Copyright (C) Duncan van Roermund, 2010-2011
+ * Copyright (C) Duncan van Roermund, 2010-2013
  * SimulatedAnnealingLSTest.java
  *
  * This program is free software: you can redistribute it and/or modify
@@ -75,7 +75,7 @@ public class SimulatedAnnealingLSTest extends AbstractProblem<SimulatedAnnealing
    @Test
    public void testSearch() {
       SimulatedAnnealingLS ls = new SimulatedAnnealingLS(new TestChanger(), 100, 100);
-      TestSolution s = (TestSolution) ls.search(this, 15);
+      TestSolution s = (TestSolution) ls.search(this, 15, -1l);
       assertEquals(11, s.value);
    }
 }

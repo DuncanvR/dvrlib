@@ -1,6 +1,6 @@
 /*
  * DvRlib - Local search
- * Copyright (C) Duncan van Roermund, 2012
+ * Copyright (C) Duncan van Roermund, 2012-2013
  * GreatDelugeLS.java
  *
  * This program is free software: you can redistribute it and/or modify
@@ -56,9 +56,9 @@ public abstract class GreatDelugeLS<P extends Problem<S, E>, S extends Solution,
     * @see GreatDelugeLS#iterate(GreatDelugeLS.GDSearchState, int)
     */
    @Override
-   protected S doSearch(P problem, E bound, S solution) {
+   protected S doSearch(P problem, E bound, long maxTimeMillis, S solution) {
       SearchState state = newState(problem, solution);
-      iterate(state, bound, -1).saveSolution(); // TODO: Determine a good stopping criterium for this LS method.
+      iterate(state, bound, maxTimeMillis, -1).saveSolution(); // TODO: Determine a good stopping criterium for this LS method.
       state.solution.setIterationCount(state.iterationCount());
       return state.solution();
    }
@@ -68,7 +68,7 @@ public abstract class GreatDelugeLS<P extends Problem<S, E>, S extends Solution,
     * @see GreatDelugeLS#iterate(Solution)
     */
    @Override
-   public SearchState iterate(SearchState state, E bound, long n) {
+   public SearchState iterate(SearchState state, E bound, long maxTimeMillis, long n) {
       if(n < 0)
          throw new IllegalArgumentException("The number of requested operations should not be less than zero");
 
@@ -100,6 +100,10 @@ public abstract class GreatDelugeLS<P extends Problem<S, E>, S extends Solution,
             }
             else // Revert the change
                state.changes.undoLast(state);
+
+            // Check the time limit
+            if(System.currentTimeMillis() >= maxTimeMillis)
+               break;
          }
       }
       catch(CannotChangeException _) { }

@@ -147,24 +147,28 @@ public class GeneticLS<S extends Solution, E extends Comparable<E>> extends Stat
     * @see GeneticLS#search(GeneticLS.GLSSearchState)
     */
    @Override
-   protected S doSearch(GeneticProblem<S, E> problem, E bound, S solution) {
-      return search(newState(problem, solution), bound).solution();
+   protected S doSearch(GeneticProblem<S, E> problem, E bound, long maxTimeMillis, S solution) {
+      return iterate(newState(problem, solution), bound, maxTimeMillis).solution();
    }
 
    /**
     * Searches for an optimal solution using the given search state, after which the best found solution is saved and the state is returned.
     * This algorithm keeps replacing the worst solution in the population by the new combined solution if it is better, until a predefined number of iterations give no improvement.
-    * @see GeneticLS#iterate(GeneticLS.GLSSearchState, int)
+    * @see GeneticLS#iterate(GeneticLS.GLSSearchState, Object, long, int)
     */
-   public SearchState search(SearchState state, E bound) {
+   public SearchState iterate(SearchState state, E bound, long maxTimeMillis) {
       assert (state != null) : "State should not be null";
       assert (bound != null) : "Bound should not be null";
 
       combiner.reinitialise(state.problem);
       long n = stopCount;
       while(n > 0 && !state.problem.betterEq(state.solution(), bound)) {
-         iterate(state, bound, n);
+         iterate(state, bound, maxTimeMillis, n);
          n = stopCount - (state.iteration - state.lastImprovement);
+
+         // Check the time limit
+         if(System.currentTimeMillis() >= maxTimeMillis)
+            break;
       }
       state.solution().setIterationCount(state.iterationCount());
       state.saveSolution();
@@ -174,9 +178,10 @@ public class GeneticLS<S extends Solution, E extends Comparable<E>> extends Stat
    /**
     * Does <code>n</code> iterations using the given search state, after which it is returned.
     * When a solution is found that is better or equal to the given bound, the search is stopped.
+    * @param maxTimeMillis The bound on System.currentTimeMillis().
     */
    @Override
-   public SearchState iterate(SearchState state, E bound, long n) {
+   public SearchState iterate(SearchState state, E bound, long maxTimeMillis, long n) {
       E overallBestEval    = null,
         generationBestEval = null;
       for(long stop = state.iteration + n; state.iteration < stop && !state.problem.betterEq(overallBestEval, bound); state.iteration++) {
@@ -233,8 +238,16 @@ public class GeneticLS<S extends Solution, E extends Comparable<E>> extends Stat
                if(savingCriterion == LocalSearch.SavingCriterion.EveryIteration)
                   state.saveSolution();
             }
+
+            // Check the time limit
+            if(System.currentTimeMillis() >= maxTimeMillis)
+               break;
          }
          generationBestEval = null;
+
+         // Check the time limit
+         if(System.currentTimeMillis() >= maxTimeMillis)
+            break;
       }
       state.solution = null;
       return state;

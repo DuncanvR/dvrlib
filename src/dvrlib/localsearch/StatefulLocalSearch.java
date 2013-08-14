@@ -1,6 +1,6 @@
 /*
  * DvRlib - Local search
- * Copyright (C) Duncan van Roermund, 2012
+ * Copyright (C) Duncan van Roermund, 2012-2013
  * StatefulLocalSearch.java
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ public abstract class StatefulLocalSearch<P extends Problem<S, E>, S extends Sol
     * Does <code>n</code> iterations on the given solution, and returns the best solution found.
     * When a solution is found that is better or equal to the given bound, the search is stopped.
     */
-   public abstract SS iterate(SS state, E bound, long n);
+   public abstract SS iterate(SS state, E bound, long maxTimeMillis, long n);
 
    /**
     * Returns a new search state.

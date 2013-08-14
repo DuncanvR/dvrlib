@@ -97,7 +97,7 @@ public class SimulatedAnnealingLS<P extends Problem<S, E>, S extends Solution, E
     * When a solution is found that is better or equal to the given bound, the search is stopped.
     */
    @Override
-   protected S doSearch(P problem, E bound, S solution) {
+   protected S doSearch(P problem, E bound, long maxTimeMillis, S solution) {
       SearchState state = newState(problem, solution);
       E curEval  = problem.evaluate(state),
         bestEval = curEval;
@@ -142,6 +142,10 @@ public class SimulatedAnnealingLS<P extends Problem<S, E>, S extends Solution, E
                // Decrease the temperature according to the schedule
                if(state.iteration % coolCount == 0)
                   state.temperature *= tempMod;
+
+               // Check the time limit
+               if(System.currentTimeMillis() >= maxTimeMillis)
+                  break;
             }
          }
          catch(CannotChangeException _) { }
@@ -152,6 +156,10 @@ public class SimulatedAnnealingLS<P extends Problem<S, E>, S extends Solution, E
 
          if(improved)
             r = -1;
+
+         // Check the time limit
+         if(System.currentTimeMillis() >= maxTimeMillis)
+            break;
       }
 
       state.saveSolution();
