@@ -34,6 +34,7 @@ public class WeightedTreeTest {
 
       assertTrue(instance.isEmpty());
       assertEquals(0, instance.size());
+
       for(int i = 1; i < 9; i++) {
          instance.add((double) i, 10 - i);
 
@@ -63,6 +64,7 @@ public class WeightedTreeTest {
       }
 
       assertTrue(instance.isEmpty());
+      assertEquals(0, instance.size());
 
       for(int i = 8; i > 0; i--) {
          instance.add((double) i, 10 + i);
@@ -82,6 +84,7 @@ public class WeightedTreeTest {
       }
 
       assertTrue(instance.isEmpty());
+      assertEquals(0, instance.size());
 
       for(int i = 1; i < 20; i++) {
          instance.add((double) 1 + (i % 5), i);
@@ -92,14 +95,18 @@ public class WeightedTreeTest {
          testBalance(instance, instance.root);
       }
 
-      assertTrue(instance.remove(2, 1));
+      assertTrue(instance.remove(3, 2));
       testBalance(instance, instance.root);
-      assertTrue(instance.remove(2, 6));
+      assertEquals(18, instance.size());
+      assertTrue(instance.remove(3, 7));
       testBalance(instance, instance.root);
-      assertTrue(instance.remove(2, 11));
+      assertEquals(17, instance.size());
+      assertTrue(instance.remove(3, 12));
       testBalance(instance, instance.root);
-      assertTrue(instance.remove(2, 16));
+      assertEquals(16, instance.size());
+      assertTrue(instance.remove(3, 17));
       testBalance(instance, instance.root);
+      assertEquals(15, instance.size());
    }
 
    @Test

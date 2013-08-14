@@ -21,21 +21,22 @@ package dvrlib.localsearch;
 
 import dvrlib.container.WeightedTree;
 
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map.Entry;
 import java.util.Random;
 
 public class WeightedTreePopulation<S extends Solution> extends GeneticPopulation<S> {
    protected static final Random Rnd = new Random();
 
-   protected final Hashtable<S, Double> keys    = new Hashtable<S, Double>();
+   protected final HashMap<S, Double>   keys    = new HashMap<S, Double>();
    protected final GeneticProblem<S, ?> problem;
    protected final WeightedTree<S>      tree    = new WeightedTree<S>();
-   protected final int                  size;
+   protected final int                  capacity;
 
-   public WeightedTreePopulation(GeneticProblem<S, ?> problem, int size) {
-      this.problem = problem;
-      this.size    = size;
+   public WeightedTreePopulation(GeneticProblem<S, ?> problem, int capacity) {
+      this.problem  = problem;
+      this.capacity = capacity;
    }
 
    /**
@@ -49,14 +50,14 @@ public class WeightedTreePopulation<S extends Solution> extends GeneticPopulatio
    public boolean add(S solution) {
       if(contains(solution)) {
          double newKey = problem.weight(solution),
-                oldKey = keys.get(solution);
+                oldKey = keys.put(solution, newKey);
          if(newKey != oldKey && tree.remove(oldKey, solution)) {
             tree.add(newKey, solution);
             return true;
          }
       }
       else {
-         if(size() >= size) {
+         if(size() >= capacity) {
             if(problem.better(solution, peekWorst()))
                popWorst();
             else
@@ -171,6 +172,12 @@ public class WeightedTreePopulation<S extends Solution> extends GeneticPopulatio
    @Override
    public void retainBest(int n) {
       tree.retainBest(n);
+      Iterator<Entry<S, Double>> it = keys.entrySet().iterator();
+      while(it.hasNext()) {
+         Entry<S, Double> e = it.next();
+         if(!tree.contains(e.getValue(), e.getKey()))
+            it.remove();
+      }
    }
 
    /**
@@ -179,6 +186,7 @@ public class WeightedTreePopulation<S extends Solution> extends GeneticPopulatio
     */
    @Override
    public int size() {
+      assert keys.size() == tree.size();
       return keys.size();
    }
 
