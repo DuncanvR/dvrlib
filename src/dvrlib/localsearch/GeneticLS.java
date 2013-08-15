@@ -19,17 +19,13 @@
 
 package dvrlib.localsearch;
 
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.LinkedList;
 
 public class GeneticLS<S extends Solution, E extends Comparable<E>> extends StatefulLocalSearch<GeneticProblem<S, E>, S, E, GeneticLS<S, E>.SearchState> {
    public class SearchState extends AbstractSearchState<GeneticProblem<S, E>, S> {
-      protected GeneticPopulation<S>      population;
-      protected HashSet<S>                taboo           = new HashSet<S>();
-      protected LinkedList<Collection<S>> tabooHistory    = new LinkedList<Collection<S>>();
-      protected S                         solution        = null;
-      protected long                      lastImprovement;
+      protected GeneticPopulation<S> population;
+      protected S                    solution        = null;
+      protected long                 lastImprovement;
 
       protected SearchState(GeneticProblem<S, E> problem, GeneticPopulation<S> population) {
          super(problem);
@@ -43,16 +39,6 @@ public class GeneticLS<S extends Solution, E extends Comparable<E>> extends Stat
       @Override
       public S solution() {
          return (solution == null ? population.peekBest() : solution);
-      }
-
-      public boolean taboo(S s) {
-         return (population.contains(s) || taboo.contains(s));
-      }
-
-      public void updateTaboo(Collection<S> tabooList) {
-         tabooHistory.add(tabooList);
-         if(tabooHistory.size() > tabooIterationCount)
-            taboo.removeAll(tabooHistory.poll());
       }
    }
 
@@ -71,8 +57,7 @@ public class GeneticLS<S extends Solution, E extends Comparable<E>> extends Stat
 
    protected int              elitistSelectionCount,
                               populationSize,
-                              stopCount,
-                              tabooIterationCount;
+                              stopCount;
    protected CombinerStrategy combinerStrategy = CombinerStrategy.First;
    protected Selector<S>      selector;
 
@@ -83,18 +68,15 @@ public class GeneticLS<S extends Solution, E extends Comparable<E>> extends Stat
     * @param elitistSelectionCount The number of best solutions that are copied from a previous generation without alteration.
     * @param populationSize        The maximum number of solutions kept in a population.
     * @param stopCount             The number of iterations in which no better solution was found after which the algorithm will stop.
-    * @param tabooIterationCount   The number of iterations tried solutions are kept in a taboo list.
     * @see GeneticLS#setPopulationSize(int)
     * @see GeneticLS#setStopCount(int)
-    * @see GeneticLS#setTabooIterationCount(int)
     * @see GeneticLS#setElitistSelectionCount(int)
     */
-   public GeneticLS(Selector<S> selector, Combiner<GeneticProblem<S, E>, S> combiner, int elitistSelectionCount, int populationSize, int stopCount, int tabooIterationCount) {
+   public GeneticLS(Selector<S> selector, Combiner<GeneticProblem<S, E>, S> combiner, int elitistSelectionCount, int populationSize, int stopCount) {
       this.combiner = combiner;
       this.selector = selector;
       setPopulationSize(populationSize);
       setStopCount(stopCount);
-      setTabooIterationCount(tabooIterationCount);
       setElitistSelectionCount(elitistSelectionCount);
    }
 
@@ -131,15 +113,6 @@ public class GeneticLS<S extends Solution, E extends Comparable<E>> extends Stat
       if(stopCount < 1)
          throw new IllegalArgumentException("stopCount should be > 0");
       this.stopCount = stopCount;
-   }
-
-   /**
-    * Sets the number of iterations the solutions that have been tried are kept in a taboo list.
-    */
-   public void setTabooIterationCount(int tabooIterationCount) {
-      if(tabooIterationCount < 1)
-         throw new IllegalArgumentException("tabooIterationCount should be > 0");
-      this.tabooIterationCount = tabooIterationCount;
    }
 
    /**
@@ -194,28 +167,22 @@ public class GeneticLS<S extends Solution, E extends Comparable<E>> extends Stat
          // Generate new solutions by combining the parents
          java.util.Iterator<S> it = parents.iterator();
          while(it.hasNext()) {
-            HashSet<S> taboo = new HashSet<S>();
             state.solution = (state.population.size() < populationSize ? null : state.population.peekWorst());
 
             // Iterate over the children solutions to select one, depending on the chosen strategy
             for(S s : combiner.combine(state, it.next(), it.next())) {
-               if(state.taboo(s))
+               if(state.population.contains(s))
                   continue;
                if(state.problem.better(state.problem.evaluationBound(s), state.solution)) {
                   if(state.problem.better(s, state.solution)) {
-                     taboo.add(state.solution);
                      state.solution = s;
                      if(combinerStrategy == CombinerStrategy.First)
                         break;
                   }
-                  else {
-                     taboo.add(s);
-                     if(combinerStrategy == CombinerStrategy.Last)
-                        break;
-                  }
+                  else if(combinerStrategy == CombinerStrategy.Last)
+                     break;
                }
             }
-            state.updateTaboo(taboo);
 
             // Check the solution
             if(state.solution == state.population.peekWorst())
