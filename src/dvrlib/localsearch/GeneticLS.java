@@ -155,14 +155,15 @@ public class GeneticLS<S extends Solution, E extends Comparable<E>> extends Stat
     */
    @Override
    public SearchState iterate(SearchState state, E bound, long maxTimeMillis, long n) {
-      E overallBestEval    = null,
-        generationBestEval = null;
+      E overallBestEval = (state.population.size() > 0 ? state.problem.evaluate(state.population.peekBest()) : null);
       for(long stop = state.iteration + n; state.iteration < stop && !state.problem.betterEq(overallBestEval, bound); state.iteration++) {
          // Select parent solutions for the next generation
          Iterable<S> parents = selector.select(state, 2 * (populationSize - elitistSelectionCount));
 
          // Clear population, keeping only the elitists
          state.population.retainBest(elitistSelectionCount);
+         E generationBestEval = (savingCriterion == LocalSearch.SavingCriterion.EveryImprovement &&
+                                 state.population.size() > 0 ? state.problem.evaluate(state.population.peekBest()) : null);
 
          // Generate new solutions by combining the parents
          java.util.Iterator<S> it = parents.iterator();
@@ -193,7 +194,7 @@ public class GeneticLS<S extends Solution, E extends Comparable<E>> extends Stat
             // Save the solution
             if(savingCriterion == LocalSearch.SavingCriterion.EveryImprovement && state.problem.better(state.solution, generationBestEval)) {
                state.saveSolution();
-               generationBestEval = state.problem.evaluationBound(state.solution);
+               generationBestEval = state.problem.evaluate(state.solution);
             }
             if(state.problem.better(state.solution, overallBestEval)) {
                overallBestEval = state.problem.evaluate(state.solution);
@@ -210,7 +211,6 @@ public class GeneticLS<S extends Solution, E extends Comparable<E>> extends Stat
             if(System.currentTimeMillis() >= maxTimeMillis)
                break;
          }
-         generationBestEval = null;
 
          // Check the time limit
          if(System.currentTimeMillis() >= maxTimeMillis)
