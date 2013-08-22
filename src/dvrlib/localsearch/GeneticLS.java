@@ -51,14 +51,14 @@ public class GeneticLS<S extends Solution, E extends Comparable<E>> extends Stat
     * @see GeneticLS#setCombinerStrategy(GeneticLS.CombinerStrategy)
     * @see Combiner#combine(SearchState, Solution, Solution)
     */
-   public enum CombinerStrategy { First, Last, Best };
+   public enum CombinerStrategy { Best, FirstImproving, LastImproving };
 
    protected final Combiner<GeneticProblem<S, E>, S> combiner;
 
    protected int              elitistSelectionCount,
                               populationSize,
                               stopCount;
-   protected CombinerStrategy combinerStrategy = CombinerStrategy.First;
+   protected CombinerStrategy combinerStrategy = CombinerStrategy.Best;
    protected Selector<S>      selector;
 
    /**
@@ -174,15 +174,13 @@ public class GeneticLS<S extends Solution, E extends Comparable<E>> extends Stat
             for(S s : combiner.combine(state, it.next(), it.next())) {
                if(state.population.contains(s))
                   continue;
-               if(state.problem.better(state.problem.evaluationBound(s), state.solution)) {
-                  if(state.problem.better(s, state.solution)) {
-                     state.solution = s;
-                     if(combinerStrategy == CombinerStrategy.First)
-                        break;
-                  }
-                  else if(combinerStrategy == CombinerStrategy.Last)
+               if(state.problem.better(state.problem.evaluationBound(s), state.solution) && state.problem.better(s, state.solution)) {
+                  state.solution = s;
+                  if(combinerStrategy == CombinerStrategy.FirstImproving)
                      break;
                }
+               else if(combinerStrategy == CombinerStrategy.LastImproving)
+                  break;
             }
 
             // Check the solution
