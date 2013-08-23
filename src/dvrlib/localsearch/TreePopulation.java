@@ -19,16 +19,24 @@
 
 package dvrlib.localsearch;
 
+import dvrlib.generic.IterableOnce;
+
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.TreeSet;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 
-public class TreePopulation<S extends Solution> extends Population<S> {
-   protected final TreeSet<S>    tree;
-   protected final int           sizeLim;
+public class TreePopulation<S extends Solution, E extends Comparable<E>> extends Population<S> {
+   protected final Problem<S, E>          problem;
+   protected final TreeMap<E, HashSet<S>> tree;
+   protected final int                    sizeLim;
 
-   public TreePopulation(Problem<S, ?> problem, int sizeLim) {
+   protected int size = 0;
+
+   public TreePopulation(Problem<S, E> problem, int sizeLim) {
+      this.problem = problem;
       this.sizeLim = sizeLim;
-      tree = new TreeSet<S>(problem);
+      tree = new TreeMap<E, HashSet<S>>();
    }
 
    /**
@@ -39,7 +47,17 @@ public class TreePopulation<S extends Solution> extends Population<S> {
     */
    @Override
    public boolean add(S solution) {
-      return tree.add(solution);
+      if(size >= sizeLim)
+         popWorst();
+      E eval = problem.evaluate(solution);
+      if(!tree.containsKey(eval))
+         tree.put(eval, new HashSet<S>());
+      if(tree.get(eval).add(solution)) {
+         size++;
+         return true;
+      }
+      else
+         return false;
    }
 
    /**
@@ -49,6 +67,7 @@ public class TreePopulation<S extends Solution> extends Population<S> {
    @Override
    public void clear() {
       tree.clear();
+      size = 0;
    }
 
    /**
@@ -57,7 +76,8 @@ public class TreePopulation<S extends Solution> extends Population<S> {
     */
    @Override
    public boolean contains(S solution) {
-      return tree.contains(solution);
+      E e = problem.evaluate(solution);
+      return (tree.containsKey(e) && tree.get(e).contains(solution));
    }
 
    /**
@@ -65,7 +85,7 @@ public class TreePopulation<S extends Solution> extends Population<S> {
     */
    @Override
    public boolean isEmpty() {
-      return tree.isEmpty();
+      return (size == 0);
    }
 
    /**
@@ -73,7 +93,33 @@ public class TreePopulation<S extends Solution> extends Population<S> {
     */
    @Override
    public Iterator<S> iterator() {
-      return tree.descendingIterator();
+      return new Iterator<S>() {
+            protected Entry<E, HashSet<S>> e = tree.lastEntry();
+            protected Iterator<S> it = e.getValue().iterator();
+
+            public boolean hasNext() {
+               return (it.hasNext() || tree.lowerEntry(e.getKey()) != null);
+            }
+
+            public S next() {
+               if(!hasNext())
+                  throw new java.util.NoSuchElementException();
+               if(!it.hasNext()) {
+                  e = tree.lowerEntry(e.getKey());
+                  it = e.getValue().iterator();
+               }
+               return it.next();
+            }
+
+            public void remove() {
+               it.remove();
+               size--;
+               if(e.getValue().isEmpty()) {
+                  tree.remove(e.getKey());
+                  e = tree.lowerEntry(e.getKey());
+               }
+            }
+         };
    }
 
    /**
@@ -82,7 +128,7 @@ public class TreePopulation<S extends Solution> extends Population<S> {
     */
    @Override
    public S peekBest() {
-      return tree.last();
+      return tree.lastEntry().getValue().iterator().next();
    }
 
    /**
@@ -91,7 +137,7 @@ public class TreePopulation<S extends Solution> extends Population<S> {
     */
    @Override
    public S peekWorst() {
-      return tree.first();
+      return tree.firstEntry().getValue().iterator().next();
    }
 
    /**
@@ -100,7 +146,13 @@ public class TreePopulation<S extends Solution> extends Population<S> {
     */
    @Override
    public S popBest() {
-      return tree.pollLast();
+      Entry<E, HashSet<S>> e = tree.lastEntry();
+      if(e.getValue().size() <= 1)
+         tree.remove(e.getKey());
+      S s = e.getValue().iterator().next();
+      e.getValue().remove(s);
+      size--;
+      return s;
    }
 
    /**
@@ -109,7 +161,13 @@ public class TreePopulation<S extends Solution> extends Population<S> {
     */
    @Override
    public S popWorst() {
-      return tree.pollFirst();
+      Entry<E, HashSet<S>> e = tree.firstEntry();
+      if(e.getValue().size() <= 1)
+         tree.remove(e.getKey());
+      S s = e.getValue().iterator().next();
+      e.getValue().remove(s);
+      size--;
+      return s;
    }
 
    /**
@@ -118,7 +176,7 @@ public class TreePopulation<S extends Solution> extends Population<S> {
     */
    @Override
    public int size() {
-      return tree.size();
+      return size;
    }
 
    /**
@@ -126,13 +184,27 @@ public class TreePopulation<S extends Solution> extends Population<S> {
     */
    @Override
    public Object[] toArray() {
-      return tree.toArray();
+      Object array[] = new Object[size()];
+      int i = 0;
+      for(S s : new IterableOnce<S>(iterator())) {
+         array[i++] = s;
+      }
+      return array;
    }
    /**
     * Returns an array containing all of the elements in this collection; the runtime type of the returned array is that of the specified array.
     */
    @Override
+   @SuppressWarnings("unchecked")
    public <T> T[] toArray(T[] a) {
-      return tree.toArray(a);
+      if(a.length < size())
+         a = (T[]) java.lang.reflect.Array.newInstance(a.getClass().getComponentType(), size());
+      int i = 0;
+      for(S s : new IterableOnce<S>(iterator())) {
+         a[i++] = (T) s;
+      }
+      if(i < a.length - 1)
+         a[i] = null;
+      return a;
    }
 }
