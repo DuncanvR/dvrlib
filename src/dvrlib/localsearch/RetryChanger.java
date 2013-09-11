@@ -41,18 +41,16 @@ public class RetryChanger<P extends Problem<S, ? extends Comparable<?>>, S exten
     */
    @Override
    public Changer<P, S, ?>.Change makeChange(SingularSearchState<P, S> ss) throws CannotChangeException {
-      for(int i = 1; i < tries; i++) {
+      CannotChangeException ex = null;
+      for(int i = 0; i < tries; i++) {
          try {
             return changer.makeChange(ss);
          }
-         catch(CannotChangeException _) { }
+         catch(CannotChangeException e) {
+            ex = e;
+         }
       }
-      try {
-         return changer.makeChange(ss);
-      }
-      catch(CannotChangeException ex) {
-         throw new CannotChangeException(this, ex);
-      }
+      throw new CannotChangeException(this, ex);
    }
 
    /**
