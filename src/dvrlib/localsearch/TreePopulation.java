@@ -130,6 +130,41 @@ public class TreePopulation<S extends Solution, E extends Comparable<E>> extends
    public S peekBest() {
       return tree.lastEntry().getValue().iterator().next();
    }
+   /**
+    * Returns but does not remove the best solution in this population that is strictly worse than the given evaluation.
+    * @see TreePopulation#peekBest()
+    */
+   public S peekBest(E ub) {
+      return tree.lowerEntry(ub).getValue().iterator().next();
+   }
+   /**
+    * Returns but does not remove the best solution in this population that is strictly worse than the given one.
+    * @see TreePopulation#peekBest(E)
+    */
+   public S peekBest(S ub) {
+      return peekBest(problem.evaluate(ub));
+   }
+
+   /**
+    * Returns but does not remove the set of best solutions in this population.
+    */
+   public HashSet<S> peekBestSet() {
+      return tree.lastEntry().getValue();
+   }
+   /**
+    * Returns but does not remove the set of best solutions in this population that are strictly worse than the given evaluation.
+    * @see TreePopulation#peekBestSet()
+    */
+   public HashSet<S> peekBestSet(E ub) {
+      return tree.lowerEntry(ub).getValue();
+   }
+   /**
+    * Returns but does not remove the set of best solutions in this population that are strictly worse than the given one.
+    * @see TreePopulation#peekBestSet(E)
+    */
+   public HashSet<S> peekBestSet(S ub) {
+      return peekBestSet(problem.evaluate(ub));
+   }
 
    /**
     * Returns but does not remove the worst solution in this population.
@@ -139,15 +174,50 @@ public class TreePopulation<S extends Solution, E extends Comparable<E>> extends
    public S peekWorst() {
       return tree.firstEntry().getValue().iterator().next();
    }
+   /**
+    * Return but does not remove the worst solution in this population that is strictly better than the given evaluation.
+    * @see TreePopulation#peekWorst()
+    */
+   public S peekWorst(E lb) {
+      return tree.higherEntry(lb).getValue().iterator().next();
+   }
+   /**
+    * Return but does not remove the worst solution in this population that is strictly better than the given one.
+    * @see TreePopulation#peekWorst(E)
+    */
+   public S peekWorst(S lb) {
+      return peekWorst(problem.evaluate(lb));
+   }
 
    /**
-    * Removes and returns the best solution in this population.
-    * @see Population#popBest()
+    * Returns but does not remove the set of worst solutions in this population.
     */
-   @Override
-   public S popBest() {
-      Entry<E, HashSet<S>> e = tree.lastEntry();
-      if(e.getValue().size() <= 1)
+   public HashSet<S> peekWorstSet() {
+      return tree.firstEntry().getValue();
+   }
+   /**
+    * Returns but does not remove the set of worst solutions in this population that are strictly better than the given evaluation.
+    * @see TreePopulation#peekWorstSet()
+    */
+   public HashSet<S> peekWorstSet(E lb) {
+      return tree.higherEntry(lb).getValue();
+   }
+   /**
+    * Returns but does not remove the set of worst solutions in this population that are strictly better than the given one.
+    * @see TreePopulation#peekWorstSet(E)
+    */
+   public HashSet<S> peekWorstSet(S lb) {
+      return peekWorstSet(problem.evaluate(lb));
+   }
+
+   /**
+    * Removes and returns one solution from the given entry of this tree.
+    * If only one solution is contained by this entry, the entry is also removed from the tree.
+    */
+   protected S pop(Entry<E, HashSet<S>> e) {
+      if(e == null)
+         return null;
+      if(e.getValue().size() == 1)
          tree.remove(e.getKey());
       S s = e.getValue().iterator().next();
       e.getValue().remove(s);
@@ -156,18 +226,49 @@ public class TreePopulation<S extends Solution, E extends Comparable<E>> extends
    }
 
    /**
+    * Removes and returns the best solution in this population.
+    * @see Population#popBest()
+    */
+   @Override
+   public S popBest() {
+      return pop(tree.lastEntry());
+   }
+   /**
+    * Removes and returns the best solution in this population that is strictly worse than the given evaluation.
+    * @see TreePopulation#popBest()
+    */
+   public S popBest(E ub) {
+      return pop(tree.lowerEntry(ub));
+   }
+   /**
+    * Removes and returns the best solution in this population that is strictly worse than the given one.
+    * @see TreePopulation#popBest(E)
+    */
+   public S popBest(S ub) {
+      return popBest(problem.evaluate(ub));
+   }
+
+   /**
     * Removes and returns the worst solution in this population.
     * @see Population#popWorst()
     */
    @Override
    public S popWorst() {
-      Entry<E, HashSet<S>> e = tree.firstEntry();
-      if(e.getValue().size() <= 1)
-         tree.remove(e.getKey());
-      S s = e.getValue().iterator().next();
-      e.getValue().remove(s);
-      size--;
-      return s;
+      return pop(tree.firstEntry());
+   }
+   /**
+    * Removes and returns the worst solution in this population that is strictly better than the given evaluation.
+    * @see TreePopulation#popWorst()
+    */
+   public S popWorst(E lb) {
+      return pop(tree.higherEntry(lb));
+   }
+   /**
+    * Removes and returns the worst solution in this population that is strictly better than the given one.
+    * @see TreePopulation#popWorst(E)
+    */
+   public S popWorst(S lb) {
+      return popWorst(problem.evaluate(lb));
    }
 
    /**
