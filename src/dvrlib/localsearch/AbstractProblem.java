@@ -156,10 +156,10 @@ public abstract class AbstractProblem<S extends Solution, E extends Comparable<E
    /**
     * Compares the given solution to the current best, and saves it if it is good enough.
     * @return A boolean indicating whether the given solution was actually saved.
-    * @see Problem#copySolution(Solution)
+    * @see Problem#cloneSolution(Solution)
     */
    @Override
-   public final boolean saveSolution(S s) {
+   public boolean saveSolution(S s) {
       return solutionPool.add(cloneSolution(s));
    }
 }
