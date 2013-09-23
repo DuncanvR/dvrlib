@@ -61,12 +61,12 @@ public class GeneticLS<S extends Solution, E extends Comparable<E>> extends Stat
 
    protected final Combiner<GeneticProblem<S, E>, S> combiner;
 
-   protected int              additionalSelectionCount,
-                              elitistSelectionCount,
-                              populationSize,
-                              stopCount;
-   protected CombinerStrategy combinerStrategy = CombinerStrategy.Best;
-   protected Selector<S>      selector;
+   protected int               additionalSelectionCount,
+                               elitistSelectionCount,
+                               populationSize,
+                               stopCount;
+   protected CombinerStrategy  combinerStrategy = CombinerStrategy.Best;
+   protected ParentSelector<S> parentSelector;
 
    /**
     * GeneticLS constructor.
@@ -81,9 +81,9 @@ public class GeneticLS<S extends Solution, E extends Comparable<E>> extends Stat
     * @see GeneticLS#setAdditionalSelectionCount(int)
     * @see GeneticLS#setElitistSelectionCount(int)
     */
-   public GeneticLS(Selector<S> selector, Combiner<GeneticProblem<S, E>, S> combiner, int additionalSelectionCount, int elitistSelectionCount, int populationSize, int stopCount) {
+   public GeneticLS(ParentSelector<S> parentSelector, Combiner<GeneticProblem<S, E>, S> combiner, int additionalSelectionCount, int elitistSelectionCount, int populationSize, int stopCount) {
       this.combiner = combiner;
-      this.selector = selector;
+      this.parentSelector = parentSelector;
       setPopulationSize(populationSize);
       setStopCount(stopCount);
       setAdditionalSelectionCount(additionalSelectionCount);
@@ -175,7 +175,7 @@ public class GeneticLS<S extends Solution, E extends Comparable<E>> extends Stat
       E overallBestEval = (state.population.size() > 0 ? state.problem.evaluate(state.population.peekBest()) : null);
       for(long stop = state.iteration + n; state.iteration < stop && !state.problem.betterEq(overallBestEval, bound); state.iteration++) {
          // Select parent solutions for the next generation
-         Iterable<S> parents = selector.select(state, 2 * (populationSize + additionalSelectionCount - elitistSelectionCount));
+         Iterable<S> parents = parentSelector.select(state, 2 * (populationSize + additionalSelectionCount - elitistSelectionCount));
 
          // Clear population, keeping only the elitists
          state.population.retainBest(elitistSelectionCount);

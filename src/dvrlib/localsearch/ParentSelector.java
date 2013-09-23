@@ -1,7 +1,7 @@
 /*
  * DvRlib - Local search
  * Copyright (C) Duncan van Roermund, 2013
- * RouletteWheelSelector.java
+ * ParentSelector.java
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,14 +19,6 @@
 
 package dvrlib.localsearch;
 
-import java.util.LinkedList;
-
-public class RouletteWheelSelector<S extends Solution> implements Selector<S> {
-   public Iterable<S> select(GeneticLS<S, ?>.SearchState ss, int count) {
-      LinkedList<S> ls = new LinkedList<S>();
-      for(int i = 0; i < count; i++) {
-         ls.add(ss.population.peekWeighted());
-      }
-      return ls;
-   }
+public interface ParentSelector<S extends Solution> {
+   public Iterable<S> select(GeneticLS<S, ?>.SearchState ss, int count);
 }

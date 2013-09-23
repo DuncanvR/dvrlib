@@ -1,7 +1,7 @@
 /*
  * DvRlib - Local search
  * Copyright (C) Duncan van Roermund, 2013
- * TournamentSelector.java
+ * TournamentParentSelector.java
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,14 +22,14 @@ package dvrlib.localsearch;
 import java.util.Comparator;
 import java.util.LinkedList;
 
-public class TournamentSelector<S extends Solution> implements Selector<S> {
+public class TournamentParentSelector<S extends Solution> implements ParentSelector<S> {
    protected final int tournamentSize;
 
    /**
-    * TournamentSelector constructor.
+    * TournamentParentSelector constructor.
     * @param tournamentSize The number of solutions that will be included in each tournament.
     */
-   public TournamentSelector(int tournamentSize) {
+   public TournamentParentSelector(int tournamentSize) {
       this.tournamentSize = tournamentSize;
    }
 
