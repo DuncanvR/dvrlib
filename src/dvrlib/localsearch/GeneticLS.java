@@ -21,6 +21,12 @@ package dvrlib.localsearch;
 
 import java.util.LinkedList;
 
+/**
+ * GeneticLS implements a genetic search algorithm in the localsearch framework.
+ * By invoking the search method, it starts iterating until no more improvements can be found for a number of iterations -- controlled by the <code>stopCount</code> parameter.
+ * Each iteration, <code>2 * (populationSize + additionalSelectionCount - elitistSelectionCount)</code> parents are selected for generating offspring, and the <code>elitistSelectionCount</code> best solutions are copied to the next generation.
+ * For each pair of parents, the <code>Combiner</code> is called to create a (set of) solution(s), of which the first/last/best is added to the next generation, depending on the setting of <code>combinerStrategy</code>.
+ */
 public class GeneticLS<S extends Solution, E extends Comparable<E>> extends StatefulLocalSearch<GeneticProblem<S, E>, S, E, GeneticLS<S, E>.SearchState> {
    public class SearchState extends AbstractSearchState<GeneticProblem<S, E>, S> {
       protected GeneticPopulation<S> population;
@@ -55,7 +61,8 @@ public class GeneticLS<S extends Solution, E extends Comparable<E>> extends Stat
 
    protected final Combiner<GeneticProblem<S, E>, S> combiner;
 
-   protected int              elitistSelectionCount,
+   protected int              additionalSelectionCount,
+                              elitistSelectionCount,
                               populationSize,
                               stopCount;
    protected CombinerStrategy combinerStrategy = CombinerStrategy.Best;
@@ -63,20 +70,23 @@ public class GeneticLS<S extends Solution, E extends Comparable<E>> extends Stat
 
    /**
     * GeneticLS constructor.
-    * @param selector              The selector used to select solutions for recombination from the population.
-    * @param combiner              The combiner used to combine solutions when searching for a solution.
-    * @param elitistSelectionCount The number of best solutions that are copied from a previous generation without alteration.
-    * @param populationSize        The maximum number of solutions kept in a population.
-    * @param stopCount             The number of iterations in which no better solution was found after which the algorithm will stop.
+    * @param selector                 The selector used to select solutions for recombination from the population.
+    * @param combiner                 The combiner used to combine solutions when searching for a solution.
+    * @param additionalSelectionCount The number of extra solutions that are created each generation.
+    * @param elitistSelectionCount    The number of best solutions that are copied from a previous generation without alteration.
+    * @param populationSize           The maximum number of solutions kept in a population.
+    * @param stopCount                The number of iterations in which no better solution was found after which the algorithm will stop.
     * @see GeneticLS#setPopulationSize(int)
     * @see GeneticLS#setStopCount(int)
+    * @see GeneticLS#setAdditionalSelectionCount(int)
     * @see GeneticLS#setElitistSelectionCount(int)
     */
-   public GeneticLS(Selector<S> selector, Combiner<GeneticProblem<S, E>, S> combiner, int elitistSelectionCount, int populationSize, int stopCount) {
+   public GeneticLS(Selector<S> selector, Combiner<GeneticProblem<S, E>, S> combiner, int additionalSelectionCount, int elitistSelectionCount, int populationSize, int stopCount) {
       this.combiner = combiner;
       this.selector = selector;
       setPopulationSize(populationSize);
       setStopCount(stopCount);
+      setAdditionalSelectionCount(additionalSelectionCount);
       setElitistSelectionCount(elitistSelectionCount);
    }
 
@@ -86,6 +96,13 @@ public class GeneticLS<S extends Solution, E extends Comparable<E>> extends Stat
     */
    public void setCombinerStrategy(CombinerStrategy combinerStrategy) {
       this.combinerStrategy = combinerStrategy;
+   }
+
+   /**
+    * Sets the number of extra solutions that are created each generation.
+    */
+   public void setAdditionalSelectionCount(int additionalSelectionCount) {
+      this.additionalSelectionCount = additionalSelectionCount;
    }
 
    /**
@@ -158,7 +175,7 @@ public class GeneticLS<S extends Solution, E extends Comparable<E>> extends Stat
       E overallBestEval = (state.population.size() > 0 ? state.problem.evaluate(state.population.peekBest()) : null);
       for(long stop = state.iteration + n; state.iteration < stop && !state.problem.betterEq(overallBestEval, bound); state.iteration++) {
          // Select parent solutions for the next generation
-         Iterable<S> parents = selector.select(state, 2 * (populationSize - elitistSelectionCount));
+         Iterable<S> parents = selector.select(state, 2 * (populationSize + additionalSelectionCount - elitistSelectionCount));
 
          // Clear population, keeping only the elitists
          state.population.retainBest(elitistSelectionCount);
@@ -172,6 +189,10 @@ public class GeneticLS<S extends Solution, E extends Comparable<E>> extends Stat
 
             // Iterate over the children solutions to select one, depending on the chosen strategy
             for(S s : combiner.combine(state, it.next(), it.next())) {
+               if(state.solution == null) {
+                  state.solution = s;
+                  continue;
+               }
                if(state.population.contains(s))
                   continue;
                if(state.problem.better(state.problem.evaluationBound(s), state.solution) && state.problem.better(s, state.solution)) {
