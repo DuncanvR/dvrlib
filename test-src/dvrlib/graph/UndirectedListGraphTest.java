@@ -56,6 +56,43 @@ public class UndirectedListGraphTest extends ListGraphTest {
    }
 
    @Override
+   public void testMerge() {
+      newInstance(3);
+      instance.addEdge(0, 1);
+      assertDegrees(new int[]{1,1,0});
+      instance.merge(1, 2);
+      assertDegrees(new int[]{1,1,1});
+      newInstance(3);
+      instance.addEdge(0, 2);
+      assertDegrees(new int[]{1,0,1});
+      instance.merge(1, 2);
+      assertDegrees(new int[]{1,1,1});
+      newInstance(3);
+      instance.addEdge(0, 1);
+      instance.addEdge(0, 2);
+      assertDegrees(new int[]{2,1,1});
+      instance.merge(1, 2);
+      assertDegrees(new int[]{1,1,1});
+
+      newInstance(3);
+      instance.addEdge(0, 1);
+      assertDegrees(new int[]{1,1,0});
+      instance.merge(0, 1);
+      assertDegrees(new int[]{0,0,0});
+      newInstance(3);
+      instance.addEdge(0, 2);
+      assertDegrees(new int[]{1,0,1});
+      instance.merge(0, 1);
+      assertDegrees(new int[]{1,1,1});
+      newInstance(3);
+      instance.addEdge(0, 1);
+      instance.addEdge(0, 2);
+      assertDegrees(new int[]{2,1,1});
+      instance.merge(0, 1);
+      assertDegrees(new int[]{1,1,1});
+   }
+
+   @Override
    public void testDegrees() {
       newInstance(6);
       assertDegrees(new int[]{0,0,0,0,0,0});
@@ -126,7 +163,7 @@ public class UndirectedListGraphTest extends ListGraphTest {
       assertEquals(6, instance.node(2).data.intValue());
       assertDegrees(new int[]{2,2,2,2,2});
       assertNull(instance.removeEdge(1, 2));
-      assertDegrees(new int[]{2,1,1,0,1});
+      assertDegrees(new int[]{2,1,1,1,1});
    }
 
    public void assertDegrees(int ds[]) {

@@ -42,16 +42,21 @@ public class ListGraph<Id extends Comparable<Id>, NodeData, EdgeData> extends Ab
             // Merge outgoing edges of t2.b into t1.b
             for(Triple<ListGraphNode<Id, NodeData, EdgeData>, EdgeData, ListGraphNode<Id, NodeData, EdgeData>> t :
                   new IterableOnce<Triple<ListGraphNode<Id, NodeData, EdgeData>, EdgeData, ListGraphNode<Id, NodeData, EdgeData>>>(t2.b.outEdgesIterator())) {
-               if(t.a != t1.b) {
-                  if(hasEdge(t1.b, t.a))
-                     replaceEdge(t1.b, t.a, mergeEdgeData(edge(t1.b, t.a), t.b));
+               assert (t.a == t2.b);
+               if(t.c != t1.b) {
+                  if(hasEdge(t1.b, t.c))
+                     replaceEdge(t1.b, t.c, mergeEdgeData(edge(t1.b, t.c), t.b));
                   else
-                     addEdge(t1.b, t.a, t.b);
+                     addEdge(t1.b, t.c, t.b);
                }
+            }
+            while(t2.b.outDegree() > 0) {
+               ListGraph.this.removeEdge(t2.b, t2.b.outEdges.keySet().iterator().next());
             }
             // Merge incoming edges of t2.b into t1.b
             for(Triple<ListGraphNode<Id, NodeData, EdgeData>, EdgeData, ListGraphNode<Id, NodeData, EdgeData>> t :
                   new IterableOnce<Triple<ListGraphNode<Id, NodeData, EdgeData>, EdgeData, ListGraphNode<Id, NodeData, EdgeData>>>(t2.b.inEdgesIterator())) {
+               assert (t.c == t2.b);
                if(t.a != t1.b) {
                   if(hasEdge(t.a, t1.b))
                      replaceEdge(t.a, t1.b, mergeEdgeData(edge(t.a, t1.b), t.b));
@@ -59,17 +64,13 @@ public class ListGraph<Id extends Comparable<Id>, NodeData, EdgeData> extends Ab
                      addEdge(t.a, t1.b, t.b);
                }
             }
+            while(t2.b.inDegree() > 0) {
+               ListGraph.this.removeEdge(t2.b.inEdges.iterator().next(), t2.b);
+            }
             // Merge sets of nodes
             t1.a.addAll(t2.a);
             // Merge node data
             t1.b.data = mergeNodeData(t1.b.data, t2.b.data);
-            // Remove node t2.b from the graph
-            while(t2.b.inDegree() > 0) {
-               ListGraph.this.removeEdge(t2.b.inEdges.iterator().next(), t2.b);
-            }
-            while(t2.b.outDegree() > 0) {
-               ListGraph.this.removeEdge(t2.b, t2.b.outEdges.keySet().iterator().next());
-            }
             nodes.remove(t2.b);
             // Return merged pair
             return t1;

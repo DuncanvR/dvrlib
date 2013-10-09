@@ -80,4 +80,9 @@ public abstract class AbstractGraphNode<Id extends Comparable<Id>, Node extends 
    public int compareTo(AbstractGraphNode<Id, Node, NodeData, EdgeData> that) {
       return id.compareTo(that.id);
    }
+
+   @Override
+   public int hashCode() {
+      return 234 + 89 * id.hashCode();
+   }
 }

@@ -72,6 +72,99 @@ public class ListGraphTest {
    }
 
    @Test
+   public void testMerge() {
+      newInstance(3);
+      instance.addEdge(0, 1);
+      assertDegrees(new int[]{0,1,0}, new int[]{1,0,0});
+      assertFalse(instance.hasEdge(0, 0));
+      assertTrue (instance.hasEdge(0, 1));
+      assertFalse(instance.hasEdge(0, 2));
+      assertFalse(instance.hasEdge(1, 0));
+      assertFalse(instance.hasEdge(1, 1));
+      assertFalse(instance.hasEdge(1, 2));
+      assertFalse(instance.hasEdge(2, 0));
+      assertFalse(instance.hasEdge(2, 1));
+      assertFalse(instance.hasEdge(2, 2));
+      instance.merge(1, 2);
+      assertDegrees(new int[]{0,1,1}, new int[]{1,0,0});
+      assertFalse(instance.hasEdge(0, 0));
+      assertTrue (instance.hasEdge(0, 1));
+      assertTrue (instance.hasEdge(0, 2));
+      assertFalse(instance.hasEdge(1, 0));
+      assertFalse(instance.hasEdge(1, 1));
+      assertFalse(instance.hasEdge(1, 2));
+      assertFalse(instance.hasEdge(2, 0));
+      assertFalse(instance.hasEdge(2, 1));
+      assertFalse(instance.hasEdge(2, 2));
+
+      newInstance(3);
+      instance.addEdge(0, 2);
+      assertDegrees(new int[]{0,0,1}, new int[]{1,0,0});
+      assertFalse(instance.hasEdge(0, 0));
+      assertFalse(instance.hasEdge(0, 1));
+      assertTrue (instance.hasEdge(0, 2));
+      assertFalse(instance.hasEdge(1, 0));
+      assertFalse(instance.hasEdge(1, 1));
+      assertFalse(instance.hasEdge(1, 2));
+      assertFalse(instance.hasEdge(2, 0));
+      assertFalse(instance.hasEdge(2, 1));
+      assertFalse(instance.hasEdge(2, 2));
+      instance.merge(1, 2);
+      assertDegrees(new int[]{0,1,1}, new int[]{1,0,0});
+      assertFalse(instance.hasEdge(0, 0));
+      assertTrue (instance.hasEdge(0, 1));
+      assertTrue (instance.hasEdge(0, 2));
+      assertFalse(instance.hasEdge(1, 0));
+      assertFalse(instance.hasEdge(1, 1));
+      assertFalse(instance.hasEdge(1, 2));
+      assertFalse(instance.hasEdge(2, 0));
+      assertFalse(instance.hasEdge(2, 1));
+      assertFalse(instance.hasEdge(2, 2));
+
+      newInstance(3);
+      instance.addEdge(0, 1);
+      instance.addEdge(0, 2);
+      assertDegrees(new int[]{0,1,1}, new int[]{2,0,0});
+      assertFalse(instance.hasEdge(0, 0));
+      assertTrue (instance.hasEdge(0, 1));
+      assertTrue (instance.hasEdge(0, 2));
+      assertFalse(instance.hasEdge(1, 0));
+      assertFalse(instance.hasEdge(1, 1));
+      assertFalse(instance.hasEdge(1, 2));
+      assertFalse(instance.hasEdge(2, 0));
+      assertFalse(instance.hasEdge(2, 1));
+      assertFalse(instance.hasEdge(2, 2));
+      instance.merge(1, 2);
+      assertDegrees(new int[]{0,1,1}, new int[]{1,0,0});
+      assertFalse(instance.hasEdge(0, 0));
+      assertTrue (instance.hasEdge(0, 1));
+      assertTrue (instance.hasEdge(0, 2));
+      assertFalse(instance.hasEdge(1, 0));
+      assertFalse(instance.hasEdge(1, 1));
+      assertFalse(instance.hasEdge(1, 2));
+      assertFalse(instance.hasEdge(2, 0));
+      assertFalse(instance.hasEdge(2, 1));
+      assertFalse(instance.hasEdge(2, 2));
+
+      newInstance(3);
+      instance.addEdge(0, 1);
+      assertDegrees(new int[]{0,1,0}, new int[]{1,0,0});
+      instance.merge(0, 1);
+      assertDegrees(new int[]{0,0,0}, new int[]{0,0,0});
+      newInstance(3);
+      instance.addEdge(0, 2);
+      assertDegrees(new int[]{0,0,1}, new int[]{1,0,0});
+      instance.merge(0, 1);
+      assertDegrees(new int[]{0,0,1}, new int[]{1,1,0});
+      newInstance(3);
+      instance.addEdge(0, 1);
+      instance.addEdge(0, 2);
+      assertDegrees(new int[]{0,1,1}, new int[]{2,0,0});
+      instance.merge(0, 1);
+      assertDegrees(new int[]{0,0,1}, new int[]{1,1,0});
+   }
+
+   @Test
    public void testDegrees() {
       newInstance(6);
       assertDegrees(new int[]{0,0,0,0,0,0}, new int[]{0,0,0,0,0,0});
@@ -147,7 +240,7 @@ public class ListGraphTest {
    public void assertDegrees(int inDs[], int outDs[]) {
       assertEquals(inDs.length, outDs.length);
       int maxInDegree = 0, maxOutDegree = 0;
-      for(int i = 0, j = 0; j < instance.nodeCount(); i++) {
+      for(int i = 0, j = 0; j < Math.max(instance.nodeCount(), inDs.length); i++) {
          if(instance.contains(i)) {
             assertEquals(inDs[j],  instance.node(i).inDegree());
             assertEquals(outDs[j], instance.node(i).outDegree());
