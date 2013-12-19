@@ -55,14 +55,30 @@ if [ -d $DIR/test-src ] ; then
       exit
    fi
 
+   # Instrument classes
+   echo " *** Instrumenting classes..."
+   if [ -d $DIR/cobertura ] ; then
+      rm -R $DIR/cobertura/* 2>/dev/null
+   else
+      mkdir -p $DIR/cobertura
+   fi
+   cobertura-instrument.sh --destination $DIR/cobertura/build/ --datafile $DIR/cobertura/datafile.ser $DIR/build/
+
    # Run tests
    echo " *** Running tests..."
    cd $DIR/test-build
-   java -cp /usr/share/java/junit.jar:../build/:./ -ea org.junit.runner.JUnitCore $(/usr/bin/find . -iname \*.class | /usr/bin/grep -v '\$' | sed 's:\./\(.*\)\.class:\1:' | tr '/' '.')
+   java -cp /usr/share/java/junit.jar:/usr/local/share/cobertura-2.0.3.jar:../cobertura/build/:../build/:./ \
+        -Dnet.sourceforge.cobertura.datafile=$DIR/cobertura/datafile.ser \
+        -ea org.junit.runner.JUnitCore $(/usr/bin/find . -iname \*.class | /usr/bin/grep -v '\$' | sed 's:\./\(.*\)\.class:\1:' | tr '/' '.')
    if [ "$?" != "0" ] ; then
       echo " *** Error(s) while running tests; Aborting"
       exit
    fi
+
+   # Generate coverage report
+   echo " *** Generating coverage report..."
+   cobertura-report.sh --destination $DIR/cobertura/report/ --datafile $DIR/cobertura/datafile.ser $DIR/src/
+   echo " --- View $DIR/cobertura/report/index.html for the test coverage report"
 fi
 
 # Package
