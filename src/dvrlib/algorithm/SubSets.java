@@ -22,13 +22,19 @@ package dvrlib.algorithm;
 import java.util.Arrays;
 import java.util.LinkedList;
 
-public class SubSets {
+public final class SubSets {
+   /**
+    * Returns a list of all permutations of the given array.
+    */
    public static <T> LinkedList<T[]> permutations(T arr[]) {
       LinkedList<T[]> lst = new LinkedList<T[]>();
       permutations(arr, 0, lst);
       return lst;
    }
 
+   /**
+    * @see SubSets#permutations(Object[])
+    */
    protected static <T> void permutations(T arr[], int i, LinkedList<T[]> lst) {
       if(i < arr.length - 1) {
          permutations(arr, i + 1, lst);
@@ -42,12 +48,18 @@ public class SubSets {
          lst.add(arr);
    }
 
+   /**
+    * Returns a list of all subsets of the given array.
+    */
    public static <T> LinkedList<T[]> subSets(T arr[]) {
       LinkedList<T[]> lst = new LinkedList<T[]>();
       subSets(arr, 0, lst);
       return lst;
    }
 
+   /**
+    * @see SubSets#subSets(Object[])
+    */
    protected static <T> void subSets(T arr[], int i, LinkedList<T[]> lst) {
       if(i < arr.length) {
          subSets(arr, i + 1, lst);
@@ -61,6 +73,9 @@ public class SubSets {
          lst.add(arr);
    }
 
+   /**
+    * Swaps the items in the given array at indices <code>i</code> and <code>j</code>.
+    */
    public static void swap(Object arr[], int i, int j) {
       Object tmp = arr[i];
       arr[i] = arr[j];
