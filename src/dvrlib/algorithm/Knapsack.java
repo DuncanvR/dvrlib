@@ -66,14 +66,13 @@ public class Knapsack<O extends KnapsackObject> {
          double bestValue = IllegalValue;
          for(int c = capacityUB; c >= capacityLB; c--) {
             double v = entry(c, objects.length - 1);
-            assert (v <= totalValue) : "Illegal value returned";
-            if(bestValue >= totalValue) {
-               bestC = -1;
-               break;
-            }
             if(v > bestValue) {
-               bestC     = c;
+               if(v == totalValue) {
+                  bestC = -1;
+                  break;
+               }
                bestValue = v;
+               bestC = c;
             }
          }
       }
@@ -116,7 +115,8 @@ public class Knapsack<O extends KnapsackObject> {
    }
 
    protected void fill(HashSet<O> knapsack, int c, int i) {
-      if(c >= 0 && i >= 0) {
+      if(c >= 0) {
+         assert (i >= 0);
          O o = objects[i];
          if(entry(c, i - 1) >= entry(c - o.weight(), i - 1) + o.value())
             fill(knapsack, c, i - 1);

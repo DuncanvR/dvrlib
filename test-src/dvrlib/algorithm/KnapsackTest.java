@@ -48,6 +48,9 @@ public class KnapsackTest {
    @Test
    public void testSolve() {
       ArrayList<KnapsackTestObject> objects = new ArrayList<KnapsackTestObject>();
+      testSolve(objects, 0, new boolean[] { }, 0d);
+      testSolve(objects, 1, new boolean[] { }, 0d);
+
       objects.add(new KnapsackTestObject(12d, 8));
       testSolve(objects, 0, new boolean[] { false },  0d);
       testSolve(objects, 1, new boolean[] { false },  0d);
@@ -107,16 +110,16 @@ public class KnapsackTest {
       testSolve(objects, 23, new boolean[] {  true,  true,  true, false }, 31d);
       testSolve(objects, 26, new boolean[] {  true,  true,  true, false }, 31d);
       testSolve(objects, 27, new boolean[] {  true,  true,  true,  true }, 37d);
-      testSolve(objects, 99, new boolean[] {  true,  true,  true,  true }, 37d);
+      testSolve(objects, 28, new boolean[] {  true,  true,  true,  true }, 37d);
    }
 
    protected void testSolve(ArrayList<KnapsackTestObject> objects, int capacity, boolean inclusions[], double profit) {
       Knapsack<KnapsackTestObject> k = new Knapsack<KnapsackTestObject>(objects.toArray(new KnapsackTestObject[0]), capacity);
-      double p = k.solve();
-      assertEquals(profit, p, 1e-9);
+      assertEquals(profit, k.solve(), 1e-9);
       java.util.HashSet<KnapsackTestObject> s = k.solution();
       for(int i = 0; i < inclusions.length; i++) {
          assertEquals(inclusions[i], s.contains(objects.get(i)));
       }
+      assertEquals(profit, k.solve(), 1e-9);
    }
 }
